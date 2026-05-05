@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MUnCh</title>
+  <style>
+    body {
+      font-family: -apple-system, sans-serif;
+      background: #111;
+      color: white;
+      margin: 0;
+      padding: 20px;
+      
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #1c1c1e;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .museum {
+      color: #aaa;
+      margin-top: 4px;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 8px;
+      background: #34c759;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    .thumb {
+  width: 100%;
+  aspect-ratio: 2 / 3;   /* ポスター比率 */
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* ふわっと暗くする */
+
+.image-wrapper {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+
+  /* ネオン */
+  box-shadow:
+    0 0 10px rgba(163, 30, 92, 0.8),
+    0 0 20px rgba(160, 14, 77, 0.6),
+    0 0 40px rgba(236, 21, 93, 0.4);
+}
+
+.image-wrapper:active {
+  transform: scale(0.97);
+  filter: brightness(1.2);
+}
+
+.image-wrapper {
+  animation: neonGlow 2s infinite alternate;
+}
+
+@keyframes neonGlow {
+  from {
+    box-shadow:
+      0 0 5px rgba(169, 19, 116, 0.6),
+      0 0 10px rgba(136, 26, 84, 0.4),
+      0 0 20px rgba(192, 35, 35, 0.3);
+  }
+  to {
+    box-shadow:
+      0 0 15px rgb(146, 20, 66),
+      0 0 30px rgba(207, 16, 35, 0.8),
+      0 0 60px rgba(163, 22, 43, 0.6);
+  }
+
+}
+.image-wrapper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+}
+
+.overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 10px;
+  color: rgba(142, 179, 134, 0.984);
+  text-shadow: 0 2px 10px rgba(202, 185, 185, 0.8);
+}
+
+.card-link:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.card::after {
+  pointer-events: none;
+}
+
+.distance {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.video-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.video-bg iframe {
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+.overlay-title {
+  position: absolute;
+  bottom: 20px;
+  left: 16px;
+  right: 16px;
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.overlay-title span {
+  display: inline-block;
+}
+
+.poster-frame {
+  position: relative;
+  padding: 20px;
+}
+
+.bulbs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bulb {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ffe9a3;
+
+  box-shadow:
+  0 0 10px #fff,
+  0 0 20px #ffd700,
+  0 0 40px #ffae00;
+
+  animation: flow 2s linear infinite;
+  animation-delay: calc(var(--i) * 0.05s);
+}
+
+/* 上 */
+.bulb:nth-child(-n+10) {
+  top: 0;
+  left: calc((100% / 10) * var(--i));
+}
+
+/* 右 */
+.bulb:nth-child(n+11):nth-child(-n+20) {
+  right: 0;
+  top: calc((100% / 10) * (var(--i) - 10));
+}
+
+/* 下 */
+.bulb:nth-child(n+21):nth-child(-n+30) {
+  bottom: 0;
+  left: calc((100% / 10) * (30 - var(--i)));
+}
+
+/* 左 */
+.bulb:nth-child(n+31) {
+  left: 0;
+  top: calc((100% / 10) * (40 - var(--i)));
+}
+
+@keyframes flow {
+  0%   { opacity: 0.2; transform: scale(0.8); }
+  50%  { opacity: 1;   transform: scale(1.4); }
+  100% { opacity: 0.2; transform: scale(0.8); }
+}
+
+.poster-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+  background: rgba(0,0,0,0.85);
+  color: white;
+
+  padding: 20px 12px;
+  z-index: 2;
+}
+
+.poster-bar .now {
+  font-size: 20px;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.poster-bar .date {
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.poster-bar .now {
+  color: #ff3b30; /* 赤 */
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="video-bg">
+    <iframe
+      src="https://www.youtube.com/embed/OWSLMN6g_Od4?autoplay=1&mute=1&loop=1&playlist=OeTFAiYbR9o&controls=0&showinfo=0&modestbranding=1"
+      frameborder="0"
+      allow="autoplay; fullscreen"
+    ></iframe>
+  </div>
+
+<h1>開催中の特別展</h1>
+
+<select id="sort">
+  <option value="end">終了が近い順</option>
+  <option value="title">タイトル順</option>
+  <option value="near">近い順</option>
+  <option value="ueno">上野</option>
+</select>
+
+<div id="list"></div>
+
+
+<script>
+
+const museums = {
+  "東京都美術館": { lat: 35.7172, lng: 139.7765 },
+  "東京国立近代美術館": { lat: 35.6909, lng: 139.7544 },
+  "東京藝術大学大学美術館": { lat: 35.7188, lng: 139.7753 }
+};
+
+const exhibitions = [
+  {
+    title: "アンドリュー・ワイエス展",
+    artist: "アンドリュー・ワイエス",
+    museum: "東京都美術館",
+    area: "上野",
+    start: "2026-04-28",
+    end: "2026-07-05",
+    imagePrefix: "PICT",
+    imageMin: 1,
+    imageMax: 577,
+    url: "https://www.tobikan.jp/exhibition/",
+    copy: "静寂の中に差し込む、ひとすじの現実",
+    ...museums["東京都美術館"]
+  },
+  {
+    title: "下村観山展",
+    artist: "下村観山",
+    museum: "東京国立近代美術館",
+    area: "竹橋",
+    start: "2026-03-17",
+    end: "2026-05-10",
+    imagePrefix: "PICT",
+    imageMin: 1,
+    imageMax: 577,
+    url: "https://www.momat.go.jp/",
+    copy: "日本画の奥に潜む、緊張と気配",
+    ...museums["東京国立近代美術館"]
+  },
+  {
+    title: "MOMATコレクション",
+    artist: "海",
+    museum: "東京国立近代美術館",
+    area: "竹橋",
+    start: "2026-03-03",
+    end: "2026-05-10",
+    imagePrefix: "PICT",
+    imageMin: 1,
+    imageMax: 577,
+    url: "https://www.momat.go.jp/",
+    copy: "時代の断片が、静かに並ぶ",
+    ...museums["東京国立近代美術館"]
+  },
+  {
+    title: "NHK日曜美術館50年展",
+    artist: "クロードモネ",
+    museum: "東京藝術大学大学美術館",
+    area: "上野",
+    start: "2026-03-28",
+    end: "2026-06-21",
+    imagePrefix: "PICT",
+    imageMin: 1,
+    imageMax: 577,
+    url: "https://museum.geidai.ac.jp/",
+    copy: "美術を見続けた時間、その記憶の展示",
+    ...museums["東京藝術大学大学美術館"]
+  },
+  {
+    title: "大英博物館 日本美術コレクション展",
+    museum: "東京都美術館",
+    area: "上野",
+    start: "2026-07-25",
+    end: "2026-10-18",
+    imagePrefix: "PICT",
+    imageMin: 1,
+    imageMax: 577,
+    url: "https://www.tobikan.jp/exhibition/",
+    copy: "海を越えた日本、美の再帰",
+    ...museums["東京都美術館"]
+  }
+];
+
+const today = new Date();
+
+let userLat = null;
+let userLng = null;
+
+navigator.geolocation.getCurrentPosition(position => {
+  userLat = position.coords.latitude;
+  userLng = position.coords.longitude;
+
+  render(); // ← 取得後に再描画
+});
+
+function getDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371; // 地球の半径(km)
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+
+  const a =
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) *
+    Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+  return R * c;
+}
+
+function toWalkTime(km) {
+  return Math.round(km * 15); // 1km = 15分で計算
+}
+
+const sortSelect = document.getElementById("sort");
+const list = document.getElementById("list");
+
+function getRandomPhoto(prefix, min, max) {
+  const num = Math.floor(Math.random() * (max - min + 1)) + min;
+  const padded = String(num).padStart(4, "0");
+  return `images/${prefix}${padded}.jpg`;
+}
+
+const imgSrc = getRandomPhoto("PICT", 1, 577);
+
+function randomizeText(text) {
+  return text.split("").map(char => {
+    const deg = (Math.random() * 20) - 10; // -10〜+10度
+    return `<span style="display:inline-block; transform: rotate(${deg}deg);">${char}</span>`;
+  }).join("");
+}
+
+function createBulbs(count) {
+  let bulbs = "";
+  for (let i = 0; i < count; i++) {
+    bulbs += `<span class="bulb" style="--i:${i}"></span>`;
+  }
+  return bulbs;
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;
+}
+
+function render() {
+  let listData = exhibitions.filter(e => 
+    new Date(e.start) <= today && today <= new Date(e.end)
+  );
+
+  if (sortSelect.value === "end") {
+    listData.sort((a, b) => new Date(a.end) - new Date(b.end));
+  }
+
+  if (sortSelect.value === "title") {
+    listData.sort((a, b) => a.title.localeCompare(b.title));
+  }
+
+  if (sortSelect.value === "ueno") {
+    listData = listData.filter(e => e.area === "上野");
+  }
+
+
+  if (sortSelect.value === "near" && userLat) {
+  listData.sort((a, b) => {
+    const d1 = getDistance(userLat, userLng, a.lat, a.lng);
+    const d2 = getDistance(userLat, userLng, b.lat, b.lng);
+    return d1 - d2;
+  });
+
+  
+}
+
+  list.innerHTML = "";
+
+  listData.forEach(e => {
+  const div = document.createElement("div");
+  div.className = "card";
+
+  let distanceText = "";
+
+  if (userLat && userLng) {
+  const d = getDistance(userLat, userLng, e.lat, e.lng);
+  const walk = toWalkTime(d);
+
+  distanceText = `${d.toFixed(1)}km（徒歩${walk}分）`;
+}
+
+const imgSrc = e.imagePrefix
+  ? getRandomPhoto(e.imagePrefix, e.imageMin, e.imageMax)
+  : "https://piscsum.photos/800/600";
+  div.innerHTML = `
+<a href="${e.url}" class="card-link">
+
+ <div class="poster-frame">
+  <div class="bulbs">
+    ${createBulbs(40)}
+  </div>
+
+  <div class="image-wrapper">
+
+  <div class="poster-bar">
+    <div class="now">NOW SHOWING</div>
+    <div class="date">${formatDate(e.start)} - ${formatDate(e.end)}</div>
+  </div>
+
+  <img src="${imgSrc}" class="thumb">
+
+  <div class="overlay-title">${randomizeText(e.title)}</div>
+
+</div>
+  <div class="title">${e.title}</div>
+  <div class="museum">${e.museum}</div>
+    </a>
+  <a href="https://www.google.com/maps/search/?api=1&query=${e.lat},${e.lng}" target="_blank">
+    📍 地図で見る
+  </a>
+  <a href="https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}" target="_blank">
+  🚶 ルートを見る
+</a>
+`;
+
+
+
+    list.appendChild(div);
+  });
+}
+
+sortSelect.addEventListener("change", render);
+
+render();
+
+</script>
+
+</body>
+</html>
