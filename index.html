@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>開催中の特別展</title>
+  <style>
+    body {
+      font-family: -apple-system, sans-serif;
+      background: #111;
+      color: white;
+      margin: 0;
+      padding: 20px;
+      
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #1c1c1e;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .museum {
+      color: #aaa;
+      margin-top: 4px;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 8px;
+      background: #34c759;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    .thumb {
+  width: 100%;
+  height: auto;
+}
+
+/* ふわっと暗くする */
+.card {
+  position: relative;
+  overflow: hidden;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(39, 50, 42, 0.2), transparent);
+}
+
+.image-wrapper {
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 10px;
+  color: rgba(142, 179, 134, 0.984);
+  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+}
+
+.card-link:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.card::after {
+  pointer-events: none;
+}
+
+.distance {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.video-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.video-bg iframe {
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+
+
+
+
+
+
+  </style>
+</head>
+<body>
+
+<h1>開催中の特別展</h1>
+
+<select id="sort">
+  <option value="end">終了が近い順</option>
+  <option value="title">タイトル順</option>
+  <option value="near">近い順</option>
+  <option value="ueno">上野</option>
+</select>
+
+<div id="list"></div>
+
+
+<script>
+
+const museums = {
+  "東京都美術館": { lat: 35.7172, lng: 139.7765 },
+  "東京国立近代美術館": { lat: 35.6909, lng: 139.7544 },
+  "東京藝術大学大学美術館": { lat: 35.7188, lng: 139.7753 }
+};
+
+const exhibitions = [
+  {
+    title: "アンドリュー・ワイエス展",
+    museum: "東京都美術館",
+    area: "上野",
+    start: "2026-04-28",
+    end: "2026-07-05",
+    image: "https://picsum.photos/800/600?random=1",
+    url: "https://www.tobikan.jp/exhibition/",
+    copy: "静寂の中に差し込む、ひとすじの現実",
+    ...museums ["東京都美術館"]
+  },
+  {
+    title: "下村観山展",
+    museum: "東京国立近代美術館",
+    area: "竹橋",
+    start: "2026-03-17",
+    end: "2026-05-10",
+    image: "images/kanzan.jpg",
+    url: "https://source.unsplash.com/800x600/?japanese,painting,art",
+    copy: "日本画の奥に潜む、緊張と気配",
+    ...museums["東京国立近代美術館"]
+  },
+  {
+    title: "MOMATコレクション",
+    museum: "東京国立近代美術館",
+    area: "竹橋",
+    start: "2026-03-03",
+    end: "2026-05-10",
+    image: "images/momat.jpg",
+    url: "https://www.momat.go.jp/",
+    copy: "時代の断片が、静かに並ぶ",
+    ...museums["東京国立近代美術館"]
+  },
+  {
+    title: "NHK日曜美術館50年展",
+    museum: "東京藝術大学大学美術館",
+    area: "上野",
+    start: "2026-03-28",
+    end: "2026-06-21",
+    image: "images/nhk.jpg",
+    url: "https://museum.geidai.ac.jp/",
+    copy: "美術を見続けた時間、その記憶の展示",
+    ...museums["東京藝術大学大学美術館"]
+  },
+  {
+    title: "大英博物館 日本美術コレクション展",
+    museum: "東京都美術館",
+    area: "上野",
+    start: "2026-07-25",
+    end: "2026-10-18",
+    image: "images/british.jpg",
+    url: "https://www.tobikan.jp/exhibition/",
+    copy: "海を越えた日本、美の再帰",
+    ...museums["東京都美術館"]
+  }
+];
+
+const today = new Date();
+
+let userLat = null;
+let userLng = null;
+
+navigator.geolocation.getCurrentPosition(position => {
+  userLat = position.coords.latitude;
+  userLng = position.coords.longitude;
+
+  render(); // ← 取得後に再描画
+});
+
+function getDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371; // 地球の半径(km)
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+
+  const a =
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) *
+    Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+  return R * c;
+}
+
+function toWalkTime(km) {
+  return Math.round(km * 15); // 1km = 15分で計算
+}
+
+const sortSelect = document.getElementById("sort");
+const list = document.getElementById("list");
+
+
+
+function render() {
+  let listData = exhibitions.filter(e => 
+    new Date(e.start) <= today && today <= new Date(e.end)
+  );
+
+  if (sortSelect.value === "end") {
+    listData.sort((a, b) => new Date(a.end) - new Date(b.end));
+  }
+
+  if (sortSelect.value === "title") {
+    listData.sort((a, b) => a.title.localeCompare(b.title));
+  }
+
+  if (sortSelect.value === "ueno") {
+    listData = listData.filter(e => e.area === "上野");
+  }
+
+
+  if (sortSelect.value === "near" && userLat) {
+  listData.sort((a, b) => {
+    const d1 = getDistance(userLat, userLng, a.lat, a.lng);
+    const d2 = getDistance(userLat, userLng, b.lat, b.lng);
+    return d1 - d2;
+  });
+
+  
+}
+
+
+
+  list.innerHTML = "";
+
+  listData.forEach(e => {
+  const div = document.createElement("div");
+  div.className = "card";
+
+  let distanceText = "";
+
+  if (userLat && userLng) {
+  const d = getDistance(userLat, userLng, e.lat, e.lng);
+  const walk = toWalkTime(d);
+
+  distanceText = `${d.toFixed(1)}km（徒歩${walk}分）`;
+}
+
+  div.innerHTML = `
+    <a href="${e.url}" class="card-link">
+      <img src="${e.image}" class="thumb">
+      <div class="title">${e.title}</div>
+      <div class="museum">${e.museum}</div>
+      <div class="distance">${distanceText}</div>
+      <div class="video-bg">
+  <iframe
+    src="https://www.youtube.com/embed/OWSLMN6g_Od4autoplay=1&mute=1&loop=1&playlist=OeTFAiYbR9o&controls=0&showinfo=0&modestbranding=1"
+    frameborder="0"
+    allow="autoplay; fullscreen"
+  ></iframe>
+</div>
+    </a>
+      
+    </a>
+  <a href="https://www.google.com/maps/search/?api=1&query=${e.lat},${e.lng}" target="_blank">
+    📍 地図で見る
+  </a>
+  <a href="https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}" target="_blank">
+  🚶 ルートを見る
+</a>
+`;
+
+
+
+    list.appendChild(div);
+  });
+}
+
+sortSelect.addEventListener("change", render);
+
+render();
+
+</script>
+
+</body>
+</html>
