@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MUnCh — Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    :root {
+      --cream: #f0ebe0;
+      --gold:  #c9a84c;
+      --dark:  #0a0a0a;
+      --paper: #f2ece0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--dark);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ヘッダー */
+    .header {
+      padding: 20px 48px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid rgba(240,235,224,0.1);
+      flex-shrink: 0;
+      background: var(--dark);
+    }
+
+    .logo {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(240,235,224,0.55);
+    }
+
+    .logo-link { text-decoration: none; }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+      margin-top: 4px;
+      letter-spacing: 0.04em;
+    }
+
+    /* タブナビ */
+    .nav-tabs { display: flex; }
+
+    .nav-tab {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(240,235,224,0.38);
+      text-decoration: none;
+      padding: 7px 18px;
+      border: 1px solid rgba(240,235,224,0.14);
+      transition: color 0.3s, background 0.3s, border-color 0.3s;
+    }
+
+    .nav-tab + .nav-tab { border-left: none; }
+
+    .nav-tab.active {
+      color: var(--cream);
+      background: rgba(240,235,224,0.07);
+      border-color: rgba(240,235,224,0.28);
+    }
+
+    .nav-tab:hover:not(.active) {
+      color: var(--gold);
+      border-color: rgba(201,168,76,0.35);
+    }
+
+    /* 地図ラッパー */
+    .map-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 紙のグレイン */
+    .map-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: 500;
+      mix-blend-mode: multiply;
+    }
+
+    /* ヴィネット */
+    .map-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 55%, rgba(10,10,10,0.35) 100%);
+      pointer-events: none;
+      z-index: 501;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* タイルに紙っぽいセピアフィルター */
+    .leaflet-tile-pane {
+      filter: sepia(0.45) saturate(0.55) brightness(1.0) contrast(0.92);
+    }
+
+    /* ズームコントロール */
+    .leaflet-control-zoom a {
+      font-family: 'Cormorant Garamond', serif !important;
+      color: #333 !important;
+      background: #f0ebe0 !important;
+      border-color: rgba(0,0,0,0.15) !important;
+    }
+
+    /* カスタムマーカー */
+    .map-dot {
+      width: 13px;
+      height: 13px;
+      background: var(--dark);
+      border: 1.5px solid var(--gold);
+      border-radius: 50%;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.45);
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+
+    .map-dot:hover {
+      transform: scale(1.4);
+    }
+
+    .map-dot.ending {
+      background: #7a1a1a;
+      border-color: #c05050;
+    }
+
+    /* ポップアップ */
+    .leaflet-popup-content-wrapper {
+      background: var(--paper) !important;
+      border-radius: 1px !important;
+      border: 1px solid rgba(0,0,0,0.15) !important;
+      box-shadow:
+        0 4px 24px rgba(0,0,0,0.35),
+        0 1px 6px rgba(0,0,0,0.2) !important;
+      padding: 0 !important;
+    }
+
+    .leaflet-popup-content {
+      margin: 0 !important;
+      width: auto !important;
+    }
+
+    .leaflet-popup-tip {
+      background: var(--paper) !important;
+    }
+
+    .popup-inner {
+      padding: 16px 18px 14px;
+      min-width: 200px;
+      max-width: 260px;
+      /* 紙グレイン */
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .popup-museum {
+      font-size: 9px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .popup-ex {
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed rgba(0,0,0,0.08);
+    }
+
+    .popup-ex:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .popup-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 12px;
+      font-weight: 400;
+      color: #111;
+      line-height: 1.6;
+      letter-spacing: 0.03em;
+    }
+
+    .popup-date {
+      font-size: 10px;
+      color: #888;
+      letter-spacing: 0.1em;
+      margin-top: 4px;
+    }
+
+    .popup-link {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #555;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0,0,0,0.2);
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .popup-link:hover {
+      color: #c9a84c;
+      border-color: rgba(201,168,76,0.5);
+    }
+
+    /* 凡例 */
+    .legend {
+      position: absolute;
+      bottom: 28px;
+      left: 20px;
+      z-index: 502;
+      background: var(--paper);
+      border: 1px solid rgba(0,0,0,0.12);
+      padding: 10px 14px;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: #777;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 480px) {
+      .header { padding: 16px 20px 12px; }
+      .page-title { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div>
+      <a href="index.html" class="logo-link">
+        <div class="logo">MUnCh — Tokyo Exhibitions</div>
+      </a>
+      <div class="page-title">美術館マップ</div>
+    </div>
+    <nav class="nav-tabs">
+      <a href="list.html" class="nav-tab">一覧</a>
+      <a href="map.html"  class="nav-tab active">地図</a>
+    </nav>
+  </header>
+
+  <div class="map-wrap">
+    <div id="map"></div>
+
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#0a0a0a;border:1.5px solid #c9a84c;"></div>
+        <span>開催中</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#7a1a1a;border:1.5px solid #c05050;"></div>
+        <span>終了間近（7日以内）</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  const museumCoords = {
+    "東京都美術館":               [35.7172, 139.7765],
+    "東京国立近代美術館":          [35.6909, 139.7544],
+    "東京藝術大学大学美術館":      [35.7188, 139.7753],
+    "国立西洋美術館":              [35.7155, 139.7757],
+    "上野の森美術館":              [35.7130, 139.7736],
+    "東京都現代美術館":            [35.6817, 139.8016],
+    "森美術館":                   [35.6604, 139.7292],
+    "国立新美術館":                [35.6655, 139.7279],
+    "サントリー美術館":            [35.6643, 139.7310],
+    "東京国立博物館":              [35.7188, 139.7764],
+    "江戸東京博物館":              [35.6966, 139.7973],
+    "世田谷美術館":                [35.6321, 139.5898],
+    "東京都写真美術館":            [35.6412, 139.7133],
+    "アーティゾン美術館":          [35.6805, 139.7680],
+    "パナソニック汐留美術館":      [35.6641, 139.7590],
+    "三菱一号館美術館":            [35.6820, 139.7638],
+    "SOMPO美術館":                [35.6896, 139.6982],
+    "根津美術館":                  [35.6599, 139.7161],
+    "山種美術館":                  [35.6631, 139.7203],
+    "五島美術館":                  [35.6185, 139.6613],
+  };
+
+  function formatDate(s) {
+    if (!s) return "—";
+    const d = new Date(s);
+    if (isNaN(d)) return s;
+    return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;
+  }
+
+  function daysUntil(dateStr) {
+    if (!dateStr) return Infinity;
+    return Math.ceil((new Date(dateStr) - new Date()) / 86400000);
+  }
+
+  // 地図初期化
+  const map = L.map("map", {
+    center: [35.690, 139.740],
+    zoom: 12,
+    zoomControl: true,
+  });
+
+  // CartoDB Light（紙っぽいタイル）
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: "abcd",
+    maxZoom: 19,
+  }).addTo(map);
+
+  // exhibitions.json 読み込み
+  fetch("exhibitions.json")
+    .then(r => r.json())
+    .then(exhibitions => {
+      // 美術館ごとにグループ化
+      const byMuseum = {};
+      exhibitions.forEach(e => {
+        if (!byMuseum[e.museum]) byMuseum[e.museum] = [];
+        byMuseum[e.museum].push(e);
+      });
+
+      Object.entries(byMuseum).forEach(([museum, list]) => {
+        const coords = museumCoords[museum];
+        if (!coords) return;
+
+        const isEndingSoon = list.some(e => daysUntil(e.end) <= 7);
+
+        const icon = L.divIcon({
+          html: `<div class="map-dot${isEndingSoon ? " ending" : ""}"></div>`,
+          className: "",
+          iconSize: [13, 13],
+          iconAnchor: [6, 6],
+          popupAnchor: [0, -10],
+        });
+
+        const popupHtml = `
+          <div class="popup-inner">
+            <div class="popup-museum">${museum}</div>
+            ${list.map(e => `
+              <div class="popup-ex">
+                <div class="popup-title">${e.title}</div>
+                <div class="popup-date">${formatDate(e.start)} — ${formatDate(e.end)}</div>
+                ${e.url ? `<a href="${e.url}" target="_blank" class="popup-link">詳細を見る</a>` : ""}
+              </div>
+            `).join("")}
+          </div>
+        `;
+
+        L.marker(coords, { icon })
+          .bindPopup(popupHtml, { maxWidth: 280 })
+          .addTo(map);
+      });
+    })
+    .catch(() => {
+      console.warn("exhibitions.json の読み込みに失敗しました");
+    });
+  </script>
+
+</body>
+</html>

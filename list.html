@@ -37,8 +37,10 @@
       font-weight: 300;
       letter-spacing: 0.4em;
       text-transform: uppercase;
-      color: rgba(240,235,224,0.4);
+      color: rgba(240,235,224,0.6);
     }
+
+    .logo-link { text-decoration: none; }
 
     .page-title {
       font-size: 26px;
@@ -49,21 +51,33 @@
       margin-top: 6px;
     }
 
-    .back-btn {
+    /* タブナビ */
+    .nav-tabs { display: flex; }
+
+    .nav-tab {
+      font-family: 'Cormorant Garamond', serif;
       font-size: 11px;
       font-weight: 300;
-      letter-spacing: 0.4em;
+      letter-spacing: 0.35em;
       text-transform: uppercase;
-      color: rgba(240,235,224,0.35);
+      color: rgba(240,235,224,0.38);
       text-decoration: none;
-      border-bottom: 1px solid rgba(240,235,224,0.15);
-      padding-bottom: 2px;
-      transition: color 0.3s, border-color 0.3s;
+      padding: 7px 18px;
+      border: 1px solid rgba(240,235,224,0.14);
+      transition: color 0.3s, background 0.3s, border-color 0.3s;
     }
 
-    .back-btn:hover {
+    .nav-tab + .nav-tab { border-left: none; }
+
+    .nav-tab.active {
+      color: var(--cream);
+      background: rgba(240,235,224,0.07);
+      border-color: rgba(240,235,224,0.28);
+    }
+
+    .nav-tab:hover:not(.active) {
       color: var(--gold);
-      border-color: var(--gold);
+      border-color: rgba(201,168,76,0.35);
     }
 
     /* コントロール */
@@ -79,7 +93,7 @@
       font-size: 9px;
       letter-spacing: 0.35em;
       text-transform: uppercase;
-      color: rgba(240,235,224,0.25);
+      color: rgba(240,235,224,0.45);
     }
 
     .sort-select {
@@ -132,9 +146,14 @@
       color: inherit;
       min-height: 130px;
       background: #f0ebe0;
+      position: relative;
       transition: filter 0.3s;
+      /* 紙テクスチャ */
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+        linear-gradient(160deg, #f5f0e8 0%, #ede8dc 60%, #f0ebe0 100%);
     }
-    .ticket-link:hover { filter: brightness(1.04); }
+    .ticket-link:hover { filter: brightness(1.03) contrast(1.01); }
 
     /* 左：画像 */
     .ticket-img-wrap {
@@ -164,10 +183,10 @@
     }
 
     .ticket-admit {
-      font-size: 7px;
-      letter-spacing: 0.3em;
+      font-size: 8px;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
-      color: #bbb;
+      color: #999;
     }
 
     .ticket-title {
@@ -182,28 +201,28 @@
 
     .ticket-museum {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 11px;
+      font-size: 12px;
       letter-spacing: 0.1em;
-      color: #777;
+      color: #555;
       margin-top: 5px;
     }
 
     .ticket-copy {
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
-      font-size: 11px;
-      color: #aaa;
+      font-size: 12px;
+      color: #888;
       margin-top: 5px;
     }
 
     .ticket-dates {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 11px;
+      font-size: 12px;
       letter-spacing: 0.1em;
-      color: #555;
+      color: #333;
       margin-top: 12px;
       padding-top: 10px;
-      border-top: 1px dashed rgba(0,0,0,0.12);
+      border-top: 1px dashed rgba(0,0,0,0.15);
     }
 
     /* ミシン目 */
@@ -296,8 +315,8 @@
     /* 距離・フッター */
     .card-distance {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 10px;
-      color: rgba(240,235,224,0.2);
+      font-size: 11px;
+      color: rgba(240,235,224,0.38);
       padding: 6px 18px 4px;
       letter-spacing: 0.05em;
     }
@@ -310,8 +329,8 @@
 
     .card-footer a {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 10px;
-      color: rgba(240,235,224,0.22);
+      font-size: 11px;
+      color: rgba(240,235,224,0.38);
       text-decoration: none;
       letter-spacing: 0.08em;
       transition: color 0.3s;
@@ -355,10 +374,15 @@
 
   <header class="header">
     <div>
-      <div class="logo">MUnCh — Tokyo Exhibitions</div>
+      <a href="index.html" class="logo-link">
+        <div class="logo">MUnCh — Tokyo Exhibitions</div>
+      </a>
       <div class="page-title">開催中の特別展</div>
     </div>
-    <a href="index.html" class="back-btn">← Back</a>
+    <nav class="nav-tabs">
+      <a href="list.html" class="nav-tab active">一覧</a>
+      <a href="map.html"  class="nav-tab">地図</a>
+    </nav>
   </header>
 
   <div class="controls">
