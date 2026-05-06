@@ -3,359 +3,327 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MUnCh</title>
+  <title>MUnCh — Tokyo Exhibitions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --cream: #f0ebe0;
+      --gold:  #c9a84c;
+      --dark:  #0a0a0a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: -apple-system, sans-serif;
-      background: #111;
-      color: white;
-      margin: 0;
-      padding: 20px;
+      background: var(--dark);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;
+      min-height: 100vh;
     }
 
-    h1 {
-      margin-bottom: 20px;
+    /* ヘッダー */
+    .header {
+      padding: 32px 48px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid rgba(240,235,224,0.08);
     }
 
-    /* ===== AI読み込みUI ===== */
-    #ai-status {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
+    .logo {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(240,235,224,0.4);
+    }
+
+    .page-title {
+      font-size: 26px;
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: 0.04em;
+      color: var(--cream);
+      margin-top: 6px;
+    }
+
+    .back-btn {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(240,235,224,0.35);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(240,235,224,0.15);
+      padding-bottom: 2px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+
+    .back-btn:hover {
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    /* コントロール */
+    .controls {
+      padding: 18px 48px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 20px;
+      border-bottom: 1px solid rgba(240,235,224,0.06);
+    }
+
+    .controls-label {
+      font-size: 9px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(240,235,224,0.25);
+    }
+
+    .sort-select {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(240,235,224,0.18);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', serif;
       font-size: 14px;
-      color: #aaa;
-    }
-
-    #ai-status.loading {
-      border-color: rgba(52, 199, 89, 0.4);
-      color: #34c759;
-    }
-
-    #ai-status.error {
-      border-color: rgba(255, 59, 48, 0.4);
-      color: #ff3b30;
-    }
-
-    #ai-status.done {
-      border-color: rgba(255,255,255,0.1);
-      color: #aaa;
-    }
-
-    .spinner {
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(52, 199, 89, 0.3);
-      border-top-color: #34c759;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      flex-shrink: 0;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .ai-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #aaa;
-      flex-shrink: 0;
-    }
-
-    .ai-dot.green { background: #34c759; }
-    .ai-dot.red   { background: #ff3b30; }
-
-    #refresh-btn {
-      margin-left: auto;
-      background: none;
-      border: 1px solid rgba(255,255,255,0.2);
-      color: white;
-      padding: 6px 12px;
-      border-radius: 8px;
+      letter-spacing: 0.05em;
+      padding: 2px 0;
       cursor: pointer;
-      font-size: 13px;
-      transition: all 0.2s;
-    }
-    #refresh-btn:hover {
-      background: rgba(255,255,255,0.1);
+      outline: none;
     }
 
-    /* ===== ソート ===== */
-    select {
-      background: #1c1c1e;
-      color: white;
-      border: 1px solid #333;
-      border-radius: 8px;
-      padding: 6px 10px;
-      margin-bottom: 16px;
-      font-size: 14px;
+    .sort-select option { background: #111; }
+
+    .count {
+      margin-left: auto;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: rgba(240,235,224,0.2);
     }
 
-    /* ===== カード ===== */
-    .card {
-      background: #1c1c1e;
-      padding: 16px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-    }
-
-    .title {
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .museum {
-      color: #aaa;
-      margin-top: 4px;
-    }
-
-    .badge {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 4px 8px;
-      background: #34c759;
-      border-radius: 6px;
+    /* ステータス（エラー時のみ表示） */
+    #status {
+      display: none;
+      padding: 16px 48px;
       font-size: 12px;
+      letter-spacing: 0.05em;
+      color: rgba(224,90,90,0.7);
     }
 
-    .thumb {
-      width: 100%;
-      aspect-ratio: 2 / 3;
-      object-fit: cover;
-      border-radius: 12px;
+    /* グリッド */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: rgba(240,235,224,0.05);
+      margin: 1px;
     }
 
-    .image-wrapper {
+    /* カード */
+    .card {
+      background: var(--dark);
       position: relative;
-      border-radius: 16px;
+    }
+
+    .card-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* 画像エリア */
+    .card-img-wrap {
+      position: relative;
+      aspect-ratio: 2 / 3;
       overflow: hidden;
-      box-shadow:
-        0 0 10px rgba(163, 30, 92, 0.8),
-        0 0 20px rgba(160, 14, 77, 0.6),
-        0 0 40px rgba(236, 21, 93, 0.4);
-      animation: neonGlow 2s infinite alternate;
     }
 
-    .image-wrapper:active {
-      transform: scale(0.97);
-      filter: brightness(1.2);
-    }
-
-    @keyframes neonGlow {
-      from {
-        box-shadow:
-          0 0 5px rgba(169, 19, 116, 0.6),
-          0 0 10px rgba(136, 26, 84, 0.4),
-          0 0 20px rgba(192, 35, 35, 0.3);
-      }
-      to {
-        box-shadow:
-          0 0 15px rgb(146, 20, 66),
-          0 0 30px rgba(207, 16, 35, 0.8),
-          0 0 60px rgba(163, 22, 43, 0.6);
-      }
-    }
-
-    .image-wrapper::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-    }
-
-    .overlay {
-      position: absolute;
-      bottom: 20px;
-      left: 10px;
-      color: rgba(142, 179, 134, 0.984);
-      text-shadow: 0 2px 10px rgba(202, 185, 185, 0.8);
-    }
-
-    .card-link:active {
-      transform: scale(0.98);
-      opacity: 0.9;
-    }
-
-    .card::after {
-      pointer-events: none;
-    }
-
-    .distance {
-      margin-top: 6px;
-      font-size: 14px;
-      color: #aaa;
-    }
-
-    .video-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
+    .card-img {
       width: 100%;
       height: 100%;
-      overflow: hidden;
-      z-index: -1;
+      object-fit: cover;
+      display: block;
+      filter: sepia(0.12) contrast(1.04);
+      transition: transform 0.7s cubic-bezier(0.16,1,0.3,1), filter 0.4s;
     }
 
-    .video-bg iframe {
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
+    .card:hover .card-img {
+      transform: scale(1.05);
+      filter: sepia(0) contrast(1.08);
     }
 
-    .overlay-title {
-      position: absolute;
-      bottom: 20px;
-      left: 16px;
-      right: 16px;
-      font-size: 28px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .overlay-title span {
-      display: inline-block;
-    }
-
-    .poster-frame {
-      position: relative;
-      padding: 20px;
-    }
-
-    .bulbs {
+    .card-img-overlay {
       position: absolute;
       inset: 0;
-      pointer-events: none;
+      background: linear-gradient(
+        to top,
+        rgba(10,10,10,0.95) 0%,
+        rgba(10,10,10,0.45) 40%,
+        rgba(10,10,10,0.05) 100%
+      );
+      transition: opacity 0.4s;
     }
 
-    .bulb {
+    .card:hover .card-img-overlay {
+      opacity: 0.85;
+    }
+
+    /* カード内テキスト（画像上） */
+    .card-info {
       position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #ffe9a3;
-      box-shadow:
-        0 0 10px #fff,
-        0 0 20px #ffd700,
-        0 0 40px #ffae00;
-      animation: flow 2s linear infinite;
-      animation-delay: calc(var(--i) * 0.05s);
-    }
-
-    .bulb:nth-child(-n+10)                  { top: 0;    left:   calc((100% / 10) * var(--i)); }
-    .bulb:nth-child(n+11):nth-child(-n+20)  { right: 0;  top:    calc((100% / 10) * (var(--i) - 10)); }
-    .bulb:nth-child(n+21):nth-child(-n+30)  { bottom: 0; left:   calc((100% / 10) * (30 - var(--i))); }
-    .bulb:nth-child(n+31)                   { left: 0;   top:    calc((100% / 10) * (40 - var(--i))); }
-
-    @keyframes flow {
-      0%   { opacity: 0.2; transform: scale(0.8); }
-      50%  { opacity: 1;   transform: scale(1.4); }
-      100% { opacity: 0.2; transform: scale(0.8); }
-    }
-
-    .poster-bar {
-      position: absolute;
-      top: 0;
+      bottom: 0;
       left: 0;
-      width: 100%;
-      background: rgba(0,0,0,0.85);
-      color: white;
-      padding: 20px 12px;
-      z-index: 2;
+      right: 0;
+      padding: 0 18px 20px;
     }
 
-    .poster-bar .now {
-      font-size: 20px;
-      letter-spacing: 2px;
-      font-weight: bold;
-      color: #ff3b30;
+    .card-date {
+      font-size: 9px;
+      color: var(--gold);
+      letter-spacing: 0.18em;
+      margin-bottom: 7px;
     }
 
-    .poster-bar .date {
-      font-size: 14px;
-      margin-top: 2px;
+    .card-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.7;
+      letter-spacing: 0.04em;
+      color: var(--cream);
     }
 
-    /* スケルトン */
-    .skeleton-card {
-      background: #1c1c1e;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      padding: 20px;
-      overflow: hidden;
+    .card-museum {
+      font-size: 10px;
+      color: rgba(240,235,224,0.38);
+      letter-spacing: 0.1em;
+      margin-top: 5px;
     }
 
-    .skeleton-img {
-      width: 100%;
-      aspect-ratio: 2/3;
-      background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
-      background-size: 200% 100%;
-      border-radius: 12px;
-      animation: shimmer 1.5s infinite;
-    }
-
-    .skeleton-line {
-      height: 16px;
-      border-radius: 8px;
-      background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      margin-top: 12px;
-    }
-
-    .skeleton-line.short { width: 60%; }
-
-    @keyframes shimmer {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    /* AI バッジ */
-    .ai-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: rgba(52,199,89,0.15);
-      border: 1px solid rgba(52,199,89,0.3);
-      color: #34c759;
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 6px;
+    .card-copy {
+      font-size: 10px;
+      font-style: italic;
+      color: rgba(240,235,224,0.28);
       margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    /* ラベル（左上）*/
+    .card-now {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      font-size: 7px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(240,235,224,0.5);
+      border: 1px solid rgba(240,235,224,0.18);
+      padding: 3px 7px;
+    }
+
+    /* 終了間近ラベル（右上）*/
+    .card-ending {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-size: 7px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(220,80,80,0.85);
+      border: 1px solid rgba(220,80,80,0.3);
+      padding: 3px 7px;
+    }
+
+    /* カード下部 */
+    .card-footer {
+      padding: 10px 18px 12px;
+      display: flex;
+      gap: 16px;
+      border-top: 1px solid rgba(240,235,224,0.05);
+    }
+
+    .card-footer a {
+      font-size: 10px;
+      color: rgba(240,235,224,0.25);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: color 0.3s;
+    }
+
+    .card-footer a:hover { color: var(--gold); }
+
+    .card-distance {
+      font-size: 10px;
+      color: rgba(240,235,224,0.2);
+      padding: 0 18px 10px;
+      letter-spacing: 0.05em;
+    }
+
+    /* 空状態 */
+    .empty {
+      grid-column: 1 / -1;
+      padding: 80px;
+      text-align: center;
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      color: rgba(240,235,224,0.18);
+    }
+
+    /* フッター */
+    .footer {
+      padding: 40px 48px;
+      border-top: 1px solid rgba(240,235,224,0.06);
+      margin-top: 1px;
+      text-align: center;
+    }
+
+    .footer-text {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: rgba(240,235,224,0.12);
+      text-transform: uppercase;
+      font-style: italic;
+    }
+
+    @media (max-width: 480px) {
+      .header   { padding: 24px 20px 20px; }
+      .controls { padding: 14px 20px; }
+      .page-title { font-size: 20px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="video-bg">
-    <iframe
-      src="https://www.youtube.com/embed/OWSLMN6g_Od4?autoplay=1&mute=1&loop=1&playlist=OeTFAiYbR9o&controls=0&showinfo=0&modestbranding=1"
-      frameborder="0"
-      allow="autoplay; fullscreen"
-    ></iframe>
+  <header class="header">
+    <div>
+      <div class="logo">MUnCh — Tokyo Exhibitions</div>
+      <div class="page-title">開催中の特別展</div>
+    </div>
+    <a href="index.html" class="back-btn">← Back</a>
+  </header>
+
+  <div class="controls">
+    <span class="controls-label">Sort</span>
+    <select id="sort" class="sort-select">
+      <option value="end">終了が近い順</option>
+      <option value="title">タイトル順</option>
+      <option value="near">近い順</option>
+      <option value="ueno">上野エリア</option>
+    </select>
+    <span class="count" id="count"></span>
   </div>
 
-  <h1>開催中の特別展</h1>
+  <div id="status"></div>
+  <div class="grid" id="list"></div>
 
-  <div id="status" style="display:none;color:#ff3b30;font-size:13px;margin-bottom:16px;"></div>
-
-  <select id="sort">
-    <option value="end">終了が近い順</option>
-    <option value="title">タイトル順</option>
-    <option value="near">近い順</option>
-    <option value="ueno">上野エリア</option>
-  </select>
-
-  <div id="list"></div>
+  <footer class="footer">
+    <div class="footer-text">東京の展覧会を、映画のように。</div>
+  </footer>
 
   <script>
-  // ===== 既存の美術館座標データ =====
   const museumCoords = {
     "東京都美術館":               { lat: 35.7172, lng: 139.7765 },
     "東京国立近代美術館":          { lat: 35.6909, lng: 139.7544 },
@@ -370,7 +338,6 @@
     "江戸東京博物館":              { lat: 35.6966, lng: 139.7973 },
     "世田谷美術館":                { lat: 35.6321, lng: 139.5898 },
     "東京都写真美術館":            { lat: 35.6412, lng: 139.7133 },
-    "ブリジストン美術館":          { lat: 35.6805, lng: 139.7680 },
     "アーティゾン美術館":          { lat: 35.6805, lng: 139.7680 },
     "パナソニック汐留美術館":      { lat: 35.6641, lng: 139.7590 },
     "三菱一号館美術館":            { lat: 35.6820, lng: 139.7638 },
@@ -380,169 +347,129 @@
     "山種美術館":                  { lat: 35.6631, lng: 139.7203 },
     "畠山記念館":                  { lat: 35.6488, lng: 139.7344 },
     "五島美術館":                  { lat: 35.6185, lng: 139.6613 },
-    "東郷青児記念 損保ジャパン日本興亜美術館": { lat: 35.6896, lng: 139.6982 },
   };
 
-  // 座標がわからない美術館はデフォルト（東京中心部）
   const defaultCoord = { lat: 35.6895, lng: 139.6917 };
-
   let exhibitions = [];
-  let userLat = null;
-  let userLng = null;
+  let userLat = null, userLng = null;
 
-  // ===== ユーザー位置取得 =====
   navigator.geolocation.getCurrentPosition(pos => {
     userLat = pos.coords.latitude;
     userLng = pos.coords.longitude;
     render();
   });
 
-  // ===== Haversine距離計算 =====
   function getDistance(lat1, lng1, lat2, lng2) {
     const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLng = (lng2 - lng1) * Math.PI / 180;
-    const a =
-      Math.sin(dLat/2)**2 +
-      Math.cos(lat1 * Math.PI / 180) *
-      Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLng/2)**2;
+    const a = Math.sin(dLat/2)**2 +
+      Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
 
   function toWalkTime(km) { return Math.round(km * 15); }
 
-  // ===== ユーティリティ =====
-  function formatDate(dateStr) {
-    if (!dateStr) return "—";
-    const d = new Date(dateStr);
-    if (isNaN(d)) return dateStr;
+  function formatDate(s) {
+    if (!s) return "—";
+    const d = new Date(s);
+    if (isNaN(d)) return s;
     return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;
   }
 
-  function randomizeText(text) {
-    return text.split("").map(char => {
-      const deg = (Math.random() * 20) - 10;
-      return `<span style="display:inline-block;transform:rotate(${deg}deg)">${char}</span>`;
-    }).join("");
+  function daysUntil(dateStr) {
+    if (!dateStr) return Infinity;
+    return Math.ceil((new Date(dateStr) - new Date()) / 86400000);
   }
 
-  function createBulbs(count) {
-    let html = "";
-    for (let i = 0; i < count; i++) {
-      html += `<span class="bulb" style="--i:${i}"></span>`;
-    }
-    return html;
-  }
+  function getCoord(name) { return museumCoords[name] || defaultCoord; }
 
-  function getCoord(museumName) {
-    return museumCoords[museumName] || defaultCoord;
-  }
-
-  function getArea(museumName) {
+  function getArea(name) {
     const ueno = ["東京都美術館","国立西洋美術館","東京国立博物館","上野の森美術館","東京藝術大学大学美術館","東京国立近代美術館"];
-    return ueno.includes(museumName) ? "上野" : "その他";
+    return ueno.includes(name) ? "上野" : "その他";
   }
 
-  // ===== exhibitions.json 読み込み =====
   async function fetchExhibitions() {
     try {
       const res = await fetch("exhibitions.json");
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const raw = await res.json();
-      exhibitions = raw.map(e => ({
-        ...e,
-        ...getCoord(e.museum),
-        area: getArea(e.museum)
-      }));
+      exhibitions = raw.map(e => ({ ...e, ...getCoord(e.museum), area: getArea(e.museum) }));
       render();
     } catch (err) {
-      console.error(err);
       const el = document.getElementById("status");
       el.style.display = "block";
       el.textContent = `データ読み込み失敗: exhibitions.json が見つかりません`;
     }
   }
 
-  // ===== 描画 =====
   function render() {
-    const sortSelect = document.getElementById("sort");
-    const list = document.getElementById("list");
-    const now = new Date();
+    const sortVal = document.getElementById("sort").value;
+    const list    = document.getElementById("list");
+    const now     = new Date();
 
-    let listData = exhibitions.filter(e => {
-      const start = e.start ? new Date(e.start) : null;
-      const end   = e.end   ? new Date(e.end)   : null;
-      // 開催中 or 1ヶ月以内開始
-      if (end && end < now) return false;
-      return true;
-    });
+    let data = exhibitions.filter(e => !e.end || new Date(e.end) >= now);
 
-    if (sortSelect.value === "end") {
-      listData.sort((a, b) => new Date(a.end||"9999") - new Date(b.end||"9999"));
-    } else if (sortSelect.value === "title") {
-      listData.sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortSelect.value === "ueno") {
-      listData = listData.filter(e => e.area === "上野");
-    } else if (sortSelect.value === "near" && userLat) {
-      listData.sort((a, b) => {
-        return getDistance(userLat, userLng, a.lat, a.lng)
-             - getDistance(userLat, userLng, b.lat, b.lng);
-      });
+    if (sortVal === "end") {
+      data.sort((a,b) => new Date(a.end||"9999") - new Date(b.end||"9999"));
+    } else if (sortVal === "title") {
+      data.sort((a,b) => a.title.localeCompare(b.title, "ja"));
+    } else if (sortVal === "ueno") {
+      data = data.filter(e => e.area === "上野");
+    } else if (sortVal === "near" && userLat) {
+      data.sort((a,b) => getDistance(userLat,userLng,a.lat,a.lng) - getDistance(userLat,userLng,b.lat,b.lng));
     }
 
+    document.getElementById("count").textContent = `${data.length} exhibitions`;
     list.innerHTML = "";
 
-    listData.forEach(e => {
-      const div = document.createElement("div");
-      div.className = "card";
+    if (data.length === 0) {
+      list.innerHTML = `<div class="empty">該当する展覧会が見つかりませんでした</div>`;
+      return;
+    }
 
-      let distanceText = "";
+    data.forEach(e => {
+      const days     = daysUntil(e.end);
+      const imgSrc   = (e.image_url && e.image_url !== "")
+        ? e.image_url
+        : `https://picsum.photos/seed/${encodeURIComponent(e.title)}/400/600`;
+      const fallback = `https://picsum.photos/seed/${encodeURIComponent(e.museum)}/400/600`;
+
+      let distanceHtml = "";
       if (userLat && userLng) {
         const d = getDistance(userLat, userLng, e.lat, e.lng);
-        distanceText = `${d.toFixed(1)}km（徒歩${toWalkTime(d)}分）`;
+        distanceHtml = `<div class="card-distance">${d.toFixed(1)} km — 徒歩 ${toWalkTime(d)} 分</div>`;
       }
 
-      // 画像：AI取得のimage_url → ローカル → picsum フォールバック
-      const localSrc = `images/PICT${String(Math.floor(Math.random()*577)+1).padStart(4,"0")}.jpg`;
-      const imgSrc = (e.image_url && e.image_url !== "") ? e.image_url : localSrc;
-      const fallbackSrc = `https://picsum.photos/seed/${encodeURIComponent(e.title)}/400/600`;
-
-      div.innerHTML = `
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
         <a href="${e.url || '#'}" class="card-link" ${e.url ? 'target="_blank"' : ''}>
-          <div class="poster-frame">
-            <div class="bulbs">${createBulbs(40)}</div>
-            <div class="image-wrapper">
-              <div class="poster-bar">
-                <div class="now">NOW SHOWING</div>
-                <div class="date">${formatDate(e.start)} - ${formatDate(e.end)}</div>
-              </div>
-              <img src="${imgSrc}" class="thumb" onerror="if(this.src!=='${fallbackSrc}'){this.src='${fallbackSrc}'}">
-              <div class="overlay-title">${randomizeText(e.title)}</div>
+          <div class="card-img-wrap">
+            <img class="card-img" src="${imgSrc}"
+                 onerror="if(this.src!=='${fallback}')this.src='${fallback}'" alt="${e.title}">
+            <div class="card-img-overlay"></div>
+            <div class="card-now">Now Showing</div>
+            ${days <= 7 ? `<div class="card-ending">Ending Soon</div>` : ""}
+            <div class="card-info">
+              <div class="card-date">${formatDate(e.start)} — ${formatDate(e.end)}</div>
+              <div class="card-title">${e.title}</div>
+              <div class="card-museum">${e.museum}</div>
+              ${e.copy ? `<div class="card-copy">"${e.copy}"</div>` : ""}
             </div>
           </div>
-          <div class="title">${e.title}</div>
-          <div class="museum">${e.museum}</div>
-          ${e.copy ? `<div class="museum" style="margin-top:6px;font-style:italic;">"${e.copy}"</div>` : ""}
-          ${distanceText ? `<div class="distance">📍 ${distanceText}</div>` : ""}
         </a>
-        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
-          <a href="https://www.google.com/maps/search/?api=1&query=${e.lat},${e.lng}" target="_blank" style="color:#aaa;font-size:13px;">📍 地図で見る</a>
-          <a href="https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}" target="_blank" style="color:#aaa;font-size:13px;">🚶 ルートを見る</a>
+        ${distanceHtml}
+        <div class="card-footer">
+          <a href="https://www.google.com/maps/search/?api=1&query=${e.lat},${e.lng}" target="_blank">地図で見る</a>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}" target="_blank">ルート</a>
         </div>
       `;
-
-      list.appendChild(div);
+      list.appendChild(card);
     });
-
-    if (listData.length === 0) {
-      list.innerHTML = `<div style="color:#aaa;padding:20px;text-align:center;">該当する展覧会が見つかりませんでした</div>`;
-    }
   }
 
   document.getElementById("sort").addEventListener("change", render);
-
-  // ===== 初期化 =====
   fetchExhibitions();
   </script>
 
