@@ -71,8 +71,7 @@
     position: fixed;
     inset: 0;
     z-index: 1;
-    /* モノクローム化 + 暗化 */
-    background: rgba(0,0,0,0.55);
+    background: rgba(0,0,0,0.3);
     mix-blend-mode: normal;
   }
 
@@ -180,10 +179,9 @@
   /* チラシカード */
   .flyer {
     position: absolute;
-    top: 50%;
+    top: 36px;
     right: 72px;
-    transform: translateY(-50%);
-    width: 160px;
+    width: 140px;
     pointer-events: all;
     opacity: 0;
     animation: flyerReveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
@@ -192,12 +190,12 @@
   @keyframes flyerReveal {
     from {
       opacity: 0;
-      transform: translateY(-46%) rotate(2deg);
+      transform: rotate(2deg) translateY(-8px);
       filter: blur(4px);
     }
     to {
       opacity: 1;
-      transform: translateY(-50%) rotate(-1.5deg);
+      transform: rotate(-1.5deg) translateY(0);
       filter: blur(0);
     }
   }
@@ -454,48 +452,20 @@ const VIDEOS = [
 ];
 
 // ============================================================
-//  展覧会データ：list.htmlと同じlocalStorageキャッシュを共有
+//  展覧会データ：exhibitions.json から読み込み
 // ============================================================
-const CACHE_KEY = "munch_exhibitions";
-const today = new Date().toISOString().split("T")[0];
+let exhibitions = [];
 
-// キャッシュがない場合のフォールバック
-const FALLBACK_EXHIBITIONS = [
-  {
-    title: "アンドリュー・ワイエス展",
-    start: "2026-04-28",
-    end: "2026-07-05",
-    image_url: "",
-    image: "images/PICT0001.jpg"
-  },
-  {
-    title: "下村観山展",
-    start: "2026-03-17",
-    end: "2026-05-10",
-    image_url: "",
-    image: "images/PICT0002.jpg"
-  },
-  {
-    title: "NHK日曜美術館50年展",
-    start: "2026-03-28",
-    end: "2026-06-21",
-    image_url: "",
-    image: "images/PICT0003.jpg"
-  }
-];
-
-function loadExhibitions() {
+async function loadExhibitions() {
   try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (raw) {
-      const { date, data } = JSON.parse(raw);
-      if (date === today && data && data.length > 0) return data;
-    }
-  } catch {}
-  return FALLBACK_EXHIBITIONS;
+    const res = await fetch("exhibitions.json");
+    if (!res.ok) throw new Error();
+    exhibitions = await res.json();
+  } catch {
+    exhibitions = [];
+  }
+  showFlyer();
 }
-
-const exhibitions = loadExhibitions();
 
 // ============================================================
 //  動画ランダム再生
@@ -620,7 +590,7 @@ document.querySelectorAll("a").forEach(a => {
 buildFilmHoles();
 buildIndicator();
 playVideo(currentVideoIndex);
-showFlyer();
+loadExhibitions();
 </script>
 </body>
 </html>
