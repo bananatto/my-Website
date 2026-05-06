@@ -113,141 +113,205 @@
       color: rgba(224,90,90,0.7);
     }
 
-    /* グリッド */
+    /* チケットリスト */
     .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      display: flex;
+      flex-direction: column;
       gap: 1px;
       background: rgba(240,235,224,0.05);
       margin: 1px;
     }
 
-    /* カード */
-    .card {
-      background: var(--dark);
-      position: relative;
-    }
+    /* カード外枠 */
+    .card { background: var(--dark); }
 
-    .card-link {
-      display: block;
+    /* チケット本体 */
+    .ticket-link {
+      display: flex;
       text-decoration: none;
       color: inherit;
+      min-height: 130px;
+      background: #f0ebe0;
+      transition: filter 0.3s;
     }
+    .ticket-link:hover { filter: brightness(1.04); }
 
-    /* 画像エリア */
-    .card-img-wrap {
-      position: relative;
-      aspect-ratio: 2 / 3;
+    /* 左：画像 */
+    .ticket-img-wrap {
+      width: 90px;
+      flex-shrink: 0;
       overflow: hidden;
     }
 
-    .card-img {
+    .ticket-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
-      filter: sepia(0.12) contrast(1.04);
-      transition: transform 0.7s cubic-bezier(0.16,1,0.3,1), filter 0.4s;
+      filter: sepia(0.15) contrast(1.05);
+      transition: filter 0.4s;
+    }
+    .ticket-link:hover .ticket-img { filter: sepia(0) contrast(1.1); }
+
+    /* 中：本文 */
+    .ticket-body {
+      flex: 1;
+      padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #111;
     }
 
-    .card:hover .card-img {
-      transform: scale(1.05);
-      filter: sepia(0) contrast(1.08);
+    .ticket-admit {
+      font-size: 7px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #bbb;
     }
 
-    .card-img-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to top,
-        rgba(10,10,10,0.95) 0%,
-        rgba(10,10,10,0.45) 40%,
-        rgba(10,10,10,0.05) 100%
-      );
-      transition: opacity 0.4s;
-    }
-
-    .card:hover .card-img-overlay {
-      opacity: 0.85;
-    }
-
-    /* カード内テキスト（画像上） */
-    .card-info {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 0 18px 20px;
-    }
-
-    .card-date {
-      font-size: 9px;
-      color: var(--gold);
-      letter-spacing: 0.18em;
-      margin-bottom: 7px;
-    }
-
-    .card-title {
+    .ticket-title {
       font-family: 'Noto Serif JP', serif;
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 400;
-      line-height: 1.7;
-      letter-spacing: 0.04em;
-      color: var(--cream);
+      color: #111;
+      line-height: 1.55;
+      letter-spacing: 0.03em;
+      margin-top: 7px;
     }
 
-    .card-museum {
-      font-size: 10px;
-      color: rgba(240,235,224,0.38);
+    .ticket-museum {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
       letter-spacing: 0.1em;
+      color: #777;
       margin-top: 5px;
     }
 
-    .card-copy {
-      font-size: 10px;
+    .ticket-copy {
+      font-family: 'Cormorant Garamond', serif;
       font-style: italic;
-      color: rgba(240,235,224,0.28);
-      margin-top: 8px;
-      line-height: 1.5;
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 5px;
     }
 
-    /* ラベル（左上）*/
-    .card-now {
+    .ticket-dates {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: #555;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed rgba(0,0,0,0.12);
+    }
+
+    /* ミシン目 */
+    .ticket-perf {
+      width: 14px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      background: #f0ebe0;
+    }
+
+    .ticket-perf::after {
+      content: '';
       position: absolute;
-      top: 14px;
-      left: 14px;
-      font-size: 7px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(240,235,224,0.5);
-      border: 1px solid rgba(240,235,224,0.18);
-      padding: 3px 7px;
+      top: 8px;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      border-left: 1px dashed rgba(0,0,0,0.18);
     }
 
-    /* 終了間近ラベル（右上）*/
-    .card-ending {
+    .perf-notch {
+      width: 14px;
+      height: 7px;
+      background: var(--dark);
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    .perf-notch.top    { border-radius: 0 0 7px 7px; }
+    .perf-notch.bottom { border-radius: 7px 7px 0 0; margin-top: auto; }
+
+    /* 右：スタブ */
+    .ticket-stub {
+      width: 66px;
+      flex-shrink: 0;
+      background: #e5e0d5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 0;
+    }
+
+    .stub-label {
+      writing-mode: vertical-rl;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #bbb;
+    }
+
+    .stub-museum {
+      writing-mode: vertical-rl;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: #777;
+      max-height: 80px;
+      overflow: hidden;
+    }
+
+    .stub-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8px;
+      color: #ccc;
+      letter-spacing: 0.08em;
+    }
+
+    /* 終了間近スタンプ */
+    .ticket-ending {
       position: absolute;
-      top: 14px;
-      right: 14px;
+      bottom: 44px;
+      right: 80px;
       font-size: 7px;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(220,80,80,0.85);
-      border: 1px solid rgba(220,80,80,0.3);
+      color: rgba(200,55,55,0.8);
+      border: 1px solid rgba(200,55,55,0.35);
       padding: 3px 7px;
+      transform: rotate(-4deg);
+      pointer-events: none;
     }
 
-    /* カード下部 */
+    /* 距離・フッター */
+    .card-distance {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px;
+      color: rgba(240,235,224,0.2);
+      padding: 6px 18px 4px;
+      letter-spacing: 0.05em;
+    }
+
     .card-footer {
-      padding: 10px 18px 12px;
+      padding: 6px 18px 10px;
       display: flex;
       gap: 16px;
-      border-top: 1px solid rgba(240,235,224,0.05);
     }
 
     .card-footer a {
+      font-family: 'Cormorant Garamond', serif;
       font-size: 10px;
-      color: rgba(240,235,224,0.25);
+      color: rgba(240,235,224,0.22);
       text-decoration: none;
       letter-spacing: 0.08em;
       transition: color 0.3s;
@@ -255,16 +319,8 @@
 
     .card-footer a:hover { color: var(--gold); }
 
-    .card-distance {
-      font-size: 10px;
-      color: rgba(240,235,224,0.2);
-      padding: 0 18px 10px;
-      letter-spacing: 0.05em;
-    }
-
     /* 空状態 */
     .empty {
-      grid-column: 1 / -1;
       padding: 80px;
       text-align: center;
       font-size: 13px;
@@ -428,12 +484,13 @@
       return;
     }
 
-    data.forEach(e => {
+    data.forEach((e, idx) => {
       const days     = daysUntil(e.end);
       const imgSrc   = (e.image_url && e.image_url !== "")
         ? e.image_url
         : `https://picsum.photos/seed/${encodeURIComponent(e.title)}/400/600`;
       const fallback = `https://picsum.photos/seed/${encodeURIComponent(e.museum)}/400/600`;
+      const num      = String(idx + 1).padStart(4, "0");
 
       let distanceHtml = "";
       if (userLat && userLng) {
@@ -443,22 +500,33 @@
 
       const card = document.createElement("div");
       card.className = "card";
+      card.style.position = "relative";
       card.innerHTML = `
-        <a href="${e.url || '#'}" class="card-link" ${e.url ? 'target="_blank"' : ''}>
-          <div class="card-img-wrap">
-            <img class="card-img" src="${imgSrc}"
+        <a href="${e.url || '#'}" class="ticket-link" ${e.url ? 'target="_blank"' : ''}>
+          <div class="ticket-img-wrap">
+            <img class="ticket-img" src="${imgSrc}"
                  onerror="if(this.src!=='${fallback}')this.src='${fallback}'" alt="${e.title}">
-            <div class="card-img-overlay"></div>
-            <div class="card-now">Now Showing</div>
-            ${days <= 7 ? `<div class="card-ending">Ending Soon</div>` : ""}
-            <div class="card-info">
-              <div class="card-date">${formatDate(e.start)} — ${formatDate(e.end)}</div>
-              <div class="card-title">${e.title}</div>
-              <div class="card-museum">${e.museum}</div>
-              ${e.copy ? `<div class="card-copy">"${e.copy}"</div>` : ""}
+          </div>
+          <div class="ticket-body">
+            <div>
+              <div class="ticket-admit">Admit One — Special Exhibition</div>
+              <div class="ticket-title">${e.title}</div>
+              <div class="ticket-museum">${e.museum}</div>
+              ${e.copy ? `<div class="ticket-copy">"${e.copy}"</div>` : ""}
             </div>
+            <div class="ticket-dates">${formatDate(e.start)} — ${formatDate(e.end)}</div>
+          </div>
+          <div class="ticket-perf">
+            <div class="perf-notch top"></div>
+            <div class="perf-notch bottom"></div>
+          </div>
+          <div class="ticket-stub">
+            <div class="stub-label">Viewing</div>
+            <div class="stub-museum">${e.museum}</div>
+            <div class="stub-number">No.${num}</div>
           </div>
         </a>
+        ${days <= 7 ? `<div class="ticket-ending">Ending Soon</div>` : ""}
         ${distanceHtml}
         <div class="card-footer">
           <a href="https://www.google.com/maps/search/?api=1&query=${e.lat},${e.lng}" target="_blank">地図で見る</a>

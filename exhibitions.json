@@ -4,7 +4,8 @@
     "museum": "東京都美術館",
     "start": "2026-04-28",
     "end": "2026-07-05",
-    "url": "https://www.tobikan.jp/exhibition/",
+    "url": "https://www.tobikan.jp/exhibition/2026_wyeth.html",
+    "image_url": "https://www.tobikan.jp/media/img/poster/2026_wyeth_l.jpg",
     "copy": "静寂の中に差し込む、ひとすじの現実"
   },
   {
@@ -12,7 +13,8 @@
     "museum": "東京国立博物館",
     "start": "2026-04-14",
     "end": "2026-06-07",
-    "url": "https://www.tnm.jp/",
+    "url": "https://www.tnm.jp/modules/r_free_page/index.php?id=2740",
+    "image_url": "https://www.tnm.jp/uploads/r_exhibition/exhibition/SPECIAL_LARGE_8419.jpg",
     "copy": "国宝20点以上、百万石の美が集結"
   },
   {
@@ -20,7 +22,8 @@
     "museum": "国立西洋美術館",
     "start": "2026-03-28",
     "end": "2026-06-14",
-    "url": "https://www.nmwa.go.jp/",
+    "url": "https://www.nmwa.go.jp/jp/exhibitions/2026hokusai.html",
+    "image_url": "https://www.nmwa.go.jp/jp/exhibitions/img/2026hokusai.png",
     "copy": "珠玉のコレクションで見る富嶽の全景"
   },
   {
@@ -28,7 +31,8 @@
     "museum": "アーティゾン美術館",
     "start": "2026-02-07",
     "end": "2026-05-24",
-    "url": "https://www.artizon.museum/",
+    "url": "https://www.artizon.museum/exhibition/detail/615",
+    "image_url": "https://atz-image.s3.ap-northeast-1.amazonaws.com/2064984481696596f230e653.72257440.jpg",
     "copy": "印象派の巨匠、光と風景の詩"
   },
   {
@@ -36,7 +40,8 @@
     "museum": "東京国立近代美術館",
     "start": "2026-03-17",
     "end": "2026-05-10",
-    "url": "https://www.momat.go.jp/",
+    "url": "https://www.momat.go.jp/exhibitions/",
+    "image_url": "https://www.momat.go.jp/wp-content/uploads/2025/10/exhibitions_567_01-1024x472.jpg",
     "copy": "日本画の奥に潜む、緊張と気配"
   },
   {
@@ -44,7 +49,8 @@
     "museum": "国立新美術館",
     "start": "2026-02-11",
     "end": "2026-05-11",
-    "url": "https://www.nact.jp/",
+    "url": "https://www.nact.jp/exhibition_special/",
+    "image_url": "https://www.nact.jp/media/1000009652_1.jpg",
     "copy": "90年代英国アートが世界を変えた夜"
   },
   {
@@ -52,7 +58,8 @@
     "museum": "森美術館",
     "start": "2026-04-29",
     "end": "2026-09-23",
-    "url": "https://www.mori.art.museum/",
+    "url": "https://www.mori.art.museum/jp/exhibitions/ronmueck/",
+    "image_url": "https://www.mori.art.museum/files/exhibitions/2025/10/23/img_ron_mueck_04.jpg",
     "copy": "超リアルな彫刻が問う、存在の重さ"
   },
   {
@@ -60,7 +67,8 @@
     "museum": "三菱一号館美術館",
     "start": "2026-02-19",
     "end": "2026-05-24",
-    "url": "https://mimt.jp/",
+    "url": "https://mimt.jp/ex_sp/shin-hanga/",
+    "image_url": "https://mimt.jp/wp-content/themes/mimt/assets/ex_sp/img/shin-hanga/top/fv_mainvisual_pc.webp",
     "copy": "清親から巴水へ、夕暮れの日本美"
   },
   {
@@ -68,7 +76,8 @@
     "museum": "サントリー美術館",
     "start": "2026-04-22",
     "end": "2026-06-21",
-    "url": "https://www.suntory.co.jp/sma/",
+    "url": "https://www.suntory.co.jp/sma/exhibition/2026_1/index.html",
+    "image_url": "https://kyosai2026.exhibit.jp/images/kv_pc_1300x.png",
     "copy": "破天荒な天才絵師、笑いと鬼気迫る世界"
   },
   {
@@ -77,6 +86,7 @@
     "start": "2026-04-25",
     "end": "2026-07-26",
     "url": "https://www.mot-art-museum.jp/exhibitions/ericcarle2026-27/",
+    "image_url": "https://mot-art-museum.jp/exhibitions/images/643cadcccd7f166f31869dda0ba8632b6c27fa76.jpg",
     "copy": "原画180点、絵本の誕生を辿る旅"
   }
 ]
