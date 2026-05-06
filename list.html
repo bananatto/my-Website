@@ -11,13 +11,93 @@
       color: white;
       margin: 0;
       padding: 20px;
-      
     }
 
     h1 {
       margin-bottom: 20px;
     }
 
+    /* ===== AI読み込みUI ===== */
+    #ai-status {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    #ai-status.loading {
+      border-color: rgba(52, 199, 89, 0.4);
+      color: #34c759;
+    }
+
+    #ai-status.error {
+      border-color: rgba(255, 59, 48, 0.4);
+      color: #ff3b30;
+    }
+
+    #ai-status.done {
+      border-color: rgba(255,255,255,0.1);
+      color: #aaa;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(52, 199, 89, 0.3);
+      border-top-color: #34c759;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .ai-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #aaa;
+      flex-shrink: 0;
+    }
+
+    .ai-dot.green { background: #34c759; }
+    .ai-dot.red   { background: #ff3b30; }
+
+    #refresh-btn {
+      margin-left: auto;
+      background: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    #refresh-btn:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* ===== ソート ===== */
+    select {
+      background: #1c1c1e;
+      color: white;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 6px 10px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    /* ===== カード ===== */
     .card {
       background: #1c1c1e;
       padding: 16px;
@@ -45,196 +125,210 @@
     }
 
     .thumb {
-  width: 100%;
-  aspect-ratio: 2 / 3;   /* ポスター比率 */
-  object-fit: cover;
-  border-radius: 12px;
-}
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      border-radius: 12px;
+    }
 
-/* ふわっと暗くする */
+    .image-wrapper {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow:
+        0 0 10px rgba(163, 30, 92, 0.8),
+        0 0 20px rgba(160, 14, 77, 0.6),
+        0 0 40px rgba(236, 21, 93, 0.4);
+      animation: neonGlow 2s infinite alternate;
+    }
 
-.image-wrapper {
-  position: relative;
-  border-radius: 16px;
-  overflow: hidden;
+    .image-wrapper:active {
+      transform: scale(0.97);
+      filter: brightness(1.2);
+    }
 
-  /* ネオン */
-  box-shadow:
-    0 0 10px rgba(163, 30, 92, 0.8),
-    0 0 20px rgba(160, 14, 77, 0.6),
-    0 0 40px rgba(236, 21, 93, 0.4);
-}
+    @keyframes neonGlow {
+      from {
+        box-shadow:
+          0 0 5px rgba(169, 19, 116, 0.6),
+          0 0 10px rgba(136, 26, 84, 0.4),
+          0 0 20px rgba(192, 35, 35, 0.3);
+      }
+      to {
+        box-shadow:
+          0 0 15px rgb(146, 20, 66),
+          0 0 30px rgba(207, 16, 35, 0.8),
+          0 0 60px rgba(163, 22, 43, 0.6);
+      }
+    }
 
-.image-wrapper:active {
-  transform: scale(0.97);
-  filter: brightness(1.2);
-}
+    .image-wrapper::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    }
 
-.image-wrapper {
-  animation: neonGlow 2s infinite alternate;
-}
+    .overlay {
+      position: absolute;
+      bottom: 20px;
+      left: 10px;
+      color: rgba(142, 179, 134, 0.984);
+      text-shadow: 0 2px 10px rgba(202, 185, 185, 0.8);
+    }
 
-@keyframes neonGlow {
-  from {
-    box-shadow:
-      0 0 5px rgba(169, 19, 116, 0.6),
-      0 0 10px rgba(136, 26, 84, 0.4),
-      0 0 20px rgba(192, 35, 35, 0.3);
-  }
-  to {
-    box-shadow:
-      0 0 15px rgb(146, 20, 66),
-      0 0 30px rgba(207, 16, 35, 0.8),
-      0 0 60px rgba(163, 22, 43, 0.6);
-  }
+    .card-link:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
 
-}
-.image-wrapper::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-}
+    .card::after {
+      pointer-events: none;
+    }
 
-.overlay {
-  position: absolute;
-  bottom: 20px;
-  left: 10px;
-  color: rgba(142, 179, 134, 0.984);
-  text-shadow: 0 2px 10px rgba(202, 185, 185, 0.8);
-}
+    .distance {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #aaa;
+    }
 
-.card-link:active {
-  transform: scale(0.98);
-  opacity: 0.9;
-}
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
 
-.card::after {
-  pointer-events: none;
-}
+    .video-bg iframe {
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+    }
 
-.distance {
-  margin-top: 6px;
-  font-size: 14px;
-  color: #aaa;
-}
+    .overlay-title {
+      position: absolute;
+      bottom: 20px;
+      left: 16px;
+      right: 16px;
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
 
-.video-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: -1;
-}
+    .overlay-title span {
+      display: inline-block;
+    }
 
-.video-bg iframe {
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-}
+    .poster-frame {
+      position: relative;
+      padding: 20px;
+    }
 
-.overlay-title {
-  position: absolute;
-  bottom: 20px;
-  left: 16px;
-  right: 16px;
-  font-size: 28px;
-  font-weight: bold;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
+    .bulbs {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
 
-.overlay-title span {
-  display: inline-block;
-}
+    .bulb {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ffe9a3;
+      box-shadow:
+        0 0 10px #fff,
+        0 0 20px #ffd700,
+        0 0 40px #ffae00;
+      animation: flow 2s linear infinite;
+      animation-delay: calc(var(--i) * 0.05s);
+    }
 
-.poster-frame {
-  position: relative;
-  padding: 20px;
-}
+    .bulb:nth-child(-n+10)                  { top: 0;    left:   calc((100% / 10) * var(--i)); }
+    .bulb:nth-child(n+11):nth-child(-n+20)  { right: 0;  top:    calc((100% / 10) * (var(--i) - 10)); }
+    .bulb:nth-child(n+21):nth-child(-n+30)  { bottom: 0; left:   calc((100% / 10) * (30 - var(--i))); }
+    .bulb:nth-child(n+31)                   { left: 0;   top:    calc((100% / 10) * (40 - var(--i))); }
 
-.bulbs {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
+    @keyframes flow {
+      0%   { opacity: 0.2; transform: scale(0.8); }
+      50%  { opacity: 1;   transform: scale(1.4); }
+      100% { opacity: 0.2; transform: scale(0.8); }
+    }
 
-.bulb {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #ffe9a3;
+    .poster-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.85);
+      color: white;
+      padding: 20px 12px;
+      z-index: 2;
+    }
 
-  box-shadow:
-  0 0 10px #fff,
-  0 0 20px #ffd700,
-  0 0 40px #ffae00;
+    .poster-bar .now {
+      font-size: 20px;
+      letter-spacing: 2px;
+      font-weight: bold;
+      color: #ff3b30;
+    }
 
-  animation: flow 2s linear infinite;
-  animation-delay: calc(var(--i) * 0.05s);
-}
+    .poster-bar .date {
+      font-size: 14px;
+      margin-top: 2px;
+    }
 
-/* 上 */
-.bulb:nth-child(-n+10) {
-  top: 0;
-  left: calc((100% / 10) * var(--i));
-}
+    /* スケルトン */
+    .skeleton-card {
+      background: #1c1c1e;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      padding: 20px;
+      overflow: hidden;
+    }
 
-/* 右 */
-.bulb:nth-child(n+11):nth-child(-n+20) {
-  right: 0;
-  top: calc((100% / 10) * (var(--i) - 10));
-}
+    .skeleton-img {
+      width: 100%;
+      aspect-ratio: 2/3;
+      background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+      background-size: 200% 100%;
+      border-radius: 12px;
+      animation: shimmer 1.5s infinite;
+    }
 
-/* 下 */
-.bulb:nth-child(n+21):nth-child(-n+30) {
-  bottom: 0;
-  left: calc((100% / 10) * (30 - var(--i)));
-}
+    .skeleton-line {
+      height: 16px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      margin-top: 12px;
+    }
 
-/* 左 */
-.bulb:nth-child(n+31) {
-  left: 0;
-  top: calc((100% / 10) * (40 - var(--i)));
-}
+    .skeleton-line.short { width: 60%; }
 
-@keyframes flow {
-  0%   { opacity: 0.2; transform: scale(0.8); }
-  50%  { opacity: 1;   transform: scale(1.4); }
-  100% { opacity: 0.2; transform: scale(0.8); }
-}
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
 
-.poster-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-
-  background: rgba(0,0,0,0.85);
-  color: white;
-
-  padding: 20px 12px;
-  z-index: 2;
-}
-
-.poster-bar .now {
-  font-size: 20px;
-  letter-spacing: 2px;
-  font-weight: bold;
-}
-
-.poster-bar .date {
-  font-size: 14px;
-  margin-top: 2px;
-}
-
-.poster-bar .now {
-  color: #ff3b30; /* 赤 */
-}
-
+    /* AI バッジ */
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(52,199,89,0.15);
+      border: 1px solid rgba(52,199,89,0.3);
+      color: #34c759;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
   </style>
 </head>
 <body>
@@ -247,249 +341,371 @@
     ></iframe>
   </div>
 
-<h1>開催中の特別展</h1>
+  <h1>開催中の特別展</h1>
 
-<select id="sort">
-  <option value="end">終了が近い順</option>
-  <option value="title">タイトル順</option>
-  <option value="near">近い順</option>
-  <option value="ueno">上野</option>
-</select>
+  <!-- AI取得状態表示 -->
+  <div id="ai-status" class="loading">
+    <div class="spinner"></div>
+    <span id="ai-status-text">Claude AIが都内の展覧会情報を検索中...</span>
+    <button id="refresh-btn" onclick="fetchExhibitions(true)" style="display:none">🔄 再取得</button>
+  </div>
 
-<div id="list"></div>
+  <select id="sort">
+    <option value="end">終了が近い順</option>
+    <option value="title">タイトル順</option>
+    <option value="near">近い順</option>
+    <option value="ueno">上野エリア</option>
+  </select>
 
+  <div id="list"></div>
 
-<script>
+  <script>
+  // ===== 既存の美術館座標データ =====
+  const museumCoords = {
+    "東京都美術館":               { lat: 35.7172, lng: 139.7765 },
+    "東京国立近代美術館":          { lat: 35.6909, lng: 139.7544 },
+    "東京藝術大学大学美術館":      { lat: 35.7188, lng: 139.7753 },
+    "国立西洋美術館":              { lat: 35.7155, lng: 139.7757 },
+    "上野の森美術館":              { lat: 35.7130, lng: 139.7736 },
+    "東京都現代美術館":            { lat: 35.6817, lng: 139.8016 },
+    "森美術館":                   { lat: 35.6604, lng: 139.7292 },
+    "国立新美術館":                { lat: 35.6655, lng: 139.7279 },
+    "サントリー美術館":            { lat: 35.6643, lng: 139.7310 },
+    "東京国立博物館":              { lat: 35.7188, lng: 139.7764 },
+    "江戸東京博物館":              { lat: 35.6966, lng: 139.7973 },
+    "世田谷美術館":                { lat: 35.6321, lng: 139.5898 },
+    "東京都写真美術館":            { lat: 35.6412, lng: 139.7133 },
+    "ブリジストン美術館":          { lat: 35.6805, lng: 139.7680 },
+    "アーティゾン美術館":          { lat: 35.6805, lng: 139.7680 },
+    "パナソニック汐留美術館":      { lat: 35.6641, lng: 139.7590 },
+    "三菱一号館美術館":            { lat: 35.6820, lng: 139.7638 },
+    "SOMPO美術館":                { lat: 35.6896, lng: 139.6982 },
+    "郷さくら美術館":              { lat: 35.6384, lng: 139.7101 },
+    "根津美術館":                  { lat: 35.6599, lng: 139.7161 },
+    "山種美術館":                  { lat: 35.6631, lng: 139.7203 },
+    "畠山記念館":                  { lat: 35.6488, lng: 139.7344 },
+    "五島美術館":                  { lat: 35.6185, lng: 139.6613 },
+    "東郷青児記念 損保ジャパン日本興亜美術館": { lat: 35.6896, lng: 139.6982 },
+  };
 
-const museums = {
-  "東京都美術館": { lat: 35.7172, lng: 139.7765 },
-  "東京国立近代美術館": { lat: 35.6909, lng: 139.7544 },
-  "東京藝術大学大学美術館": { lat: 35.7188, lng: 139.7753 }
-};
+  // 座標がわからない美術館はデフォルト（東京中心部）
+  const defaultCoord = { lat: 35.6895, lng: 139.6917 };
 
-const exhibitions = [
-  {
-    title: "アンドリュー・ワイエス展",
-    artist: "アンドリュー・ワイエス",
-    museum: "東京都美術館",
-    area: "上野",
-    start: "2026-04-28",
-    end: "2026-07-05",
-    imagePrefix: "PICT",
-    imageMin: 1,
-    imageMax: 577,
-    url: "https://www.tobikan.jp/exhibition/",
-    copy: "静寂の中に差し込む、ひとすじの現実",
-    ...museums["東京都美術館"]
-  },
-  {
-    title: "下村観山展",
-    artist: "下村観山",
-    museum: "東京国立近代美術館",
-    area: "竹橋",
-    start: "2026-03-17",
-    end: "2026-05-10",
-    imagePrefix: "PICT",
-    imageMin: 1,
-    imageMax: 577,
-    url: "https://www.momat.go.jp/",
-    copy: "日本画の奥に潜む、緊張と気配",
-    ...museums["東京国立近代美術館"]
-  },
-  {
-    title: "MOMATコレクション",
-    artist: "海",
-    museum: "東京国立近代美術館",
-    area: "竹橋",
-    start: "2026-03-03",
-    end: "2026-05-10",
-    imagePrefix: "PICT",
-    imageMin: 1,
-    imageMax: 577,
-    url: "https://www.momat.go.jp/",
-    copy: "時代の断片が、静かに並ぶ",
-    ...museums["東京国立近代美術館"]
-  },
-  {
-    title: "NHK日曜美術館50年展",
-    artist: "クロードモネ",
-    museum: "東京藝術大学大学美術館",
-    area: "上野",
-    start: "2026-03-28",
-    end: "2026-06-21",
-    imagePrefix: "PICT",
-    imageMin: 1,
-    imageMax: 577,
-    url: "https://museum.geidai.ac.jp/",
-    copy: "美術を見続けた時間、その記憶の展示",
-    ...museums["東京藝術大学大学美術館"]
-  },
-  {
-    title: "大英博物館 日本美術コレクション展",
-    museum: "東京都美術館",
-    area: "上野",
-    start: "2026-07-25",
-    end: "2026-10-18",
-    imagePrefix: "PICT",
-    imageMin: 1,
-    imageMax: 577,
-    url: "https://www.tobikan.jp/exhibition/",
-    copy: "海を越えた日本、美の再帰",
-    ...museums["東京都美術館"]
-  }
-];
+  let exhibitions = [];
+  let userLat = null;
+  let userLng = null;
 
-const today = new Date();
-
-let userLat = null;
-let userLng = null;
-
-navigator.geolocation.getCurrentPosition(position => {
-  userLat = position.coords.latitude;
-  userLng = position.coords.longitude;
-
-  render(); // ← 取得後に再描画
-});
-
-function getDistance(lat1, lng1, lat2, lng2) {
-  const R = 6371; // 地球の半径(km)
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-
-  const a =
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) *
-    Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLng/2) * Math.sin(dLng/2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-  return R * c;
-}
-
-function toWalkTime(km) {
-  return Math.round(km * 15); // 1km = 15分で計算
-}
-
-const sortSelect = document.getElementById("sort");
-const list = document.getElementById("list");
-
-function getRandomPhoto(prefix, min, max) {
-  const num = Math.floor(Math.random() * (max - min + 1)) + min;
-  const padded = String(num).padStart(4, "0");
-  return `images/${prefix}${padded}.jpg`;
-}
-
-const imgSrc = getRandomPhoto("PICT", 1, 577);
-
-function randomizeText(text) {
-  return text.split("").map(char => {
-    const deg = (Math.random() * 20) - 10; // -10〜+10度
-    return `<span style="display:inline-block; transform: rotate(${deg}deg);">${char}</span>`;
-  }).join("");
-}
-
-function createBulbs(count) {
-  let bulbs = "";
-  for (let i = 0; i < count; i++) {
-    bulbs += `<span class="bulb" style="--i:${i}"></span>`;
-  }
-  return bulbs;
-}
-
-function formatDate(dateStr) {
-  const d = new Date(dateStr);
-  return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;
-}
-
-function render() {
-  let listData = exhibitions.filter(e => 
-    new Date(e.start) <= today && today <= new Date(e.end)
-  );
-
-  if (sortSelect.value === "end") {
-    listData.sort((a, b) => new Date(a.end) - new Date(b.end));
-  }
-
-  if (sortSelect.value === "title") {
-    listData.sort((a, b) => a.title.localeCompare(b.title));
-  }
-
-  if (sortSelect.value === "ueno") {
-    listData = listData.filter(e => e.area === "上野");
-  }
-
-
-  if (sortSelect.value === "near" && userLat) {
-  listData.sort((a, b) => {
-    const d1 = getDistance(userLat, userLng, a.lat, a.lng);
-    const d2 = getDistance(userLat, userLng, b.lat, b.lng);
-    return d1 - d2;
+  // ===== ユーザー位置取得 =====
+  navigator.geolocation.getCurrentPosition(pos => {
+    userLat = pos.coords.latitude;
+    userLng = pos.coords.longitude;
+    render();
   });
 
-  
-}
+  // ===== Haversine距離計算 =====
+  function getDistance(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat/2)**2 +
+      Math.cos(lat1 * Math.PI / 180) *
+      Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLng/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
 
-  list.innerHTML = "";
+  function toWalkTime(km) { return Math.round(km * 15); }
 
-  listData.forEach(e => {
-  const div = document.createElement("div");
-  div.className = "card";
+  // ===== ユーティリティ =====
+  function formatDate(dateStr) {
+    if (!dateStr) return "—";
+    const d = new Date(dateStr);
+    if (isNaN(d)) return dateStr;
+    return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;
+  }
 
-  let distanceText = "";
+  function randomizeText(text) {
+    return text.split("").map(char => {
+      const deg = (Math.random() * 20) - 10;
+      return `<span style="display:inline-block;transform:rotate(${deg}deg)">${char}</span>`;
+    }).join("");
+  }
 
-  if (userLat && userLng) {
-  const d = getDistance(userLat, userLng, e.lat, e.lng);
-  const walk = toWalkTime(d);
+  function createBulbs(count) {
+    let html = "";
+    for (let i = 0; i < count; i++) {
+      html += `<span class="bulb" style="--i:${i}"></span>`;
+    }
+    return html;
+  }
 
-  distanceText = `${d.toFixed(1)}km（徒歩${walk}分）`;
-}
+  function getCoord(museumName) {
+    return museumCoords[museumName] || defaultCoord;
+  }
 
-const imgSrc = e.imagePrefix
-  ? getRandomPhoto(e.imagePrefix, e.imageMin, e.imageMax)
-  : "https://piscsum.photos/800/600";
-  div.innerHTML = `
-<a href="${e.url}" class="card-link">
+  function getArea(museumName) {
+    const ueno = ["東京都美術館","国立西洋美術館","東京国立博物館","上野の森美術館","東京藝術大学大学美術館","東京国立近代美術館"];
+    return ueno.includes(museumName) ? "上野" : "その他";
+  }
 
- <div class="poster-frame">
-  <div class="bulbs">
-    ${createBulbs(40)}
-  </div>
+  // ===== スケルトンローダー =====
+  function showSkeletons(n = 3) {
+    const list = document.getElementById("list");
+    list.innerHTML = Array(n).fill(`
+      <div class="skeleton-card">
+        <div class="skeleton-img"></div>
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    `).join("");
+  }
 
-  <div class="image-wrapper">
+  // ===== AI ステータス更新 =====
+  function setStatus(state, text) {
+    const el = document.getElementById("ai-status");
+    const textEl = document.getElementById("ai-status-text");
+    const btn = document.getElementById("refresh-btn");
+    el.className = state;
+    textEl.textContent = text;
+    // spinnerを動的生成
+    const spinner = el.querySelector(".spinner, .ai-dot");
+    if (spinner) spinner.remove();
+    const icon = document.createElement("div");
+    if (state === "loading") {
+      icon.className = "spinner";
+    } else {
+      icon.className = "ai-dot" + (state === "done" ? " green" : " red");
+    }
+    el.prepend(icon);
+    btn.style.display = (state !== "loading") ? "block" : "none";
+  }
 
-  <div class="poster-bar">
-    <div class="now">NOW SHOWING</div>
-    <div class="date">${formatDate(e.start)} - ${formatDate(e.end)}</div>
-  </div>
+  // ===== キャッシュ管理 =====
+  const CACHE_KEY = "munch_exhibitions";
+  const today = new Date().toISOString().split("T")[0];
 
-  <img src="${imgSrc}" class="thumb">
+  function loadCache() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      const { date, data } = JSON.parse(raw);
+      if (date === today) return data; // 今日のキャッシュが有効
+      return null;
+    } catch { return null; }
+  }
 
-  <div class="overlay-title">${randomizeText(e.title)}</div>
+  function saveCache(data) {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ date: today, data }));
+    } catch {}
+  }
 
-</div>
-  <div class="title">${e.title}</div>
-  <div class="museum">${e.museum}</div>
-    </a>
-  <a href="https://www.google.com/maps/search/?api=1&query=${e.lat},${e.lng}" target="_blank">
-    📍 地図で見る
-  </a>
-  <a href="https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}" target="_blank">
-  🚶 ルートを見る
-</a>
+  // ===== Claude API呼び出し =====
+  async function fetchExhibitions(forceRefresh = false) {
+    // キャッシュチェック（強制更新でない場合）
+    if (!forceRefresh) {
+      const cached = loadCache();
+      if (cached) {
+        exhibitions = cached;
+        setStatus("done", `✓ ${exhibitions.length}件（キャッシュ済み・${today}取得）`);
+        render();
+        return;
+      }
+    }
+
+    setStatus("loading", "Claude AIが都内の展覧会情報を検索中...");
+    showSkeletons(4);
+
+    const prompt = `
+あなたは東京都内の美術館の展覧会情報の専門家です。
+今日の日付は${today}です。
+
+現在（${today}時点で）開催中、または今後1ヶ月以内に開始予定の東京都内の美術館・博物館の特別展・企画展を、できるだけ多く（10件以上）調べてください。
+Web検索を活用して最新の情報を取得してください。
+
+以下のJSON配列のみを返してください（説明文や```は不要）：
+[
+  {
+    "title": "展覧会タイトル",
+    "museum": "美術館名（正式名称）",
+    "start": "YYYY-MM-DD",
+    "end": "YYYY-MM-DD",
+    "url": "展覧会の公式URL",
+    "copy": "展覧会の魅力を伝える一言キャッチコピー（20文字以内）"
+  }
+]
+
+注意：
+- 常設展は除く
+- 開催地は東京都内のみ
+- 日付は正確に（不明な場合は省略可）
+- JSONのみ出力、他のテキスト一切不要
 `;
 
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          tools: [{ type: "web_search_20250305", name: "web_search" }],
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
 
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-    list.appendChild(div);
-  });
-}
+      const data = await response.json();
 
-sortSelect.addEventListener("change", render);
+      // テキストブロックを結合
+      const text = data.content
+        .filter(b => b.type === "text")
+        .map(b => b.text)
+        .join("");
 
-render();
+      // JSON部分を抽出
+      const match = text.match(/\[[\s\S]*\]/);
+      if (!match) throw new Error("JSON not found in response");
 
-</script>
+      const raw = JSON.parse(match[0]);
+
+      // 座標・エリアを付与
+      exhibitions = raw.map(e => ({
+        ...e,
+        ...getCoord(e.museum),
+        area: getArea(e.museum)
+      }));
+
+      saveCache(exhibitions);
+      setStatus("done", `✓ ${exhibitions.length}件の展覧会を取得（AI検索・${today}時点）`);
+      render();
+
+    } catch (err) {
+      console.error(err);
+      setStatus("error", `取得失敗: ${err.message}　— フォールバックデータを表示中`);
+      useFallback();
+    }
+  }
+
+  // ===== フォールバック（手動データ） =====
+  function useFallback() {
+    exhibitions = [
+      {
+        title: "アンドリュー・ワイエス展",
+        museum: "東京都美術館",
+        area: "上野",
+        start: "2026-04-28",
+        end: "2026-07-05",
+        url: "https://www.tobikan.jp/exhibition/",
+        copy: "静寂の中に差し込む、ひとすじの現実",
+        ...museumCoords["東京都美術館"]
+      },
+      {
+        title: "下村観山展",
+        museum: "東京国立近代美術館",
+        area: "竹橋",
+        start: "2026-03-17",
+        end: "2026-05-10",
+        url: "https://www.momat.go.jp/",
+        copy: "日本画の奥に潜む、緊張と気配",
+        ...museumCoords["東京国立近代美術館"]
+      },
+      {
+        title: "NHK日曜美術館50年展",
+        museum: "東京藝術大学大学美術館",
+        area: "上野",
+        start: "2026-03-28",
+        end: "2026-06-21",
+        url: "https://museum.geidai.ac.jp/",
+        copy: "美術を見続けた時間、その記憶の展示",
+        ...museumCoords["東京藝術大学大学美術館"]
+      }
+    ];
+    render();
+  }
+
+  // ===== 描画 =====
+  function render() {
+    const sortSelect = document.getElementById("sort");
+    const list = document.getElementById("list");
+    const now = new Date();
+
+    let listData = exhibitions.filter(e => {
+      const start = e.start ? new Date(e.start) : null;
+      const end   = e.end   ? new Date(e.end)   : null;
+      // 開催中 or 1ヶ月以内開始
+      if (end && end < now) return false;
+      return true;
+    });
+
+    if (sortSelect.value === "end") {
+      listData.sort((a, b) => new Date(a.end||"9999") - new Date(b.end||"9999"));
+    } else if (sortSelect.value === "title") {
+      listData.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortSelect.value === "ueno") {
+      listData = listData.filter(e => e.area === "上野");
+    } else if (sortSelect.value === "near" && userLat) {
+      listData.sort((a, b) => {
+        return getDistance(userLat, userLng, a.lat, a.lng)
+             - getDistance(userLat, userLng, b.lat, b.lng);
+      });
+    }
+
+    list.innerHTML = "";
+
+    listData.forEach(e => {
+      const div = document.createElement("div");
+      div.className = "card";
+
+      let distanceText = "";
+      if (userLat && userLng) {
+        const d = getDistance(userLat, userLng, e.lat, e.lng);
+        distanceText = `${d.toFixed(1)}km（徒歩${toWalkTime(d)}分）`;
+      }
+
+      // 画像：ローカルがなければプレースホルダー
+      const imgSrc = `images/PICT${String(Math.floor(Math.random()*577)+1).padStart(4,"0")}.jpg`;
+
+      div.innerHTML = `
+        <a href="${e.url || '#'}" class="card-link" ${e.url ? 'target="_blank"' : ''}>
+          <div class="poster-frame">
+            <div class="bulbs">${createBulbs(40)}</div>
+            <div class="image-wrapper">
+              <div class="poster-bar">
+                <div class="now">NOW SHOWING</div>
+                <div class="date">${formatDate(e.start)} - ${formatDate(e.end)}</div>
+              </div>
+              <img src="${imgSrc}" class="thumb" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(e.title)}/400/600'">
+              <div class="overlay-title">${randomizeText(e.title)}</div>
+            </div>
+          </div>
+          <div class="title">${e.title}</div>
+          <div class="museum">${e.museum}</div>
+          ${e.copy ? `<div class="museum" style="margin-top:6px;font-style:italic;">"${e.copy}"</div>` : ""}
+          ${distanceText ? `<div class="distance">📍 ${distanceText}</div>` : ""}
+          <span class="ai-badge">🤖 AI取得</span>
+        </a>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+          <a href="https://www.google.com/maps/search/?api=1&query=${e.lat},${e.lng}" target="_blank" style="color:#aaa;font-size:13px;">📍 地図で見る</a>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}" target="_blank" style="color:#aaa;font-size:13px;">🚶 ルートを見る</a>
+        </div>
+      `;
+
+      list.appendChild(div);
+    });
+
+    if (listData.length === 0) {
+      list.innerHTML = `<div style="color:#aaa;padding:20px;text-align:center;">該当する展覧会が見つかりませんでした</div>`;
+    }
+  }
+
+  document.getElementById("sort").addEventListener("change", render);
+
+  // ===== 初期化 =====
+  fetchExhibitions();
+  </script>
 
 </body>
 </html>
