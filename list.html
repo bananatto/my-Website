@@ -523,8 +523,9 @@
 
 現在（${today}時点で）開催中、または今後1ヶ月以内に開始予定の東京都内の美術館・博物館の特別展・企画展を、できるだけ多く（10件以上）調べてください。
 Web検索を活用して最新の情報を取得してください。
+各展覧会について、公式サイトや美術館サイトに掲載されているOGP画像・メインビジュアルのURLも調べて含めてください。
 
-以下のJSON配列のみを返してください（説明文や```は不要）：
+以下のJSON配列のみを返してください（説明文や\`\`\`は不要）：
 [
   {
     "title": "展覧会タイトル",
@@ -532,6 +533,7 @@ Web検索を活用して最新の情報を取得してください。
     "start": "YYYY-MM-DD",
     "end": "YYYY-MM-DD",
     "url": "展覧会の公式URL",
+    "image_url": "展覧会のメインビジュアル画像の直接URL（.jpg/.png/.webpで終わるもの。なければ空文字）",
     "copy": "展覧会の魅力を伝える一言キャッチコピー（20文字以内）"
   }
 ]
@@ -540,6 +542,7 @@ Web検索を活用して最新の情報を取得してください。
 - 常設展は除く
 - 開催地は東京都内のみ
 - 日付は正確に（不明な場合は省略可）
+- image_urlは実際に存在する画像の直接URLのみ。不明な場合は空文字""にする
 - JSONのみ出力、他のテキスト一切不要
 `;
 
@@ -665,8 +668,10 @@ Web検索を活用して最新の情報を取得してください。
         distanceText = `${d.toFixed(1)}km（徒歩${toWalkTime(d)}分）`;
       }
 
-      // 画像：ローカルがなければプレースホルダー
-      const imgSrc = `images/PICT${String(Math.floor(Math.random()*577)+1).padStart(4,"0")}.jpg`;
+      // 画像：AI取得のimage_url → ローカル → picsum フォールバック
+      const localSrc = `images/PICT${String(Math.floor(Math.random()*577)+1).padStart(4,"0")}.jpg`;
+      const imgSrc = (e.image_url && e.image_url !== "") ? e.image_url : localSrc;
+      const fallbackSrc = `https://picsum.photos/seed/${encodeURIComponent(e.title)}/400/600`;
 
       div.innerHTML = `
         <a href="${e.url || '#'}" class="card-link" ${e.url ? 'target="_blank"' : ''}>
@@ -677,7 +682,7 @@ Web検索を活用して最新の情報を取得してください。
                 <div class="now">NOW SHOWING</div>
                 <div class="date">${formatDate(e.start)} - ${formatDate(e.end)}</div>
               </div>
-              <img src="${imgSrc}" class="thumb" onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(e.title)}/400/600'">
+              <img src="${imgSrc}" class="thumb" onerror="if(this.src!=='${fallbackSrc}'){this.src='${fallbackSrc}'}">
               <div class="overlay-title">${randomizeText(e.title)}</div>
             </div>
           </div>

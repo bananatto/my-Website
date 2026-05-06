@@ -4,138 +4,624 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MUnCh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
-body {
-  margin: 0;
-  overflow: hidden;
-  font-family: -apple-system, sans-serif;
-  color: white;
-}
+  :root {
+    --cream: #f0ebe0;
+    --gold:  #c9a84c;
+    --dark:  #0a0a0a;
+  }
 
-/* 動画背景 */
-.video-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  overflow: hidden;
-}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-.video-bg iframe {
-  position: absolute;
-  top: 50%;
-  left: 50%;
+  body {
+    overflow: hidden;
+    background: var(--dark);
+    font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;
+    color: var(--cream);
+    cursor: none;
+  }
 
-  width: 200vw;
-  height: 200vh;
+  /* カスタムカーソル */
+  .cursor {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    background: var(--cream);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(240,235,224,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.4s ease, width 0.3s, height 0.3s;
+    transform: translate(-50%, -50%);
+  }
 
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
+  /* 動画背景 */
+  .video-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
 
-/* 右上カード */
-.hero {
-  position: absolute;
-  top: 30px;
-  right: 20px;
-  width: 100px;
-}
+  .video-bg iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200vw;
+    height: 200vh;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
 
-.hero img {
-  width: 100%;
-  border-radius: 12px;
-}
+  /* 映画フィルター層 */
+  .film-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    /* モノクローム化 + 暗化 */
+    background: rgba(0,0,0,0.55);
+    mix-blend-mode: normal;
+  }
 
-.hero .title {
-  font-size: 16px;
-  margin-top: 8px;
-}
+  /* グレイン（フィルム粒子）*/
+  .grain {
+    position: fixed;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: 2;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    animation: grain-move 0.8s steps(1) infinite;
+    pointer-events: none;
+  }
 
-.hero .date {
-  font-size: 12px;
-  color: #ccc;
-}
+  @keyframes grain-move {
+    0%  { transform: translate(0,0); }
+    10% { transform: translate(-2%,-3%); }
+    20% { transform: translate(3%, 1%); }
+    30% { transform: translate(-1%, 4%); }
+    40% { transform: translate(4%,-1%); }
+    50% { transform: translate(-3%, 2%); }
+    60% { transform: translate(2%, 3%); }
+    70% { transform: translate(-4%, 0%); }
+    80% { transform: translate(1%,-4%); }
+    90% { transform: translate(3%, 2%); }
+  }
 
-/* 下にボタン */
-.enter {
-  position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-}
+  /* 映画スキャンライン */
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+  }
 
-.enter a {
-  color: white;
-  text-decoration: none;
-  border: 1px solid white;
-  padding: 10px 20px;
-}
+  /* ビネット */
+  .vignette {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    background: radial-gradient(ellipse at center,
+      transparent 40%,
+      rgba(0,0,0,0.7) 100%
+    );
+    pointer-events: none;
+  }
 
-.hero {
-  backdrop-filter: blur(6px);
-  background: rgba(0,0,0,0.5);
-  padding: 10px;
-  border-radius: 12px;
-}
+  /* フィルム縦線（両端） */
+  .film-edge {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 48px;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 12px 0;
+    pointer-events: none;
+  }
+  .film-edge.left  { left: 0;  border-right: 1px solid rgba(240,235,224,0.08); }
+  .film-edge.right { right: 0; border-left:  1px solid rgba(240,235,224,0.08); }
+
+  .film-hole {
+    width: 20px;
+    height: 14px;
+    border: 1px solid rgba(240,235,224,0.12);
+    border-radius: 3px;
+    margin: 0 auto;
+  }
+
+  /* メインUI */
+  .ui {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 36px 72px;
+    pointer-events: none;
+  }
+
+  /* ロゴ */
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(240,235,224,0.5);
+    opacity: 0;
+    animation: fadeIn 1.2s ease 0.3s forwards;
+  }
+
+  /* チラシカード */
+  .flyer {
+    position: absolute;
+    top: 50%;
+    right: 72px;
+    transform: translateY(-50%);
+    width: 160px;
+    pointer-events: all;
+    opacity: 0;
+    animation: flyerReveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+  }
+
+  @keyframes flyerReveal {
+    from {
+      opacity: 0;
+      transform: translateY(-46%) rotate(2deg);
+      filter: blur(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(-50%) rotate(-1.5deg);
+      filter: blur(0);
+    }
+  }
+
+  .flyer-inner {
+    position: relative;
+    background: var(--cream);
+    color: #111;
+    padding: 0;
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow:
+      -8px 12px 40px rgba(0,0,0,0.8),
+      -2px 4px 12px rgba(0,0,0,0.6);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+
+  .flyer-inner:hover {
+    transform: rotate(0deg) scale(1.03);
+    box-shadow:
+      -12px 20px 60px rgba(0,0,0,0.9),
+      -3px 6px 20px rgba(0,0,0,0.7);
+  }
+
+  .flyer-img {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    display: block;
+    filter: sepia(0.15) contrast(1.05);
+  }
+
+  /* 画像読み込み失敗時のフォールバック */
+  .flyer-img-fallback {
+    width: 100%;
+    aspect-ratio: 2/3;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(240,235,224,0.2);
+    font-size: 32px;
+  }
+
+  .flyer-meta {
+    padding: 12px 10px 14px;
+    background: var(--cream);
+  }
+
+  .flyer-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: #111;
+    line-height: 1.6;
+    letter-spacing: 0.05em;
+  }
+
+  .flyer-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10px;
+    color: #777;
+    margin-top: 6px;
+    letter-spacing: 0.08em;
+  }
+
+  .flyer-stamp {
+    position: absolute;
+    top: 10px;
+    left: 8px;
+    background: rgba(0,0,0,0.75);
+    color: var(--cream);
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    padding: 3px 6px;
+    text-transform: uppercase;
+  }
+
+  /* テープ風装飾 */
+  .tape {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-1deg);
+    width: 60px;
+    height: 18px;
+    background: rgba(240,235,224,0.35);
+    backdrop-filter: blur(2px);
+  }
+
+  /* 下部 */
+  .bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.4s forwards;
+  }
+
+  .enter-btn {
+    pointer-events: all;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--cream);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(240,235,224,0.3);
+    padding-bottom: 4px;
+    transition: color 0.3s, border-color 0.3s;
+    position: relative;
+  }
+
+  .enter-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: width 0.4s ease;
+  }
+
+  .enter-btn:hover { color: var(--gold); }
+  .enter-btn:hover::after { width: 100%; }
+
+  .tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(240,235,224,0.3);
+    letter-spacing: 0.1em;
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* 左下の展覧会カウンター */
+  .counter {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: rgba(240,235,224,0.04);
+    line-height: 1;
+    position: absolute;
+    bottom: 80px;
+    left: 72px;
+    letter-spacing: -0.02em;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* 動画インジケーター */
+  .video-indicator {
+    position: absolute;
+    top: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.6s forwards;
+    pointer-events: none;
+  }
+
+  .vid-dot {
+    width: 20px;
+    height: 2px;
+    background: rgba(240,235,224,0.2);
+    border-radius: 1px;
+    transition: background 0.4s;
+  }
+
+  .vid-dot.active {
+    background: rgba(240,235,224,0.7);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 動画切替アニメーション */
+  .video-bg {
+    transition: opacity 0.8s ease;
+  }
+  .video-bg.fade-out { opacity: 0; }
 
 </style>
 </head>
-
 <body>
 
-<div class="video-bg">
-  <iframe id="yt"></iframe>
+<!-- カスタムカーソル -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- 動画背景 -->
+<div class="video-bg" id="videoBg">
+  <iframe id="yt" frameborder="0" allow="autoplay; fullscreen"></iframe>
 </div>
 
-<div class="hero" id="hero"></div>
+<!-- フィルム演出 -->
+<div class="film-overlay"></div>
+<div class="grain"></div>
+<div class="scanlines"></div>
+<div class="vignette"></div>
 
-<div class="enter">
-  <a href="list.html">ENTER</a>
+<!-- フィルムエッジ（両端の穴） -->
+<div class="film-edge left" id="filmLeft"></div>
+<div class="film-edge right" id="filmRight"></div>
+
+<!-- 大きな背景数字 -->
+<div class="counter" id="counter">01</div>
+
+<!-- 動画インジケーター -->
+<div class="video-indicator" id="indicator"></div>
+
+<!-- メインUI -->
+<div class="ui">
+  <div class="logo">MUnCh — Tokyo Exhibitions</div>
+
+  <!-- チラシカード -->
+  <a href="list.html" class="flyer" id="flyer">
+    <div class="tape"></div>
+    <div class="flyer-inner" id="flyerInner">
+      <div class="flyer-stamp">Now Showing</div>
+      <img class="flyer-img" id="flyerImg" src="" alt="">
+      <div class="flyer-meta">
+        <div class="flyer-title" id="flyerTitle"></div>
+        <div class="flyer-date" id="flyerDate"></div>
+      </div>
+    </div>
+  </a>
+
+  <div class="bottom">
+    <a href="list.html" class="enter-btn">Enter</a>
+    <div class="tagline">
+      東京の展覧会を、<br>映画のように。
+    </div>
+  </div>
 </div>
 
 <script>
-// 展覧会データ
-const exhibitions = [
+// ============================================================
+//  ★ YouTube動画IDをここに追加・変更してください ★
+// ============================================================
+const VIDEOS = [
+  { id: "pPZTTibvGQw", label: "01" },
+  { id: "DYm0H8t8Uww", label: "02" },
+  // ↓ 追加したい場合はここにコピーして増やせます
+  { id: "ZiqfbasYZk", label: "03" },
+  { id: "doaQC-S8de8", label: "04" },
+];
+
+// ============================================================
+//  展覧会データ：list.htmlと同じlocalStorageキャッシュを共有
+// ============================================================
+const CACHE_KEY = "munch_exhibitions";
+const today = new Date().toISOString().split("T")[0];
+
+// キャッシュがない場合のフォールバック
+const FALLBACK_EXHIBITIONS = [
   {
     title: "アンドリュー・ワイエス展",
     start: "2026-04-28",
     end: "2026-07-05",
+    image_url: "",
     image: "images/PICT0001.jpg"
   },
   {
     title: "下村観山展",
     start: "2026-03-17",
     end: "2026-05-10",
+    image_url: "",
     image: "images/PICT0002.jpg"
   },
   {
     title: "NHK日曜美術館50年展",
     start: "2026-03-28",
     end: "2026-06-21",
+    image_url: "",
     image: "images/PICT0003.jpg"
   }
 ];
 
-// ランダム展覧会
-const e = exhibitions[Math.floor(Math.random() * exhibitions.length)];
+function loadExhibitions() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (raw) {
+      const { date, data } = JSON.parse(raw);
+      if (date === today && data && data.length > 0) return data;
+    }
+  } catch {}
+  return FALLBACK_EXHIBITIONS;
+}
 
-document.getElementById("hero").innerHTML = `
-  <img src="${e.image}">
-  <div class="title">${e.title}</div>
-  <div class="date">${e.start} - ${e.end}</div>
-`;
+const exhibitions = loadExhibitions();
 
-// 🎬 YouTubeランダム開始
-const videoId = "pPZTTibvGQw"; // あなたのID
-const start = Math.floor(Math.random() * 3600); // 0〜120秒
+// ============================================================
+//  動画ランダム再生
+// ============================================================
+let currentVideoIndex = Math.floor(Math.random() * VIDEOS.length);
 
-document.getElementById("yt").src =
-  `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&start=${start}&controls=0&showinfo=0&modestbranding=1`;
+function buildIndicator() {
+  const el = document.getElementById("indicator");
+  el.innerHTML = VIDEOS.map((_, i) =>
+    `<div class="vid-dot${i === currentVideoIndex ? ' active' : ''}" data-i="${i}"></div>`
+  ).join("");
+}
 
+function buildFilmHoles() {
+  const count = Math.floor(window.innerHeight / 32);
+  const hole = () => `<div class="film-hole"></div>`;
+  document.getElementById("filmLeft").innerHTML  = Array(count).fill(hole()).join("");
+  document.getElementById("filmRight").innerHTML = Array(count).fill(hole()).join("");
+}
+
+function playVideo(index) {
+  const v = VIDEOS[index];
+  const start = Math.floor(Math.random() * 3600);
+  document.getElementById("yt").src =
+    `https://www.youtube.com/embed/${v.id}?autoplay=1&mute=1&loop=1&playlist=${v.id}&start=${start}&controls=0&showinfo=0&modestbranding=1`;
+  document.getElementById("counter").textContent = v.label;
+
+  // インジケーター更新
+  document.querySelectorAll(".vid-dot").forEach((d, i) => {
+    d.classList.toggle("active", i === index);
+  });
+}
+
+function switchVideo() {
+  const bg = document.getElementById("videoBg");
+  bg.classList.add("fade-out");
+  setTimeout(() => {
+    currentVideoIndex = (currentVideoIndex + 1) % VIDEOS.length;
+    playVideo(currentVideoIndex);
+    bg.classList.remove("fade-out");
+  }, 800);
+}
+
+// 一定時間ごとに動画切替（90秒）
+setInterval(switchVideo, 90000);
+
+// ============================================================
+//  チラシカード
+// ============================================================
+function showFlyer() {
+  const e = exhibitions[Math.floor(Math.random() * exhibitions.length)];
+
+  const imgEl = document.getElementById("flyerImg");
+
+  // image_url（AI取得）→ ローカル画像 → picsum の順でフォールバック
+  const localSrc  = e.image || "";
+  const aiSrc     = (e.image_url && e.image_url !== "") ? e.image_url : null;
+  const picsumSrc = `https://picsum.photos/seed/${encodeURIComponent(e.title)}/400/600`;
+
+  imgEl.src = aiSrc || localSrc || picsumSrc;
+  imgEl.onerror = function() {
+    if (this.src !== picsumSrc && this.src !== localSrc && localSrc) {
+      this.src = localSrc; // aiSrc失敗 → ローカル
+    } else if (this.src !== picsumSrc) {
+      this.src = picsumSrc; // ローカルも失敗 → picsum
+    } else {
+      // picsum失敗 → 絵文字フォールバック
+      this.style.display = "none";
+      const fb = document.createElement("div");
+      fb.className = "flyer-img-fallback";
+      fb.textContent = "🎨";
+      this.parentNode.insertBefore(fb, this);
+    }
+  };
+  document.getElementById("flyerTitle").textContent = e.title;
+
+  const fmt = s => {
+    const d = new Date(s);
+    return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;
+  };
+  document.getElementById("flyerDate").textContent = `${fmt(e.start)} — ${fmt(e.end)}`;
+}
+
+// ============================================================
+//  カーソル
+// ============================================================
+const cursor = document.getElementById("cursor");
+const ring   = document.getElementById("cursorRing");
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener("mousemove", e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx - 3 + "px";
+  cursor.style.top  = my - 3 + "px";
+});
+
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) *.12;
+  ring.style.left = rx + "px";
+  ring.style.top  = ry + "px";
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll("a").forEach(a => {
+  a.addEventListener("mouseenter", () => {
+    cursor.style.transform = "scale(3)";
+    ring.style.width = "50px";
+    ring.style.height = "50px";
+  });
+  a.addEventListener("mouseleave", () => {
+    cursor.style.transform = "scale(1)";
+    ring.style.width = "32px";
+    ring.style.height = "32px";
+  });
+});
+
+// ============================================================
+//  初期化
+// ============================================================
+buildFilmHoles();
+buildIndicator();
+playVideo(currentVideoIndex);
+showFlyer();
 </script>
-
 </body>
 </html>
