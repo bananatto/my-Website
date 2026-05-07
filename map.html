@@ -240,6 +240,23 @@
       border-color: rgba(201,168,76,0.5);
     }
 
+    /* 現在位置マーカー */
+    .my-location {
+      width: 14px;
+      height: 14px;
+      background: #3a7bd5;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(58,123,213,0.25), 0 2px 8px rgba(0,0,0,0.4);
+      animation: pulse 2s ease-out infinite;
+    }
+
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0   rgba(58,123,213,0.5), 0 2px 8px rgba(0,0,0,0.4); }
+      70%  { box-shadow: 0 0 0 10px rgba(58,123,213,0),   0 2px 8px rgba(0,0,0,0.4); }
+      100% { box-shadow: 0 0 0 0   rgba(58,123,213,0),   0 2px 8px rgba(0,0,0,0.4); }
+    }
+
     /* 凡例 */
     .legend {
       position: absolute;
@@ -303,6 +320,10 @@
         <div class="legend-dot" style="background:#7a1a1a;border:1.5px solid #c05050;"></div>
         <span>終了間近（7日以内）</span>
       </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#3a7bd5;border:2px solid #fff;box-shadow:0 0 0 3px rgba(58,123,213,0.3);"></div>
+        <span>現在地</span>
+      </div>
     </div>
   </div>
 
@@ -355,6 +376,26 @@
     subdomains: "abcd",
     maxZoom: 19,
   }).addTo(map);
+
+  // 現在位置を表示
+  const myIcon = L.divIcon({
+    html: '<div class="my-location"></div>',
+    className: "",
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+    popupAnchor: [0, -10],
+  });
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const { latitude: lat, longitude: lng } = pos.coords;
+      L.marker([lat, lng], { icon: myIcon })
+        .bindPopup('<div class="popup-inner"><div class="popup-museum">現在地</div></div>')
+        .addTo(map);
+    },
+    () => { /* 位置情報が取得できなくても無視 */ },
+    { enableHighAccuracy: true, timeout: 8000 }
+  );
 
   // exhibitions.json 読み込み
   fetch("exhibitions.json")
