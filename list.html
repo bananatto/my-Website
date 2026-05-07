@@ -338,6 +338,201 @@
 
     .card-footer a:hover { color: var(--gold); }
 
+    /* ===== パンフレット ===== */
+    .pamphlet {
+      border-top: 1px solid rgba(240,235,224,0.06);
+    }
+
+    /* 表紙タブ（常に表示） */
+    .pamphlet-cover {
+      display: flex;
+      align-items: center;
+      padding: 11px 18px;
+      cursor: pointer;
+      user-select: none;
+      background: #e8e3d8;
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+        linear-gradient(to right, #e0dbd0, #e8e3d8);
+      transition: filter 0.2s;
+      gap: 10px;
+    }
+
+    .pamphlet-cover:hover { filter: brightness(0.97); }
+
+    .pamphlet-icon {
+      font-size: 13px;
+      opacity: 0.5;
+      flex-shrink: 0;
+    }
+
+    .pamphlet-label-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #888;
+      flex: 1;
+    }
+
+    .pamphlet-chevron {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      color: #aaa;
+      line-height: 1;
+      transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .pamphlet.open .pamphlet-chevron {
+      transform: rotate(90deg);
+    }
+
+    /* 開閉アニメーション */
+    .pamphlet-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.45s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .pamphlet.open .pamphlet-body {
+      grid-template-rows: 1fr;
+    }
+
+    .pamphlet-content {
+      overflow: hidden;
+      min-height: 0;
+      display: flex;
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+        linear-gradient(160deg, #f5f0e8 0%, #ede8dc 100%);
+    }
+
+    /* 左ページ：画像 */
+    .pamphlet-img-wrap {
+      width: 42%;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .pamphlet-img {
+      width: 100%;
+      height: 100%;
+      min-height: 220px;
+      object-fit: cover;
+      display: block;
+      filter: sepia(0.12) contrast(1.04);
+    }
+
+    /* 折り目 */
+    .pamphlet-fold {
+      width: 1px;
+      flex-shrink: 0;
+      background: linear-gradient(to bottom,
+        rgba(0,0,0,0.04),
+        rgba(0,0,0,0.14) 40%,
+        rgba(0,0,0,0.08) 70%,
+        rgba(0,0,0,0.03)
+      );
+      box-shadow: 1px 0 4px rgba(0,0,0,0.07), -1px 0 2px rgba(255,255,255,0.4);
+    }
+
+    /* 右ページ：テキスト */
+    .pamphlet-text {
+      flex: 1;
+      padding: 22px 20px 22px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #111;
+    }
+
+    .pamphlet-heading {
+      font-size: 8px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #bbb;
+      margin-bottom: 10px;
+    }
+
+    .pamphlet-ex-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: #111;
+      line-height: 1.7;
+      letter-spacing: 0.03em;
+    }
+
+    .pamphlet-rule {
+      height: 1px;
+      background: linear-gradient(to right, rgba(0,0,0,0.15), transparent);
+      margin: 12px 0;
+    }
+
+    .pamphlet-museum-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      color: #555;
+      letter-spacing: 0.1em;
+    }
+
+    .pamphlet-dates {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 12px;
+      color: #c9a84c;
+      letter-spacing: 0.1em;
+      margin-top: 6px;
+    }
+
+    .pamphlet-copy {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 12px;
+      color: #888;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    /* ストーリー本文 */
+    .pamphlet-story {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 11.5px;
+      font-weight: 300;
+      color: #2a2a2a;
+      line-height: 2.0;
+      letter-spacing: 0.04em;
+      flex: 1;
+    }
+
+    .pamphlet-story p {
+      margin: 0;
+    }
+
+    .pamphlet-story p + p {
+      margin-top: 1.1em;
+    }
+
+    .pamphlet-link {
+      display: inline-block;
+      margin-top: 16px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #333;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0,0,0,0.2);
+      padding-bottom: 2px;
+      transition: color 0.3s, border-color 0.3s;
+      align-self: flex-start;
+    }
+
+    .pamphlet-link:hover {
+      color: #c9a84c;
+      border-color: rgba(201,168,76,0.5);
+    }
+
     /* 空状態 */
     .empty {
       padding: 80px;
@@ -556,9 +751,45 @@
           <a href="https://www.google.com/maps/search/?api=1&query=${e.lat},${e.lng}" target="_blank">地図で見る</a>
           <a href="https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}" target="_blank">ルート</a>
         </div>
+
+        <!-- パンフレット -->
+        <div class="pamphlet" id="pamphlet-${idx}">
+          <div class="pamphlet-cover" onclick="togglePamphlet(${idx})">
+            <span class="pamphlet-icon">◎</span>
+            <span class="pamphlet-label-text">Pamphlet</span>
+            <span class="pamphlet-chevron">›</span>
+          </div>
+          <div class="pamphlet-body">
+            <div class="pamphlet-content">
+              <div class="pamphlet-img-wrap">
+                <img class="pamphlet-img" src="${imgSrc}"
+                     onerror="if(this.src!=='${fallback}')this.src='${fallback}'" alt="${e.title}">
+              </div>
+              <div class="pamphlet-fold"></div>
+              <div class="pamphlet-text">
+                ${e.story
+                  ? `<div class="pamphlet-story">${e.story.split("\n\n").map(p => `<p>${p}</p>`).join("")}</div>`
+                  : `<div>
+                      <div class="pamphlet-heading">Special Exhibition</div>
+                      <div class="pamphlet-ex-title">${e.title}</div>
+                      <div class="pamphlet-rule"></div>
+                      <div class="pamphlet-museum-name">${e.museum}</div>
+                      <div class="pamphlet-dates">${formatDate(e.start)} — ${formatDate(e.end)}</div>
+                      ${e.copy ? `<div class="pamphlet-copy">"${e.copy}"</div>` : ""}
+                    </div>`
+                }
+                ${e.url ? `<a href="${e.url}" target="_blank" class="pamphlet-link">公式サイトを見る</a>` : ""}
+              </div>
+            </div>
+          </div>
+        </div>
       `;
       list.appendChild(card);
     });
+  }
+
+  function togglePamphlet(idx) {
+    document.getElementById(`pamphlet-${idx}`).classList.toggle("open");
   }
 
   document.getElementById("sort").addEventListener("change", render);

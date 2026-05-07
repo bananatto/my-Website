@@ -6,7 +6,8 @@
     "end": "2026-07-05",
     "url": "https://www.tobikan.jp/exhibition/2026_wyeth.html",
     "image_url": "https://www.tobikan.jp/media/img/poster/2026_wyeth_l.jpg",
-    "copy": "静寂の中に差し込む、ひとすじの現実"
+    "copy": "静寂の中に差し込む、ひとすじの現実",
+    "story": "窓の向こうに、草原がある。風は吹いていないのに、カーテンが揺れる。\n\n彼女はいつもそこにいた——部屋の端に、光の届かない場所に。ワイエスの絵は語らない。ただ、静かに、あなたを見つめ返す。\n\n描かれているのは風景ではなく、時間だ。止まったまま、どこへも行けない、あの感覚。"
   },
   {
     "title": "百万石！加賀前田家",
@@ -15,7 +16,8 @@
     "end": "2026-06-07",
     "url": "https://www.tnm.jp/modules/r_free_page/index.php?id=2740",
     "image_url": "https://www.tnm.jp/uploads/r_exhibition/exhibition/SPECIAL_LARGE_8419.jpg",
-    "copy": "国宝20点以上、百万石の美が集結"
+    "copy": "国宝20点以上、百万石の美が集結",
+    "story": "百万石とは、米の重さではなく、夢の重さだったのかもしれない。\n\n刀は鞘に収まり、甲冑はもう誰も守らない。それでも金沢の空の下で育まれた前田家の美は、腐らずに今日まで届いた。\n\n権力は滅びる。しかし美は、滅びることを知らない。"
   },
   {
     "title": "北斎 冨嶽三十六景 井内コレクションより",
@@ -24,7 +26,8 @@
     "end": "2026-06-14",
     "url": "https://www.nmwa.go.jp/jp/exhibitions/2026hokusai.html",
     "image_url": "https://www.nmwa.go.jp/jp/exhibitions/img/2026hokusai.png",
-    "copy": "珠玉のコレクションで見る富嶽の全景"
+    "copy": "珠玉のコレクションで見る富嶽の全景",
+    "story": "波は、山になろうとしていた。富士は、波になろうとしていた。\n\n北斎は八十余年、筆を置かなかった。晩年、彼は自らを「画狂老人」と名乗った。あの頂は、人の目に映るたびに形を変える——それでも、そこにあり続ける。\n\n見るたびに、初めて見る絵がある。"
   },
   {
     "title": "クロード・モネ —風景への問いかけ",
@@ -33,7 +36,8 @@
     "end": "2026-05-24",
     "url": "https://www.artizon.museum/exhibition/detail/615",
     "image_url": "https://atz-image.s3.ap-northeast-1.amazonaws.com/2064984481696596f230e653.72257440.jpg",
-    "copy": "印象派の巨匠、光と風景の詩"
+    "copy": "印象派の巨匠、光と風景の詩",
+    "story": "光は嘘をつかない。ただ、いつも違う嘘をつく。\n\nモネは睡蓮の前に座り続け、水面が空を映すのか、空が水面を映すのか、もう気にしなくなった。白内障が深まるにつれ、絵は溶けていった。それでも筆は止まらなかった。\n\n正午の庭に答えはない。光だけがある。"
   },
   {
     "title": "下村観山展",
@@ -42,7 +46,8 @@
     "end": "2026-05-10",
     "url": "https://www.momat.go.jp/exhibitions/",
     "image_url": "https://www.momat.go.jp/wp-content/uploads/2025/10/exhibitions_567_01-1024x472.jpg",
-    "copy": "日本画の奥に潜む、緊張と気配"
+    "copy": "日本画の奥に潜む、緊張と気配",
+    "story": "線の細さに、強さが宿る。\n\n日本画の沈黙は、西洋画の沈黙とは違う種類のものだ。観山は余白に何かを描いた——見えないものを見せるために、あえて描かなかった。\n\n息を詰めて見ていると、絵の中の気配が、こちら側に漏れてくる気がする。"
   },
   {
     "title": "テート美術館 ― YBA & BEYOND 世界を変えた90s英国アート",
@@ -51,7 +56,8 @@
     "end": "2026-05-11",
     "url": "https://www.nact.jp/exhibition_special/",
     "image_url": "https://www.nact.jp/media/1000009652_1.jpg",
-    "copy": "90年代英国アートが世界を変えた夜"
+    "copy": "90年代英国アートが世界を変えた夜",
+    "story": "1990年代のロンドンで、若者たちは美術館に火をつけようとした——比喩ではなく、ほとんど文字通りに。\n\n牛は二つに割られ、ベッドは汚れたまま展示された。醜さも美しさと同じ権利を持つ、と彼らは叫んだ。\n\n世界は怒り、そして振り返った。あれから三十年。問いはまだ、答えを待っている。"
   },
   {
     "title": "ロン・ミュエク展",
@@ -60,7 +66,8 @@
     "end": "2026-09-23",
     "url": "https://www.mori.art.museum/jp/exhibitions/ronmueck/",
     "image_url": "https://www.mori.art.museum/files/exhibitions/2025/10/23/img_ron_mueck_04.jpg",
-    "copy": "超リアルな彫刻が問う、存在の重さ"
+    "copy": "超リアルな彫刻が問う、存在の重さ",
+    "story": "等身大の人間は、もはや怖くない。だがミュエクの彫刻は、五メートルの赤子としてあなたを見下ろす。\n\nまぶたの厚さ、産毛の一本一本——その重さは、生よりも生きている。それが、なぜか悲しい。\n\n私たちは何者なのかと、彫刻が問う。彫刻は答えない。"
   },
   {
     "title": "トワイライト、新版画 —小林清親から川瀬巴水まで",
@@ -69,7 +76,8 @@
     "end": "2026-05-24",
     "url": "https://mimt.jp/ex_sp/shin-hanga/",
     "image_url": "https://mimt.jp/wp-content/themes/mimt/assets/ex_sp/img/shin-hanga/top/fv_mainvisual_pc.webp",
-    "copy": "清親から巴水へ、夕暮れの日本美"
+    "copy": "清親から巴水へ、夕暮れの日本美",
+    "story": "夕暮れは、東京にも降りてくる。清親は闇の中に光を見つけ、巴水は旅の宿で雪を待った。\n\n版木に刻まれた線は、百年の後もまだ震えている——あの夜の、冷たい空気ごと。\n\n印刷された景色の中に、もう誰もいない。それでも灯りが、一つ、ともっている。"
   },
   {
     "title": "ゴールドマン コレクション 河鍋暁斎の世界",
@@ -78,7 +86,8 @@
     "end": "2026-06-21",
     "url": "https://www.suntory.co.jp/sma/exhibition/2026_1/index.html",
     "image_url": "https://kyosai2026.exhibit.jp/images/kv_pc_1300x.png",
-    "copy": "破天荒な天才絵師、笑いと鬼気迫る世界"
+    "copy": "破天荒な天才絵師、笑いと鬼気迫る世界",
+    "story": "鬼は笑い、骸骨は踊り、蛙は相撲をとる。\n\n暁斎の筆は止まらなかった——酔っていても、怒っていても。天才と狂気のあいだに、彼は住所を持っていた。表札には何と書いてあったのだろう。\n\n怖いのに、目が離せない。それが暁斎の罠だ。"
   },
   {
     "title": "エリック・カール展 はじまりは、はらぺこあおむし",
@@ -87,6 +96,7 @@
     "end": "2026-07-26",
     "url": "https://www.mot-art-museum.jp/exhibitions/ericcarle2026-27/",
     "image_url": "https://mot-art-museum.jp/exhibitions/images/643cadcccd7f166f31869dda0ba8632b6c27fa76.jpg",
-    "copy": "原画180点、絵本の誕生を辿る旅"
+    "copy": "原画180点、絵本の誕生を辿る旅",
+    "story": "あおむしは、腹が減っていた。月曜日にりんごを一つ。火曜日に梨を二つ。\n\nそして最後に、繭の中で長い眠りについた。目覚めたとき、世界はもっと広くなっていた。\n\nあのとき子供だった誰もが、今も知っている——空腹と、変容と、朝の光の色を。"
   }
 ]
