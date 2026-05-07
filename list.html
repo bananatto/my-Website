@@ -343,104 +343,137 @@
       border-top: 1px solid rgba(201,168,76,0.2);
     }
 
-    /* 背表紙 */
+    /* 表紙ラッパー（閉じると縮む） */
+    .book-cover-wrap {
+      overflow: hidden;
+      max-height: 240px;
+      transition: max-height 0.48s cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 0.35s ease;
+      opacity: 1;
+    }
+
+    .book.open .book-cover-wrap {
+      max-height: 0;
+      opacity: 0;
+    }
+
+    /* 表紙本体 */
     .book-cover {
-      display: flex;
-      align-items: center;
-      padding: 0 16px 0 0;
-      min-height: 52px;
+      position: relative;
+      height: 200px;
+      overflow: hidden;
       cursor: pointer;
       user-select: none;
+      transition: filter 0.25s;
+      /* shape はインラインで上書き */
+    }
+
+    .book-cover:hover { filter: brightness(1.10) contrast(1.02); }
+
+    /* 表紙の背景画像 */
+    .book-cover-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center top;
+      filter: sepia(0.18) contrast(1.06) brightness(0.88);
+      transition: transform 0.4s ease;
+    }
+
+    .book-cover:hover .book-cover-bg { transform: scale(1.03); }
+
+    /* 表紙のオーバーレイ */
+    .book-cover-overlay {
+      position: absolute;
+      inset: 0;
+      /* color is set inline per theme */
+    }
+
+    /* 表紙の内側装飾ボーダー */
+    .book-cover-inner-border {
+      position: absolute;
+      inset: 10px;
+      border: 1px solid rgba(255,255,255,0.0);
+      /* accent color applied inline */
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* 表紙テキストコンテンツ */
+    .book-cover-content {
       position: relative;
-      overflow: hidden;
-      background: linear-gradient(100deg, #161008 0%, #241c0e 55%, #1c1409 100%);
-      transition: filter 0.2s;
-    }
-
-    .book-cover:hover { filter: brightness(1.14); }
-
-    /* 左の綴じ側シャドウ */
-    .book-cover::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 7px;
-      background: linear-gradient(to right,
-        rgba(0,0,0,0.55),
-        rgba(201,168,76,0.12) 60%,
-        transparent
-      );
-      z-index: 1;
-    }
-
-    /* ページ断面（右寄り） */
-    .book-pages-edge {
-      position: absolute;
-      right: 42px;
-      top: 7px;
-      bottom: 7px;
-      width: 11px;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(240,235,224,0.10) 0px,
-        rgba(240,235,224,0.10) 1px,
-        rgba(240,235,224,0.025) 1px,
-        rgba(240,235,224,0.025) 2px
-      );
-      border-left:  1px solid rgba(240,235,224,0.13);
-      border-right: 1px solid rgba(240,235,224,0.06);
-    }
-
-    .book-cover-inner {
-      flex: 1;
+      z-index: 3;
+      height: 100%;
       display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0 68px 0 14px;
-      min-width: 0;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px 22px 16px;
     }
 
-    .book-cover-badge {
+    .book-cover-label {
       font-family: 'Cormorant Garamond', serif;
       font-size: 8px;
-      letter-spacing: 0.32em;
+      letter-spacing: 0.36em;
       text-transform: uppercase;
-      color: rgba(201,168,76,0.65);
-      border: 1px solid rgba(201,168,76,0.28);
-      padding: 3px 8px;
-      flex-shrink: 0;
+      margin-bottom: 10px;
+      /* accent color inline */
     }
 
-    .book-cover-rule {
-      height: 1px;
-      width: 16px;
-      flex-shrink: 0;
-      background: rgba(201,168,76,0.28);
-    }
-
-    .book-cover-title {
+    .book-cover-main-title {
       font-family: 'Noto Serif JP', serif;
-      font-size: 11px;
-      font-weight: 300;
-      letter-spacing: 0.06em;
-      color: rgba(240,235,224,0.72);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex: 1;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.65;
+      letter-spacing: 0.04em;
+      color: rgba(240,235,224,0.92);
+      margin-bottom: 8px;
     }
 
-    .book-cover-chevron {
-      position: absolute;
-      right: 14px;
+    .book-cover-divider {
+      height: 1px;
+      width: 36px;
+      margin-bottom: 8px;
+      /* accent color inline */
+    }
+
+    .book-cover-museum {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      color: rgba(201,168,76,0.5);
-      line-height: 1;
-      transition: transform 0.42s cubic-bezier(0.16,1,0.3,1);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: rgba(240,235,224,0.55);
+      margin-bottom: 2px;
     }
 
-    .book.open .book-cover-chevron { transform: rotate(90deg); }
+    .book-cover-dates {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: rgba(240,235,224,0.42);
+    }
+
+    /* タップヒント */
+    .book-cover-hint {
+      position: absolute;
+      z-index: 3;
+      bottom: 14px;
+      right: 18px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(240,235,224,0.35);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: opacity 0.2s;
+    }
+
+    .book-cover:hover .book-cover-hint { opacity: 0.7; }
+
+    .book-cover-hint-arrow {
+      font-size: 14px;
+      line-height: 1;
+    }
 
     /* 開閉アニメーション */
     .book-body {
@@ -809,14 +842,27 @@
 
         <!-- 本（パンフレット） -->
         <div class="book" id="book-${idx}">
-          <div class="book-cover" onclick="toggleBook(${idx})">
-            <div class="book-pages-edge"></div>
-            <div class="book-cover-inner">
-              <span class="book-cover-badge">Pamphlet</span>
-              <span class="book-cover-rule"></span>
-              <span class="book-cover-title">${e.title}</span>
+          <div class="book-cover-wrap">
+            <div class="book-cover"
+                 style="${getCoverStyle(idx, e)}"
+                 onclick="toggleBook(${idx})">
+              <div class="book-cover-bg"
+                   style="background-image:url('${imgSrc}');"
+                   onerror="this.style.backgroundImage='url(${fallback})'"></div>
+              <div class="book-cover-overlay" style="${getCoverOverlay(idx)}"></div>
+              <div class="book-cover-inner-border" style="${getCoverBorder(idx)}"></div>
+              <div class="book-cover-content">
+                <div class="book-cover-label" style="color:${getCoverAccent(idx)}">${e.museum}</div>
+                <div class="book-cover-main-title">${e.title}</div>
+                <div class="book-cover-divider" style="background:${getCoverAccent(idx)}"></div>
+                <div class="book-cover-museum">Special Exhibition</div>
+                <div class="book-cover-dates">${formatDate(e.start)} — ${formatDate(e.end)}</div>
+              </div>
+              <div class="book-cover-hint">
+                <span>open</span>
+                <span class="book-cover-hint-arrow">↓</span>
+              </div>
             </div>
-            <span class="book-cover-chevron">›</span>
           </div>
           <div class="book-body">
             <div class="book-spread">
@@ -846,6 +892,90 @@
       `;
       list.appendChild(card);
     });
+  }
+
+  /* ===== 表紙テーマ（展覧会ごとに個性的な形・色） ===== */
+  const COVER_THEMES = [
+    { // 0: ワイエス — 静寂・グレーブルー・標準四角
+      accent:  '#8fb0cc',
+      overlay: 'rgba(20,28,44,0.76)',
+      shape:   '',
+      border:  'border: 1px solid rgba(143,176,204,0.22);'
+    },
+    { // 1: 加賀前田家 — 金・和風・アーチ上部
+      accent:  '#c9a84c',
+      overlay: 'rgba(14,8,2,0.74)',
+      shape:   'border-radius: 48% 48% 0 0 / 18px 18px 0 0;',
+      border:  'border: 1px solid rgba(201,168,76,0.30); border-radius: 44% 44% 0 0 / 14px 14px 0 0;'
+    },
+    { // 2: 北斎 — 藍・波形の下辺
+      accent:  '#6888d0',
+      overlay: 'rgba(6,12,32,0.76)',
+      shape:   'clip-path: polygon(0 0,100% 0,100% 88%,97% 92%,94% 88%,91% 93%,88% 88%,85% 93%,82% 88%,79% 93%,76% 88%,73% 93%,70% 88%,67% 93%,64% 88%,61% 93%,58% 88%,55% 93%,52% 88%,49% 93%,46% 88%,43% 93%,40% 88%,37% 93%,34% 88%,31% 93%,28% 88%,25% 93%,22% 88%,19% 93%,16% 88%,13% 93%,10% 88%,7% 93%,4% 88%,1% 93%,0 88%);',
+      border:  'border: 1px solid rgba(104,136,208,0.22);'
+    },
+    { // 3: モネ — 青緑・上角が丸い
+      accent:  '#7abca0',
+      overlay: 'rgba(10,18,26,0.72)',
+      shape:   'border-radius: 14px 14px 0 0;',
+      border:  'border: 1px solid rgba(122,188,160,0.22); border-radius: 10px 10px 0 0;'
+    },
+    { // 4: 観山 — 墨・縦長ぎみ・上下に細い罫
+      accent:  '#c0b8b0',
+      overlay: 'rgba(4,4,4,0.80)',
+      shape:   '',
+      border:  'border-top: 2px solid rgba(192,184,176,0.35); border-bottom: 2px solid rgba(192,184,176,0.35); border-left: none; border-right: none;'
+    },
+    { // 5: テートYBA — 純黒・右上コーナー斜めカット
+      accent:  '#e03030',
+      overlay: 'rgba(4,4,4,0.84)',
+      shape:   'clip-path: polygon(0 0,calc(100% - 32px) 0,100% 32px,100% 100%,0 100%);',
+      border:  'border: 1px solid rgba(224,48,48,0.25);'
+    },
+    { // 6: ロン・ミュエク — 肌・全角が面取り（八角形）
+      accent:  '#c8a880',
+      overlay: 'rgba(16,13,10,0.78)',
+      shape:   'clip-path: polygon(18px 0,calc(100% - 18px) 0,100% 18px,100% calc(100% - 18px),calc(100% - 18px) 100%,18px 100%,0 calc(100% - 18px),0 18px);',
+      border:  'border: 1px solid rgba(200,168,128,0.22);'
+    },
+    { // 7: 新版画 — 夕茶・左上だけ大きく丸い
+      accent:  '#c88040',
+      overlay: 'rgba(22,10,4,0.74)',
+      shape:   'border-radius: 28px 0 0 0;',
+      border:  'border: 1px solid rgba(200,128,64,0.24); border-radius: 22px 0 0 0;'
+    },
+    { // 8: 暁斎 — 深紅・左上に大きく斜めカット
+      accent:  '#c02820',
+      overlay: 'rgba(10,3,3,0.78)',
+      shape:   'clip-path: polygon(36px 0,100% 0,100% 100%,0 100%,0 36px);',
+      border:  'border: 1px solid rgba(192,40,32,0.28);'
+    },
+    { // 9: エリック・カール — 深緑・全体がかなり丸い
+      accent:  '#50b868',
+      overlay: 'rgba(4,14,18,0.72)',
+      shape:   'border-radius: 20px 20px 0 0;',
+      border:  'border: 1px solid rgba(80,184,104,0.25); border-radius: 16px 16px 0 0;'
+    },
+  ];
+
+  function getCoverTheme(idx) {
+    return COVER_THEMES[idx % COVER_THEMES.length];
+  }
+
+  function getCoverStyle(idx) {
+    return getCoverTheme(idx).shape;
+  }
+
+  function getCoverOverlay(idx) {
+    return `background: ${getCoverTheme(idx).overlay};`;
+  }
+
+  function getCoverBorder(idx) {
+    return getCoverTheme(idx).border;
+  }
+
+  function getCoverAccent(idx) {
+    return getCoverTheme(idx).accent;
   }
 
   function toggleBook(idx) {
