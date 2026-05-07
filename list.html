@@ -342,88 +342,110 @@
 
     /* ===== 本（パンフレット） ===== */
     .book {
-      border-top: 1px solid rgba(201,168,76,0.18);
+      padding: 16px 0 4px;
     }
 
-    /* ページめくりアニメーション */
+    /* ===== ページめくりアニメーション（左右） ===== */
     @keyframes pageFlip {
-      0%   { transform: perspective(520px) rotateX(0deg) translateY(0); opacity: 1; }
-      30%  { transform: perspective(520px) rotateX(-25deg) translateY(-8px); opacity: 0.95; }
-      70%  { transform: perspective(520px) rotateX(-80deg) translateY(-4px); opacity: 0.4; }
-      100% { transform: perspective(520px) rotateX(-95deg) translateY(0); opacity: 0; }
-    }
-    @keyframes pageSheen {
-      0%   { left: -120%; opacity: 0; }
-      20%  { opacity: 1; }
-      100% { left: 120%;  opacity: 0; }
+      0%   { transform: perspective(800px) rotateY(0deg);    opacity: 1; }
+      25%  { transform: perspective(800px) rotateY(-45deg);  opacity: 1; }
+      50%  { transform: perspective(800px) rotateY(-90deg);  opacity: 0.6; }
+      75%  { transform: perspective(800px) rotateY(-135deg); opacity: 0.2; }
+      100% { transform: perspective(800px) rotateY(-180deg); opacity: 0; }
     }
     @keyframes pageFlipBack {
-      0%   { transform: perspective(520px) rotateX(-95deg); opacity: 0; }
-      40%  { transform: perspective(520px) rotateX(-20deg); opacity: 0.7; }
-      100% { transform: perspective(520px) rotateX(0deg);   opacity: 1; }
+      0%   { transform: perspective(800px) rotateY(-180deg); opacity: 0; }
+      50%  { transform: perspective(800px) rotateY(-90deg);  opacity: 0.5; }
+      80%  { transform: perspective(800px) rotateY(-20deg);  opacity: 0.9; }
+      100% { transform: perspective(800px) rotateY(0deg);    opacity: 1; }
+    }
+    /* パラパラ用 中間ページ */
+    @keyframes pageFlipMid {
+      0%   { transform: perspective(800px) rotateY(0deg);    opacity: 0; clip-path: none; }
+      10%  { opacity: 0.7; }
+      50%  { transform: perspective(800px) rotateY(-90deg);  opacity: 0.5; }
+      90%  { opacity: 0.2; }
+      100% { transform: perspective(800px) rotateY(-180deg); opacity: 0; }
+    }
+    @keyframes pageSheen {
+      0%   { left: -100%; opacity: 0; }
+      10%  { opacity: 0.9; }
+      100% { left: 110%;  opacity: 0; }
     }
 
-    /* 表紙ラッパー（高さ管理） */
+    /* 表紙ラッパー */
     .book-cover-wrap {
       overflow: visible;
-      max-height: 400px;
-      transition: max-height 0.05s 0.38s ease;
+      position: relative;
     }
     .book.open .book-cover-wrap {
-      max-height: 0;
       overflow: hidden;
-      transition: max-height 0.05s 0.38s ease;
+      max-height: 0;
     }
 
     /* 表紙本体 */
     .book-cover {
       position: relative;
-      height: 200px;
+      height: 210px;
       overflow: hidden;
       cursor: pointer;
       user-select: none;
-      transform-origin: top center;
+      transform-origin: left center;  /* 本の背（左端）を軸に右へめくる */
       transition: filter 0.25s;
+      will-change: transform;
     }
-    .book-cover:hover { filter: brightness(1.10) contrast(1.02); }
+    .book-cover:hover { filter: brightness(1.08) contrast(1.03); }
 
-    /* めくり中のシェーン */
+    /* めくり中の光沢シェーン */
     .book-cover::after {
       content: '';
       position: absolute;
       top: 0; bottom: 0;
-      left: -120%; width: 60%;
+      left: -100%; width: 50%;
       background: linear-gradient(to right,
-        transparent, rgba(255,255,255,0.13) 50%, transparent);
+        transparent 0%,
+        rgba(255,255,255,0.08) 40%,
+        rgba(255,255,255,0.22) 50%,
+        rgba(255,255,255,0.08) 60%,
+        transparent 100%);
       pointer-events: none;
       opacity: 0;
       z-index: 20;
     }
-    .book-cover.flipping::after {
-      animation: pageSheen 0.42s ease-in forwards;
-    }
-    .book-cover.flipping {
-      animation: pageFlip 0.42s cubic-bezier(0.4,0,0.6,1) forwards;
-    }
-    .book-cover.flipping-back {
-      animation: pageFlipBack 0.38s cubic-bezier(0.2,0,0.4,1) forwards;
-    }
+    .book-cover.flipping::after { animation: pageSheen 0.55s ease-in forwards; }
+    .book-cover.flipping       { animation: pageFlip  0.55s cubic-bezier(0.4,0,0.55,1) forwards; }
+    .book-cover.flipping-back  { animation: pageFlipBack 0.48s cubic-bezier(0.2,0,0.38,1) forwards; }
 
-    /* 背景画像 */
+    /* パラパラ用 幽霊ページ（2枚） */
+    .book-flip-ghost {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 15;
+      transform-origin: left center;
+      opacity: 0;
+      background: linear-gradient(160deg, #f0ebe0, #e8e3d8);
+    }
+    .book-flip-ghost--1 { animation-delay: 0.08s; }
+    .book-flip-ghost--2 { animation-delay: 0.16s; }
+    .book-cover.flipping .book-flip-ghost { animation: pageFlipMid 0.55s ease-in forwards; }
+
+    /* 表紙背景画像 */
     .book-cover-bg {
       position: absolute;
       inset: 0;
       background-size: cover;
-      background-position: center top;
-      filter: sepia(0.18) contrast(1.06) brightness(0.88);
-      transition: transform 0.4s ease;
+      background-position: center 20%;
+      filter: sepia(0.10) contrast(1.08) brightness(0.95) saturate(1.05);
+      transition: transform 0.5s ease;
     }
-    .book-cover:hover .book-cover-bg { transform: scale(1.03); }
+    .book-cover:hover .book-cover-bg { transform: scale(1.04); }
 
-    /* オーバーレイ */
+    /* グラデーションオーバーレイ（下に向かって暗く） */
     .book-cover-overlay {
       position: absolute;
       inset: 0;
+      /* background はテーマごとにインライン */
     }
 
     /* 内側装飾ボーダー */
@@ -442,68 +464,78 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      padding: 20px 22px 16px;
+      padding: 0 22px 18px;
     }
     .book-cover-label {
       font-family: 'Cormorant Garamond', serif;
       font-size: 8px;
       letter-spacing: 0.36em;
       text-transform: uppercase;
-      margin-bottom: 10px;
+      margin-bottom: 9px;
     }
     .book-cover-main-title {
       font-family: 'Noto Serif JP', serif;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 400;
-      line-height: 1.65;
+      line-height: 1.6;
       letter-spacing: 0.04em;
-      color: rgba(240,235,224,0.92);
-      margin-bottom: 8px;
+      color: #fff;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.7), 0 2px 24px rgba(0,0,0,0.5);
+      margin-bottom: 10px;
     }
     .book-cover-divider {
       height: 1px;
       width: 36px;
-      margin-bottom: 8px;
+      margin-bottom: 9px;
+      opacity: 0.8;
     }
     .book-cover-museum {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 10px;
+      font-size: 11px;
       letter-spacing: 0.14em;
-      color: rgba(240,235,224,0.55);
+      color: rgba(255,255,255,0.72);
+      text-shadow: 0 1px 6px rgba(0,0,0,0.8);
       margin-bottom: 2px;
     }
     .book-cover-dates {
       font-family: 'Cormorant Garamond', serif;
       font-size: 10px;
       letter-spacing: 0.1em;
-      color: rgba(240,235,224,0.42);
+      color: rgba(255,255,255,0.52);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     }
     .book-cover-hint {
       position: absolute;
       z-index: 3;
-      bottom: 12px; right: 16px;
+      top: 14px; right: 16px;
       font-family: 'Cormorant Garamond', serif;
       font-size: 9px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: rgba(240,235,224,0.32);
+      color: rgba(255,255,255,0.28);
       display: flex; align-items: center; gap: 5px;
-      transition: opacity 0.2s;
+      transition: color 0.25s;
     }
-    .book-cover:hover .book-cover-hint { opacity: 0.65; }
+    .book-cover:hover .book-cover-hint { color: rgba(255,255,255,0.55); }
 
-    /* ========== 形状テーマ ========== */
+    /* ========== 形状テーマ（形を強調・四角背景を隠す） ========== */
 
-    /* 1: ポートレートフレーム（ワイエス） */
+    /* すべての形状ラッパーの共通スタイル */
+    .book-cover-wrap {
+      padding: 10px 0 14px;
+    }
+
+    /* 1: ポートレートフレーム（ワイエス） ─ 絵画の額縁風 */
     .bc-portrait {
       width: 52%;
-      height: 220px;
-      margin: 10px auto;
+      height: 230px;
+      margin: 0 auto;
       box-shadow:
-        0 0 0 6px #1c1a14,
-        0 0 0 8px rgba(143,176,204,0.25),
-        0 0 0 14px #1c1a14,
-        0 8px 32px rgba(0,0,0,0.6);
+        0 0 0 5px #0a0a0a,
+        0 0 0 7px rgba(143,176,204,0.35),
+        0 0 0 13px #0a0a0a,
+        0 0 0 15px rgba(143,176,204,0.15),
+        0 12px 40px rgba(0,0,0,0.7);
     }
     .bc-portrait .book-cover-inner-border {
       inset: 8px;
@@ -512,81 +544,101 @@
 
     /* 2: 鳥居アーチ（加賀前田家） */
     .bc-arch {
-      border-radius: 50% 50% 0 0 / 32% 32% 0 0;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.55);
+      border-radius: 50% 50% 0 0 / 30% 30% 0 0;
+      box-shadow: 0 -2px 0 0 var(--dark), 0 10px 40px rgba(0,0,0,0.65);
     }
     .bc-arch .book-cover-inner-border {
-      inset: 8px;
+      inset: 10px;
       border: 1px solid rgba(201,168,76,0.32);
-      border-radius: 46% 46% 0 0 / 28% 28% 0 0;
+      border-radius: 46% 46% 0 0 / 26% 26% 0 0;
     }
 
-    /* 3: 波形底辺（北斎） */
+    /* 3: 波形底辺（北斎） ─ drop-shadowで形に沿う */
     .bc-wave {
-      clip-path: polygon(0 0,100% 0,100% 85%,97.5% 90%,95% 85%,92.5% 91%,90% 85%,87.5% 91%,85% 85%,82.5% 91%,80% 85%,77.5% 91%,75% 85%,72.5% 91%,70% 85%,67.5% 91%,65% 85%,62.5% 91%,60% 85%,57.5% 91%,55% 85%,52.5% 91%,50% 85%,47.5% 91%,45% 85%,42.5% 91%,40% 85%,37.5% 91%,35% 85%,32.5% 91%,30% 85%,27.5% 91%,25% 85%,22.5% 91%,20% 85%,17.5% 91%,15% 85%,12.5% 91%,10% 85%,7.5% 91%,5% 85%,2.5% 91%,0 85%);
+      clip-path: polygon(0 0,100% 0,100% 83%,97.5% 88%,95% 83%,92.5% 89%,90% 83%,87.5% 89%,85% 83%,82.5% 89%,80% 83%,77.5% 89%,75% 83%,72.5% 89%,70% 83%,67.5% 89%,65% 83%,62.5% 89%,60% 83%,57.5% 89%,55% 83%,52.5% 89%,50% 83%,47.5% 89%,45% 83%,42.5% 89%,40% 83%,37.5% 89%,35% 83%,32.5% 89%,30% 83%,27.5% 89%,25% 83%,22.5% 89%,20% 83%,17.5% 89%,15% 83%,12.5% 89%,10% 83%,7.5% 89%,5% 83%,2.5% 89%,0 83%);
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.8));
     }
     .bc-wave .book-cover-inner-border {
-      inset: 8px;
-      border: 1px solid rgba(104,136,208,0.26);
+      inset: 8px 8px 28px;
+      border: 1px solid rgba(104,136,208,0.28);
     }
 
-    /* 4: 楕円（モネ） */
+    /* 4: 楕円（モネ） ─ 浮かぶパレット */
     .bc-oval {
-      width: 82%;
-      height: 210px;
+      width: 80%;
+      height: 215px;
       border-radius: 50%;
-      margin: 8px auto;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      margin: 0 auto;
+      box-shadow:
+        0 0 0 3px rgba(122,188,160,0.25),
+        0 12px 44px rgba(0,0,0,0.65),
+        0 0 60px rgba(122,188,160,0.08);
     }
     .bc-oval .book-cover-inner-border {
       border: 1px solid rgba(122,188,160,0.28);
       border-radius: 50%;
+      inset: 8px;
     }
 
-    /* 5: 掛け軸（観山） */
+    /* 5: 掛け軸（観山） ─ 軸棒が本物らしい */
     .bc-kakemono-wrap {
-      padding: 0 24%;
+      padding: 4px 26% 14px;
     }
     .bc-kakemono {
-      height: 240px;
-      overflow: visible;
+      height: 230px;
+      box-shadow: 3px 0 12px rgba(0,0,0,0.5), -3px 0 12px rgba(0,0,0,0.5);
     }
     .bc-kakemono-roller {
       position: relative;
       z-index: 5;
-      height: 14px;
-      background: linear-gradient(to bottom, #3a2a18, #5a4030 40%, #3a2a18);
-      border-radius: 7px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.1);
+      height: 16px;
+      background:
+        linear-gradient(to bottom,
+          rgba(255,255,255,0.08) 0%,
+          #5a4030 20%,
+          #3a2818 50%,
+          #5a4030 80%,
+          rgba(0,0,0,0.3) 100%
+        );
+      border-radius: 8px;
+      box-shadow:
+        0 3px 10px rgba(0,0,0,0.8),
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 -1px 0 rgba(0,0,0,0.3);
     }
     .bc-kakemono .book-cover-inner-border {
-      border-top: 2px solid rgba(192,184,176,0.38);
-      border-bottom: 2px solid rgba(192,184,176,0.38);
+      border-top: 1px solid rgba(192,184,176,0.25);
+      border-bottom: 1px solid rgba(192,184,176,0.25);
       border-left: none; border-right: none;
       inset: 0 10px;
     }
 
-    /* 6: 破れた紙（テートYBA） */
+    /* 6: 破れた紙（テートYBA） ─ drop-shadowで輪郭を強調 */
     .bc-torn {
-      clip-path: polygon(0 0,100% 0,100% 68%,97% 72%,100% 76%,96% 80%,100% 84%,97% 88%,100% 92%,95% 96%,100% 100%,88% 95%,82% 100%,76% 93%,70% 100%,64% 94%,58% 100%,52% 93%,46% 100%,40% 94%,34% 100%,28% 93%,22% 100%,16% 94%,10% 100%,4% 94%,0 100%);
+      clip-path: polygon(0 0,100% 0,100% 65%,98% 69%,100% 73%,97% 77%,100% 81%,97% 85%,100% 89%,96% 93%,100% 97%,93% 95%,87% 100%,81% 93%,75% 100%,69% 93%,63% 100%,57% 93%,51% 100%,45% 93%,39% 100%,33% 93%,27% 100%,21% 93%,15% 100%,9% 93%,3% 100%,0 97%);
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.85));
     }
     .bc-torn .book-cover-inner-border {
-      inset: 8px;
+      inset: 8px 8px 50px;
       border: 1px solid rgba(224,48,48,0.28);
     }
 
-    /* 7: レコード（ロン・ミュエク） */
+    /* 7: LPレコード（ロン・ミュエク） ─ 盤面の写実 */
     .bc-vinyl-wrap {
-      padding: 8px 0 8px;
       display: flex;
       justify-content: center;
+      padding: 4px 0 16px;
     }
     .bc-vinyl {
-      width: min(200px,58vw);
-      height: min(200px,58vw);
+      width: min(210px,60vw);
+      height: min(210px,60vw);
       border-radius: 50%;
       flex-shrink: 0;
       overflow: hidden;
+      box-shadow:
+        0 0 0 2px rgba(240,235,224,0.07),
+        0 14px 44px rgba(0,0,0,0.75),
+        inset 0 0 30px rgba(0,0,0,0.4);
     }
     .bc-vinyl-groove {
       position: absolute;
@@ -594,123 +646,154 @@
       border-radius: 50%;
       background: repeating-radial-gradient(
         circle at center,
-        transparent 0px, transparent 9px,
-        rgba(0,0,0,0.18) 9px, rgba(0,0,0,0.18) 10px
+        transparent 0px,   transparent 7px,
+        rgba(0,0,0,0.22)   7px, rgba(0,0,0,0.22) 8px,
+        transparent 8px,   transparent 11px,
+        rgba(0,0,0,0.12)  11px, rgba(0,0,0,0.12) 12px
       );
       z-index: 1;
+    }
+    /* レコードの反射光 */
+    .bc-vinyl::before {
+      content: '';
+      position: absolute;
+      top: 4%; left: 10%;
+      width: 35%; height: 45%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.07) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: 3;
+      pointer-events: none;
     }
     .bc-vinyl-label {
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%,-50%);
-      width: 42%; height: 42%;
+      width: 40%; height: 40%;
       border-radius: 50%;
-      background: radial-gradient(circle, #2a1c08 60%, #1a1005);
-      border: 1px solid rgba(201,168,76,0.35);
+      background: radial-gradient(circle at 40% 35%, #3a2510 0%, #1c0e04 70%);
+      border: 1px solid rgba(201,168,76,0.4);
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
       z-index: 4;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .bc-vinyl-label-text {
-      font-family: 'Noto Serif JP', serif;
+      font-family: 'Cormorant Garamond', serif;
       font-size: 7px;
-      font-weight: 300;
-      color: rgba(240,235,224,0.7);
+      font-weight: 400;
+      color: rgba(201,168,76,0.85);
       text-align: center;
-      letter-spacing: 0.04em;
-      padding: 4px;
-      line-height: 1.5;
+      letter-spacing: 0.12em;
+      line-height: 1.6;
     }
     .bc-vinyl-hole {
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%,-50%);
-      width: 14px; height: 14px;
+      width: 13px; height: 13px;
       border-radius: 50%;
-      background: var(--dark);
+      background: radial-gradient(circle, #1a1410, #0a0a0a);
       z-index: 5;
-      box-shadow: 0 0 0 2px rgba(240,235,224,0.1);
+      box-shadow:
+        0 0 0 1.5px rgba(255,255,255,0.12),
+        inset 0 1px 2px rgba(0,0,0,0.8);
     }
     .bc-vinyl .book-cover-content { display: none; }
     .bc-vinyl .book-cover-hint {
-      bottom: 14%; right: 50%;
-      transform: translateX(50%);
+      top: auto; bottom: 12%;
+      right: 50%; transform: translateX(50%);
       z-index: 6;
     }
 
-    /* 8: 平行四辺形（新版画） */
+    /* 8: 平行四辺形（新版画） ─ drop-shadowで輪郭 */
     .bc-slant {
-      clip-path: polygon(6% 0,100% 0,94% 100%,0 100%);
+      clip-path: polygon(7% 0,100% 0,93% 100%,0 100%);
+      filter: drop-shadow(0 6px 20px rgba(0,0,0,0.8));
     }
     .bc-slant .book-cover-inner-border {
       inset: 8px;
-      border: 1px solid rgba(200,128,64,0.26);
+      border: 1px solid rgba(200,128,64,0.28);
     }
 
-    /* 9: ブラウン管テレビ（暁斎） */
+    /* 9: ブラウン管テレビ（暁斎） ─ TVボディを写実的に */
     .bc-crt-wrap {
-      padding: 0 4%;
+      padding: 0 5% 28px;
     }
     .bc-crt {
-      border-radius: 16% 16% 10% 10% / 10% 10% 7% 7%;
+      border-radius: 14% 14% 10% 10% / 8% 8% 6% 6%;
       box-shadow:
-        0 0 0 10px #1a0808,
-        0 0 0 14px #0f0505,
-        0 10px 36px rgba(0,0,0,0.7);
+        0 0 0 8px #180808,
+        0 0 0 11px #230e0e,
+        0 0 0 12px #110505,
+        0 14px 40px rgba(0,0,0,0.8);
       overflow: visible;
     }
-    .bc-crt .book-cover-bg {
-      border-radius: 14% 14% 8% 8% / 8% 8% 5% 5%;
+    /* スクリーンのベゼル内側に反射光 */
+    .bc-crt::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 13% 13% 9% 9% / 7% 7% 5% 5%;
+      background: linear-gradient(140deg,
+        rgba(255,255,255,0.06) 0%,
+        transparent 45%);
+      z-index: 8;
+      pointer-events: none;
     }
-    .bc-crt .book-cover-overlay {
-      border-radius: 14% 14% 8% 8% / 8% 8% 5% 5%;
-    }
+    .bc-crt .book-cover-bg   { border-radius: 13% 13% 9% 9% / 7% 7% 5% 5%; }
+    .bc-crt .book-cover-overlay { border-radius: 13% 13% 9% 9% / 7% 7% 5% 5%; }
     .bc-crt .book-cover-inner-border {
       inset: 12px;
-      border: 2px solid rgba(192,40,32,0.32);
-      border-radius: 12% 12% 6% 6% / 8% 8% 4% 4%;
+      border: 2px solid rgba(192,40,32,0.30);
+      border-radius: 10% 10% 7% 7% / 6% 6% 4% 4%;
     }
     .bc-crt-antenna {
       position: absolute;
-      bottom: 100%; margin-bottom: 4px;
-      width: 3px;
-      height: 40px;
-      background: linear-gradient(to top, #1a0808, #2a1010);
-      border-radius: 2px;
+      bottom: 100%;
+      width: 4px;
+      height: 44px;
+      background: linear-gradient(to top,
+        #1a0808 0%, #2e1212 40%, #1e0e0e 100%);
+      border-radius: 2px 2px 0 0;
       z-index: 10;
       transform-origin: bottom center;
+      box-shadow: 1px 0 3px rgba(0,0,0,0.5);
     }
-    .bc-crt-antenna--l { left: 28%; transform: rotate(-22deg); }
-    .bc-crt-antenna--r { right: 28%; transform: rotate(22deg); }
+    .bc-crt-antenna--l { left: 26%; transform: rotate(-20deg); }
+    .bc-crt-antenna--r { right: 26%; transform: rotate(20deg); }
     .bc-crt-knobs {
       position: absolute;
-      bottom: -18px;
+      bottom: -22px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
-      gap: 8px;
+      gap: 10px;
       z-index: 10;
     }
     .bc-crt-knob {
-      width: 8px; height: 8px;
+      width: 10px; height: 10px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #3a1010, #1a0505);
+      background: radial-gradient(circle at 35% 30%,
+        #3a1010 0%, #1a0505 100%);
       border: 1px solid #2a0808;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.8);
+      box-shadow:
+        0 2px 5px rgba(0,0,0,0.9),
+        inset 0 1px 0 rgba(255,255,255,0.06);
     }
 
-    /* 10: 六角形ポップ（エリック・カール） */
+    /* 10: 六角形（エリック・カール） ─ drop-shadowで輪郭 */
     .bc-hex-wrap {
-      padding: 6px 8%;
+      padding: 6px 6% 16px;
     }
     .bc-hex {
       clip-path: polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);
       height: 220px;
+      filter: drop-shadow(0 6px 22px rgba(0,0,0,0.75));
     }
     .bc-hex .book-cover-inner-border {
       border: 2px solid rgba(80,184,104,0.30);
-      clip-path: polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);
+      clip-path: polygon(26% 3%,74% 3%,97% 50%,74% 97%,26% 97%,3% 50%);
       inset: 0;
     }
 
@@ -728,7 +811,9 @@
       overflow: hidden;
       min-height: 0;
       display: flex;
-      box-shadow: inset 0 6px 16px rgba(0,0,0,0.20);
+      box-shadow:
+        inset 0 8px 20px rgba(0,0,0,0.25),
+        inset 0 -4px 12px rgba(0,0,0,0.10);
     }
 
     /* 左ページ：画像 */
@@ -737,57 +822,105 @@
       flex-shrink: 0;
       overflow: hidden;
       position: relative;
-      background: #1a1410;
+      background: #111;
     }
-
     .book-left img {
       width: 100%;
       height: 100%;
-      min-height: 250px;
+      min-height: 260px;
       object-fit: cover;
       display: block;
-      filter: sepia(0.12) contrast(1.04);
+      filter: sepia(0.15) contrast(1.06) brightness(0.97);
+    }
+    /* 左ページ下の印刷情報 */
+    .book-left-footer {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 18px 14px 10px;
+      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%);
     }
 
     /* ページ番号（左ページ下） */
     .book-left-folio {
-      position: absolute;
-      bottom: 10px;
-      left: 0; right: 0;
-      text-align: center;
       font-family: 'Cormorant Garamond', serif;
       font-size: 9px;
       letter-spacing: 0.2em;
-      color: rgba(240,235,224,0.4);
-      pointer-events: none;
+      color: rgba(240,235,224,0.5);
+      text-align: center;
     }
 
-    /* 背の折り目（ガター） */
+    /* 背の折り目（ガター） ─ 写実的な綴じ目 */
     .book-gutter {
-      width: 20px;
+      width: 22px;
       flex-shrink: 0;
+      position: relative;
       background: linear-gradient(to right,
-        rgba(0,0,0,0.24),
-        rgba(0,0,0,0.08) 25%,
-        rgba(255,255,255,0.30) 50%,
-        rgba(0,0,0,0.05) 75%,
-        rgba(0,0,0,0.01)
+        rgba(0,0,0,0.32) 0%,
+        rgba(0,0,0,0.14) 20%,
+        rgba(255,255,255,0.12) 35%,
+        rgba(255,255,255,0.28) 50%,
+        rgba(255,255,255,0.08) 65%,
+        rgba(0,0,0,0.08) 80%,
+        rgba(0,0,0,0.03) 100%
       );
       box-shadow:
-        3px 0 10px rgba(0,0,0,0.10),
-        -2px 0 5px rgba(255,255,255,0.22);
+        -3px 0 8px rgba(0,0,0,0.20),
+         4px 0 10px rgba(0,0,0,0.12);
+    }
+    /* ガターの縦の綴じ糸ライン */
+    .book-gutter::before {
+      content: '';
+      position: absolute;
+      left: 50%; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom,
+        transparent,
+        rgba(0,0,0,0.08) 15%,
+        rgba(0,0,0,0.12) 50%,
+        rgba(0,0,0,0.08) 85%,
+        transparent
+      );
     }
 
-    /* 右ページ：ストーリー */
+    /* 右ページ：ストーリー ─ リアルな紙の質感 */
     .book-right {
       flex: 1;
-      padding: 20px 22px 20px 18px;
+      padding: 20px 20px 18px 16px;
       display: flex;
       flex-direction: column;
-      color: #111;
+      color: #1a1410;
+      position: relative;
+      overflow: hidden;
+      /* 多層の紙テクスチャ */
+      background-color: #f3ede0;
       background-image:
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-        linear-gradient(160deg, #f5f0e8 0%, #ede8dc 100%);
+        /* 細かいノイズグレイン */
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E"),
+        /* 左端のガター影 */
+        linear-gradient(to right, rgba(0,0,0,0.07) 0%, rgba(0,0,0,0.02) 12%, transparent 30%),
+        /* 右端の微妙な暗み */
+        linear-gradient(to left, rgba(0,0,0,0.04) 0%, transparent 20%),
+        /* 上端の影（本を開いたときの影） */
+        linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, transparent 8%),
+        /* 下端の影（ページが丸まる感じ） */
+        linear-gradient(to top, rgba(0,0,0,0.06) 0%, transparent 10%),
+        /* 紙の色の微妙なグラデーション */
+        linear-gradient(155deg, #f8f3e8 0%, #f3ede0 40%, #ede7d8 75%, #e8e1d4 100%);
+    }
+    /* ページ右端のページ断面（積み重なった紙の厚み） */
+    .book-right::after {
+      content: '';
+      position: absolute;
+      top: 3px; bottom: 3px; right: 0;
+      width: 4px;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(180,160,120,0.12) 0px,
+        rgba(180,160,120,0.12) 1px,
+        rgba(220,200,170,0.06) 1px,
+        rgba(220,200,170,0.06) 3px
+      );
+      pointer-events: none;
     }
 
     /* ページ上部の装飾罫 */
@@ -796,22 +929,20 @@
       align-items: center;
       gap: 8px;
       margin-bottom: 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
+      padding-bottom: 9px;
+      border-bottom: 1px solid rgba(100,80,50,0.15);
     }
-
     .book-right-header-rule {
       flex: 1;
       height: 1px;
-      background: linear-gradient(to right, rgba(0,0,0,0.12), transparent);
+      background: linear-gradient(to right, rgba(100,80,50,0.15), transparent);
     }
-
     .book-right-header-label {
       font-family: 'Cormorant Garamond', serif;
       font-size: 8px;
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: rgba(201,168,76,0.7);
+      color: rgba(160,120,60,0.75);
     }
 
     /* ストーリー本文 */
@@ -1087,6 +1218,8 @@
             ${th.wrapBefore}
             <div class="book-cover ${th.coverClass}"
                  onclick="toggleBook(${idx})">
+              <div class="book-flip-ghost book-flip-ghost--1"></div>
+              <div class="book-flip-ghost book-flip-ghost--2"></div>
               <div class="book-cover-bg"
                    style="background-image:url('${imgSrc}');"
                    onerror="this.style.backgroundImage='url(${fallback})'"></div>
@@ -1113,7 +1246,9 @@
               <div class="book-left">
                 <img src="${imgSrc}"
                      onerror="if(this.src!=='${fallback}')this.src='${fallback}'" alt="${e.title}">
-                <div class="book-left-folio">— ${String(idx * 2 + 1).padStart(2,"0")} —</div>
+                <div class="book-left-footer">
+                  <div class="book-left-folio">— ${String(idx * 2 + 1).padStart(2,"0")} —</div>
+                </div>
               </div>
               <div class="book-gutter"></div>
               <div class="book-right">
@@ -1141,39 +1276,46 @@
   /* ===== 表紙テーマ（展覧会ごとに個性的な形・色） ===== */
   const COVER_THEMES = [
     { // 0: ワイエス — 肖像画の額縁
-      accent: '#8fb0cc', overlay: 'rgba(20,28,44,0.76)',
+      accent: '#8fb0cc',
+      overlay: 'linear-gradient(to bottom, rgba(20,28,44,0.15) 0%, rgba(20,28,44,0.55) 55%, rgba(10,16,28,0.90) 100%)',
       wrapClass: '', coverClass: 'bc-portrait',
       wrapBefore: '', coverInner: '', wrapAfter: ''
     },
     { // 1: 加賀前田家 — 鳥居アーチ
-      accent: '#c9a84c', overlay: 'rgba(14,8,2,0.76)',
+      accent: '#c9a84c',
+      overlay: 'linear-gradient(to bottom, rgba(14,8,2,0.10) 0%, rgba(14,8,2,0.50) 50%, rgba(8,4,0,0.92) 100%)',
       wrapClass: '', coverClass: 'bc-arch',
       wrapBefore: '', coverInner: '', wrapAfter: ''
     },
     { // 2: 北斎 — 波形底辺
-      accent: '#6888d0', overlay: 'rgba(6,12,32,0.78)',
+      accent: '#6888d0',
+      overlay: 'linear-gradient(to bottom, rgba(6,12,32,0.08) 0%, rgba(6,12,32,0.48) 50%, rgba(4,8,22,0.92) 100%)',
       wrapClass: '', coverClass: 'bc-wave',
       wrapBefore: '', coverInner: '', wrapAfter: ''
     },
     { // 3: モネ — 楕円パレット
-      accent: '#7abca0', overlay: 'rgba(10,18,26,0.72)',
+      accent: '#7abca0',
+      overlay: 'linear-gradient(to bottom, rgba(10,18,26,0.10) 0%, rgba(10,18,26,0.42) 45%, rgba(6,12,18,0.88) 100%)',
       wrapClass: '', coverClass: 'bc-oval',
       wrapBefore: '', coverInner: '', wrapAfter: ''
     },
     { // 4: 観山 — 掛け軸（上下に軸棒）
-      accent: '#c0b8b0', overlay: 'rgba(4,4,4,0.82)',
+      accent: '#c0b8b0',
+      overlay: 'linear-gradient(to bottom, rgba(4,4,4,0.20) 0%, rgba(4,4,4,0.55) 55%, rgba(4,4,4,0.93) 100%)',
       wrapClass: 'bc-kakemono-wrap', coverClass: 'bc-kakemono',
       wrapBefore: '<div class="bc-kakemono-roller"></div>',
       coverInner: '',
       wrapAfter:  '<div class="bc-kakemono-roller"></div>'
     },
     { // 5: テートYBA — 破れた紙
-      accent: '#e03030', overlay: 'rgba(4,4,4,0.86)',
+      accent: '#e03030',
+      overlay: 'linear-gradient(to bottom, rgba(4,4,4,0.05) 0%, rgba(4,4,4,0.50) 50%, rgba(4,4,4,0.94) 100%)',
       wrapClass: '', coverClass: 'bc-torn',
       wrapBefore: '', coverInner: '', wrapAfter: ''
     },
-    { // 6: ロン・ミュエク — LPレコード（溝・ラベル・穴）
-      accent: '#c8a880', overlay: 'rgba(14,11,8,0.82)',
+    { // 6: ロン・ミュエク — LPレコード
+      accent: '#c8a880',
+      overlay: 'radial-gradient(circle at center, rgba(14,11,8,0.55) 0%, rgba(8,6,4,0.88) 100%)',
       wrapClass: 'bc-vinyl-wrap', coverClass: 'bc-vinyl',
       wrapBefore: '',
       coverInner: `<div class="bc-vinyl-groove"></div>
@@ -1182,12 +1324,14 @@
       wrapAfter: ''
     },
     { // 7: 新版画 — 平行四辺形
-      accent: '#c88040', overlay: 'rgba(22,10,4,0.76)',
+      accent: '#c88040',
+      overlay: 'linear-gradient(to bottom, rgba(22,10,4,0.12) 0%, rgba(22,10,4,0.50) 50%, rgba(14,6,2,0.92) 100%)',
       wrapClass: '', coverClass: 'bc-slant',
       wrapBefore: '', coverInner: '', wrapAfter: ''
     },
-    { // 8: 暁斎 — ブラウン管テレビ（アンテナ・ダイヤル）
-      accent: '#c02820', overlay: 'rgba(8,3,3,0.82)',
+    { // 8: 暁斎 — ブラウン管テレビ
+      accent: '#c02820',
+      overlay: 'linear-gradient(to bottom, rgba(8,3,3,0.12) 0%, rgba(8,3,3,0.50) 50%, rgba(5,2,2,0.93) 100%)',
       wrapClass: 'bc-crt-wrap', coverClass: 'bc-crt',
       wrapBefore: '',
       coverInner: `<div class="bc-crt-antenna bc-crt-antenna--l"></div>
@@ -1198,7 +1342,8 @@
       wrapAfter: ''
     },
     { // 9: エリック・カール — 六角形
-      accent: '#50b868', overlay: 'rgba(4,14,18,0.74)',
+      accent: '#50b868',
+      overlay: 'linear-gradient(to bottom, rgba(4,14,18,0.10) 0%, rgba(4,14,18,0.45) 50%, rgba(2,8,12,0.90) 100%)',
       wrapClass: 'bc-hex-wrap', coverClass: 'bc-hex',
       wrapBefore: '', coverInner: '', wrapAfter: ''
     },
