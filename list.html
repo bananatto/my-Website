@@ -1024,10 +1024,66 @@
       font-style: italic;
     }
 
+    /* 検索バー */
+    .search-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(240,235,224,0.18);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+      padding: 2px 0;
+      outline: none;
+      width: 200px;
+      transition: border-color 0.3s;
+    }
+    .search-input::placeholder {
+      color: rgba(240,235,224,0.28);
+      font-style: italic;
+    }
+    .search-input:focus {
+      border-bottom-color: rgba(201,168,76,0.55);
+    }
+
+    /* お気に入りボタン */
+    .fav-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,168,76,0.35);
+      background: rgba(10,10,10,0.72);
+      color: rgba(201,168,76,0.45);
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: color 0.25s, background 0.25s, border-color 0.25s, transform 0.15s;
+      backdrop-filter: blur(4px);
+    }
+    .fav-btn:hover {
+      color: var(--gold);
+      border-color: rgba(201,168,76,0.7);
+      background: rgba(10,10,10,0.88);
+      transform: scale(1.12);
+    }
+    .fav-btn.active {
+      color: var(--gold);
+      border-color: rgba(201,168,76,0.65);
+      background: rgba(20,15,5,0.85);
+    }
+
     @media (max-width: 480px) {
       .header   { padding: 24px 20px 20px; }
       .controls { padding: 14px 20px; }
       .page-title { font-size: 20px; }
+      .search-input { width: 130px; }
     }
   </style>
 </head>
@@ -1054,6 +1110,7 @@
       <option value="near">近い順</option>
       <option value="ueno">上野エリア</option>
     </select>
+    <input id="search" class="search-input" type="text" placeholder="タイトル・美術館で検索…" autocomplete="off">
     <span class="count" id="count"></span>
   </div>
 
@@ -1144,12 +1201,34 @@
     }
   }
 
+  /* ===== お気に入り（localStorage） ===== */
+  function getFavs() {
+    try { return JSON.parse(localStorage.getItem("munch_favs") || "{}"); }
+    catch { return {}; }
+  }
+  function setFav(id, val) {
+    const favs = getFavs();
+    if (val) favs[id] = true;
+    else delete favs[id];
+    localStorage.setItem("munch_favs", JSON.stringify(favs));
+  }
+
   function render() {
-    const sortVal = document.getElementById("sort").value;
-    const list    = document.getElementById("list");
-    const now     = new Date();
+    const sortVal   = document.getElementById("sort").value;
+    const searchVal = document.getElementById("search").value.trim().toLowerCase();
+    const list      = document.getElementById("list");
+    const now       = new Date();
 
     let data = exhibitions.filter(e => !e.end || new Date(e.end) >= now);
+
+    // キーワードフィルタ
+    if (searchVal) {
+      data = data.filter(e =>
+        (e.title  || "").toLowerCase().includes(searchVal) ||
+        (e.museum || "").toLowerCase().includes(searchVal) ||
+        (e.copy   || "").toLowerCase().includes(searchVal)
+      );
+    }
 
     if (sortVal === "end") {
       data.sort((a,b) => new Date(a.end||"9999") - new Date(b.end||"9999"));
@@ -1183,10 +1262,15 @@
         distanceHtml = `<div class="card-distance">${d.toFixed(1)} km — 徒歩 ${toWalkTime(d)} 分</div>`;
       }
 
+      const favId  = `${e.title}__${e.museum}`;
+      const favs   = getFavs();
+      const isFav  = !!favs[favId];
+
       const card = document.createElement("div");
       card.className = "card";
       card.style.position = "relative";
       card.innerHTML = `
+        <button class="fav-btn${isFav ? ' active' : ''}" data-fav-id="${favId}" aria-label="お気に入り">${isFav ? '♥' : '♡'}</button>
         <a href="${e.url || '#'}" class="ticket-link" ${e.url ? 'target="_blank"' : ''}>
           <div class="ticket-img-wrap">
             <img class="ticket-img" src="${imgSrc}"
@@ -1384,6 +1468,20 @@
   }
 
   document.getElementById("sort").addEventListener("change", render);
+  document.getElementById("search").addEventListener("input", render);
+
+  // お気に入りボタン：イベント委譲（a要素のクリックと干渉しない）
+  document.getElementById("list").addEventListener("click", function(e) {
+    const btn = e.target.closest(".fav-btn");
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const favId = btn.dataset.favId;
+    const isNowFav = btn.classList.toggle("active");
+    btn.textContent = isNowFav ? "♥" : "♡";
+    setFav(favId, isNowFav);
+  });
+
   fetchExhibitions();
   </script>
 

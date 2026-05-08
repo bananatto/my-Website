@@ -16,15 +16,21 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  html {
+    overflow-x: hidden;
+  }
+
   body {
-    overflow: hidden;
     background: var(--dark);
     font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;
     color: var(--cream);
     cursor: none;
+    overflow-x: hidden;
   }
 
-  /* カスタムカーソル */
+  /* ============================================================
+     カスタムカーソル
+  ============================================================ */
   .cursor {
     position: fixed;
     width: 6px;
@@ -48,9 +54,173 @@
     transform: translate(-50%, -50%);
   }
 
+  /* ============================================================
+     フィルムカウントダウン ローディング画面
+  ============================================================ */
+  #film-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    transition: opacity 0.8s ease;
+  }
+
+  #film-loader.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .loader-grain {
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    animation: grain-move 0.8s steps(1) infinite;
+    pointer-events: none;
+  }
+
+  .loader-scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.05) 2px,
+      rgba(0,0,0,0.05) 4px
+    );
+    pointer-events: none;
+  }
+
+  /* フィルムコマ風 外枠 */
+  .film-frame-outer {
+    position: relative;
+    width: 200px;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .film-strip-side {
+    width: 24px;
+    background: #0f0f0f;
+    border: 1px solid rgba(240,235,224,0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 8px 0;
+    flex-shrink: 0;
+  }
+
+  .film-strip-hole {
+    width: 12px;
+    height: 9px;
+    border: 1px solid rgba(240,235,224,0.15);
+    border-radius: 2px;
+    margin: 0 auto;
+  }
+
+  .film-frame-center {
+    flex: 1;
+    border-top: 1px solid rgba(240,235,224,0.08);
+    border-bottom: 1px solid rgba(240,235,224,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: #050505;
+    min-height: 220px;
+  }
+
+  /* カウントダウン数字 */
+  .countdown-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 96px;
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1;
+    opacity: 0;
+    position: absolute;
+    animation: countFlash 0.7s ease forwards;
+    user-select: none;
+  }
+
+  @keyframes countFlash {
+    0%   { opacity: 0; transform: scale(1.15); filter: blur(4px); }
+    30%  { opacity: 1; transform: scale(1);    filter: blur(0); }
+    80%  { opacity: 1; transform: scale(1);    filter: blur(0); }
+    100% { opacity: 0; transform: scale(0.9);  filter: blur(2px); }
+  }
+
+  /* フィルムタイプ表示 */
+  .film-meta {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 8px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(240,235,224,0.25);
+  }
+
+  /* 円形プログレス */
+  .loader-progress-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 130px;
+    height: 130px;
+  }
+
+  .loader-progress-ring circle {
+    fill: none;
+    stroke: rgba(201,168,76,0.3);
+    stroke-width: 0.5;
+    cx: 65;
+    cy: 65;
+    r: 60;
+    stroke-dasharray: 377;
+    stroke-dashoffset: 377;
+    transform-origin: center;
+    transform: rotate(-90deg);
+    animation: ringProgress 2.8s linear forwards;
+  }
+
+  @keyframes ringProgress {
+    from { stroke-dashoffset: 377; }
+    to   { stroke-dashoffset: 0; }
+  }
+
+  .loader-label {
+    margin-top: 28px;
+    font-size: 10px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: rgba(240,235,224,0.3);
+    text-align: center;
+  }
+
+  /* ============================================================
+     ヒーロー（元のメイン画面：fixed → 最初のスクロールセクション）
+  ============================================================ */
+  #hero {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+  }
+
   /* 動画背景 */
   .video-bg {
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: 0;
     overflow: hidden;
@@ -68,14 +238,13 @@
 
   /* 映画フィルター層 */
   .film-overlay {
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: 1;
     background: rgba(0,0,0,0.3);
-    mix-blend-mode: normal;
   }
 
-  /* グレイン（フィルム粒子）*/
+  /* グレイン */
   .grain {
     position: fixed;
     inset: -50%;
@@ -101,7 +270,7 @@
     90% { transform: translate(3%, 2%); }
   }
 
-  /* 映画スキャンライン */
+  /* スキャンライン */
   .scanlines {
     position: fixed;
     inset: 0;
@@ -128,7 +297,7 @@
     pointer-events: none;
   }
 
-  /* フィルム縦線（両端） */
+  /* フィルムエッジ */
   .film-edge {
     position: fixed;
     top: 0;
@@ -152,9 +321,9 @@
     margin: 0 auto;
   }
 
-  /* メインUI */
-  .ui {
-    position: fixed;
+  /* ヒーローUI */
+  .hero-ui {
+    position: absolute;
     inset: 0;
     z-index: 10;
     display: flex;
@@ -211,7 +380,6 @@
     transition: transform 0.4s ease, box-shadow 0.4s ease;
   }
 
-  /* ダブルボーダー（ポスター枠） */
   .flyer-inner::before {
     content: '';
     position: absolute;
@@ -228,7 +396,6 @@
       -3px 5px 16px rgba(0,0,0,0.7);
   }
 
-  /* ポスターヘッダー */
   .poster-header {
     padding: 8px 10px 7px;
     text-align: center;
@@ -247,7 +414,6 @@
     filter: sepia(0.1) contrast(1.05);
   }
 
-  /* 画像読み込み失敗時のフォールバック */
   .flyer-img-fallback {
     width: 100%;
     aspect-ratio: 3/4;
@@ -259,7 +425,6 @@
     font-size: 28px;
   }
 
-  /* ポスター下部テキスト */
   .poster-body {
     padding: 10px 12px 13px;
   }
@@ -288,7 +453,6 @@
     letter-spacing: 0.12em;
   }
 
-  /* テープ風装飾 */
   .tape {
     position: absolute;
     top: -8px;
@@ -395,11 +559,462 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* 動画切替アニメーション */
   .video-bg {
     transition: opacity 0.8s ease;
   }
   .video-bg.fade-out { opacity: 0; }
+
+  /* スクロールヒント */
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeIn 1s ease 2s forwards;
+    pointer-events: none;
+  }
+
+  .scroll-hint span {
+    font-size: 9px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: rgba(240,235,224,0.3);
+  }
+
+  .scroll-hint-line {
+    width: 1px;
+    height: 28px;
+    background: linear-gradient(to bottom, rgba(240,235,224,0.3), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50%       { opacity: 0.8; transform: scaleY(1.1); }
+  }
+
+  /* ============================================================
+     今週の注目展覧会セクション
+  ============================================================ */
+  #exhibitions-section {
+    position: relative;
+    z-index: 5;
+    background: var(--dark);
+    padding: 100px 72px 80px;
+    overflow: hidden;
+  }
+
+  /* セクション上部の区切り線 */
+  #exhibitions-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 72px;
+    right: 72px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(240,235,224,0.1), transparent);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    margin-bottom: 56px;
+  }
+
+  .section-label {
+    font-size: 9px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.8;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: var(--cream);
+    line-height: 1;
+  }
+
+  .section-count {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-style: italic;
+    color: rgba(240,235,224,0.3);
+    letter-spacing: 0.1em;
+    margin-left: auto;
+  }
+
+  /* 展覧会カードグリッド */
+  .exhibitions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  /* 個別カード */
+  .exhibition-card {
+    position: relative;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(240,235,224,0.06);
+    transition: border-color 0.4s ease, transform 0.4s ease, background 0.4s ease;
+    text-decoration: none;
+    color: var(--cream);
+    display: block;
+    overflow: hidden;
+
+    /* スクロールアニメーション初期状態 */
+    opacity: 0;
+    transform: translateY(32px);
+  }
+
+  .exhibition-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 0.8s ease,
+      transform 0.8s ease,
+      border-color 0.4s ease,
+      background 0.4s ease;
+  }
+
+  .exhibition-card:hover {
+    border-color: rgba(201,168,76,0.2);
+    background: rgba(255,255,255,0.04);
+    transform: translateY(-4px);
+  }
+
+  /* カード内ダブルボーダー */
+  .exhibition-card::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(240,235,224,0.04);
+    pointer-events: none;
+    z-index: 2;
+    transition: border-color 0.4s ease;
+  }
+
+  .exhibition-card:hover::before {
+    border-color: rgba(201,168,76,0.1);
+  }
+
+  .card-image-wrap {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: #111;
+  }
+
+  .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(0.3) contrast(1.05) sepia(0.08);
+    transition: transform 0.6s ease, filter 0.6s ease;
+  }
+
+  .exhibition-card:hover .card-img {
+    transform: scale(1.04);
+    filter: grayscale(0.1) contrast(1.08) sepia(0.05);
+  }
+
+  /* 画像上のゴールドオーバーレイ（ホバー時） */
+  .card-image-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 50%,
+      rgba(0,0,0,0.7) 100%
+    );
+    z-index: 1;
+  }
+
+  /* カード番号 */
+  .card-number {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-style: italic;
+    color: rgba(240,235,224,0.4);
+    letter-spacing: 0.1em;
+    z-index: 3;
+  }
+
+  /* カード本体 */
+  .card-body {
+    padding: 22px 24px 26px;
+    position: relative;
+  }
+
+  .card-museum {
+    font-size: 8px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-bottom: 10px;
+  }
+
+  .card-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.7;
+    letter-spacing: 0.06em;
+    color: var(--cream);
+    margin-bottom: 12px;
+  }
+
+  .card-copy {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(240,235,224,0.45);
+    line-height: 1.6;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+  }
+
+  .card-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(240,235,224,0.3);
+  }
+
+  /* カード区切り線 */
+  .card-rule {
+    height: 1px;
+    background: linear-gradient(to right, rgba(240,235,224,0.08), transparent);
+    margin: 14px 0;
+  }
+
+  /* もっと見るリンク */
+  .view-all-wrap {
+    margin-top: 56px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+  }
+
+  .view-all-wrap.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .view-all-link {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--cream);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(240,235,224,0.2);
+    padding-bottom: 4px;
+    position: relative;
+    transition: color 0.3s;
+  }
+
+  .view-all-link::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: width 0.4s ease;
+  }
+
+  .view-all-link:hover { color: var(--gold); }
+  .view-all-link:hover::after { width: 100%; }
+
+  .view-all-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(240,235,224,0.08), transparent);
+    max-width: 120px;
+  }
+
+  /* ============================================================
+     フッター
+  ============================================================ */
+  footer {
+    position: relative;
+    z-index: 5;
+    background: #060606;
+    border-top: 1px solid rgba(240,235,224,0.06);
+    padding: 60px 72px 40px;
+
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  footer.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .footer-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 48px;
+  }
+
+  .footer-brand .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--cream);
+    margin-bottom: 12px;
+  }
+
+  .footer-brand .footer-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(240,235,224,0.35);
+    line-height: 1.8;
+    letter-spacing: 0.06em;
+  }
+
+  .footer-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .stat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(240,235,224,0.35);
+  }
+
+  .footer-social {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-end;
+  }
+
+  .footer-social-label {
+    font-size: 8px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: rgba(240,235,224,0.25);
+    margin-bottom: 4px;
+  }
+
+  .social-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+  }
+
+  .social-link {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(240,235,224,0.35);
+    text-decoration: none;
+    transition: color 0.3s;
+    position: relative;
+  }
+
+  .social-link::before {
+    content: '—';
+    margin-right: 8px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .social-link:hover { color: var(--gold); }
+  .social-link:hover::before { opacity: 1; }
+
+  /* フッター区切り線 */
+  .footer-rule {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(240,235,224,0.08), transparent);
+    margin-bottom: 24px;
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .copyright {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(240,235,224,0.2);
+  }
+
+  .footer-film-code {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 9px;
+    font-style: italic;
+    letter-spacing: 0.15em;
+    color: rgba(240,235,224,0.12);
+    user-select: none;
+  }
+
+  /* ============================================================
+     スクロールアニメーション共通
+  ============================================================ */
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .fade-in-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
 </style>
 </head>
@@ -409,13 +1024,87 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<!-- 動画背景 -->
-<div class="video-bg" id="videoBg">
-  <iframe id="yt" frameborder="0" playsinline allow="autoplay; fullscreen; encrypted-media; picture-in-picture"></iframe>
+<!-- ============================================================
+     フィルムカウントダウン ローディング画面
+============================================================ -->
+<div id="film-loader">
+  <div class="loader-grain"></div>
+  <div class="loader-scanlines"></div>
+
+  <div class="film-frame-outer" id="filmFrameOuter">
+    <div class="film-strip-side" id="filmStripLeft"></div>
+    <div class="film-frame-center">
+      <svg class="loader-progress-ring" viewBox="0 0 130 130">
+        <circle id="progressCircle" cx="65" cy="65" r="60"
+          fill="none"
+          stroke="rgba(201,168,76,0.3)"
+          stroke-width="0.5"
+          stroke-dasharray="377"
+          stroke-dashoffset="377"
+          style="transform-origin:center;transform:rotate(-90deg)"/>
+      </svg>
+      <div class="countdown-number" id="countdownNum">5</div>
+      <div class="film-meta">MUNCH — TOKYO EXHIBITIONS</div>
+    </div>
+    <div class="film-strip-side" id="filmStripRight"></div>
+  </div>
+
+  <div class="loader-label">Loading</div>
 </div>
 
-<!-- フィルム演出 -->
-<div class="film-overlay"></div>
+<!-- ============================================================
+     ヒーローセクション
+============================================================ -->
+<section id="hero">
+  <!-- 動画背景 -->
+  <div class="video-bg" id="videoBg">
+    <iframe id="yt" frameborder="0" playsinline allow="autoplay; fullscreen; encrypted-media; picture-in-picture"></iframe>
+  </div>
+
+  <!-- フィルム演出 -->
+  <div class="film-overlay"></div>
+
+  <!-- 大きな背景数字 -->
+  <div class="counter" id="counter">01</div>
+
+  <!-- 動画インジケーター -->
+  <div class="video-indicator" id="indicator"></div>
+
+  <!-- ヒーローUI -->
+  <div class="hero-ui">
+    <div class="logo">MUnCh — Tokyo Exhibitions</div>
+
+    <!-- チラシカード -->
+    <a href="list.html" class="flyer" id="flyer">
+      <div class="tape"></div>
+      <div class="flyer-inner" id="flyerInner">
+        <div class="poster-header">Tokyo Exhibition</div>
+        <img class="flyer-img" id="flyerImg" src="" alt="">
+        <div class="poster-body">
+          <div class="poster-rule"></div>
+          <div class="flyer-title" id="flyerTitle"></div>
+          <div class="poster-rule"></div>
+          <div class="flyer-date" id="flyerDate"></div>
+        </div>
+      </div>
+    </a>
+
+    <div class="bottom">
+      <a href="list.html" class="enter-btn">Enter</a>
+      <div class="tagline">
+        東京の展覧会を、<br>映画のように。
+      </div>
+    </div>
+  </div>
+
+  <!-- スクロールヒント -->
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-hint-line"></div>
+  </div>
+</section>
+
+<!-- グレイン / スキャンライン / ビネット（fixed：全セクションに重なる） -->
 <div class="grain"></div>
 <div class="scanlines"></div>
 <div class="vignette"></div>
@@ -424,38 +1113,69 @@
 <div class="film-edge left" id="filmLeft"></div>
 <div class="film-edge right" id="filmRight"></div>
 
-<!-- 大きな背景数字 -->
-<div class="counter" id="counter">01</div>
+<!-- ============================================================
+     今週の注目展覧会セクション
+============================================================ -->
+<section id="exhibitions-section">
+  <div class="section-header fade-in-up">
+    <span class="section-label">Featured</span>
+    <h2 class="section-title">注目の展覧会</h2>
+    <span class="section-count" id="exhibitionCount">—</span>
+  </div>
 
-<!-- 動画インジケーター -->
-<div class="video-indicator" id="indicator"></div>
+  <div class="exhibitions-grid" id="exhibitionsGrid">
+    <!-- JS で挿入 -->
+  </div>
 
-<!-- メインUI -->
-<div class="ui">
-  <div class="logo">MUnCh — Tokyo Exhibitions</div>
+  <div class="view-all-wrap" id="viewAllWrap">
+    <div class="view-all-line"></div>
+    <a href="list.html" class="view-all-link">View All Exhibitions</a>
+  </div>
+</section>
 
-  <!-- チラシカード -->
-  <a href="list.html" class="flyer" id="flyer">
-    <div class="tape"></div>
-    <div class="flyer-inner" id="flyerInner">
-      <div class="poster-header">Tokyo Exhibition</div>
-      <img class="flyer-img" id="flyerImg" src="" alt="">
-      <div class="poster-body">
-        <div class="poster-rule"></div>
-        <div class="flyer-title" id="flyerTitle"></div>
-        <div class="poster-rule"></div>
-        <div class="flyer-date" id="flyerDate"></div>
+<!-- ============================================================
+     フッター
+============================================================ -->
+<footer id="site-footer">
+  <div class="footer-inner">
+    <!-- ブランド -->
+    <div class="footer-brand">
+      <div class="footer-logo">MUnCh</div>
+      <p class="footer-desc">
+        東京の展覧会を、<br>映画のように。
+      </p>
+    </div>
+
+    <!-- スタッツ -->
+    <div class="footer-stats">
+      <div class="stat-item">
+        <span class="stat-number" id="footerExhibitionCount">—</span>
+        <span class="stat-label">Exhibitions</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="footerMuseumCount">—</span>
+        <span class="stat-label">Museums</span>
       </div>
     </div>
-  </a>
 
-  <div class="bottom">
-    <a href="list.html" class="enter-btn">Enter</a>
-    <div class="tagline">
-      東京の展覧会を、<br>映画のように。
+    <!-- ソーシャル -->
+    <div class="footer-social">
+      <div class="footer-social-label">Follow</div>
+      <div class="social-links">
+        <a href="#" class="social-link">Instagram</a>
+        <a href="#" class="social-link">X / Twitter</a>
+        <a href="#" class="social-link">Note</a>
+      </div>
     </div>
   </div>
-</div>
+
+  <div class="footer-rule"></div>
+
+  <div class="footer-bottom">
+    <span class="copyright" id="footerCopyright">© 2026 MUnCh. All rights reserved.</span>
+    <span class="footer-film-code">TOKYO · 35mm · MMXXVI</span>
+  </div>
+</footer>
 
 <script>
 // ============================================================
@@ -480,6 +1200,63 @@ async function loadExhibitions() {
     exhibitions = [];
   }
   showFlyer();
+  renderFeaturedExhibitions();
+  updateFooterStats();
+}
+
+// ============================================================
+//  フィルムカウントダウン ローダー
+// ============================================================
+function buildLoaderFilmHoles() {
+  const count = 8;
+  const hole = () => `<div class="film-strip-hole"></div>`;
+  const html = Array(count).fill(hole()).join("");
+  document.getElementById("filmStripLeft").innerHTML  = html;
+  document.getElementById("filmStripRight").innerHTML = html;
+}
+
+function runCountdown() {
+  const el = document.getElementById("countdownNum");
+  const circle = document.getElementById("progressCircle");
+  const circumference = 377;
+  let count = 5;
+  let startTime = null;
+  const totalDuration = 3000; // 3秒
+
+  function animateProgress(timestamp) {
+    if (!startTime) startTime = timestamp;
+    const elapsed = timestamp - startTime;
+    const progress = Math.min(elapsed / totalDuration, 1);
+    const offset = circumference * (1 - progress);
+    circle.style.strokeDashoffset = offset;
+
+    if (progress < 1) {
+      requestAnimationFrame(animateProgress);
+    }
+  }
+  requestAnimationFrame(animateProgress);
+
+  function tick() {
+    el.style.animation = 'none';
+    el.offsetHeight; // reflow
+    el.textContent = count;
+    el.style.animation = 'countFlash 0.7s ease forwards';
+
+    if (count > 1) {
+      count--;
+      setTimeout(tick, 600);
+    } else {
+      // カウントダウン終了：ローダーを消す
+      setTimeout(() => {
+        const loader = document.getElementById("film-loader");
+        loader.classList.add("hidden");
+        setTimeout(() => { loader.style.display = "none"; }, 900);
+        document.body.style.overflow = "";
+      }, 700);
+    }
+  }
+
+  tick();
 }
 
 // ============================================================
@@ -508,7 +1285,6 @@ function playVideo(index) {
     `https://www.youtube.com/embed/${v.id}?autoplay=1&mute=1&loop=1&playlist=${v.id}&start=${start}&controls=0&showinfo=0&modestbranding=1&playsinline=1`;
   document.getElementById("counter").textContent = v.label;
 
-  // インジケーター更新
   document.querySelectorAll(".vid-dot").forEach((d, i) => {
     d.classList.toggle("active", i === index);
   });
@@ -524,18 +1300,16 @@ function switchVideo() {
   }, 800);
 }
 
-// 一定時間ごとに動画切替（90秒）
 setInterval(switchVideo, 90000);
 
 // ============================================================
 //  チラシカード
 // ============================================================
 function showFlyer() {
+  if (!exhibitions.length) return;
   const e = exhibitions[Math.floor(Math.random() * exhibitions.length)];
 
   const imgEl = document.getElementById("flyerImg");
-
-  // image_url（AI取得）→ ローカル画像 → picsum の順でフォールバック
   const localSrc  = e.image || "";
   const aiSrc     = (e.image_url && e.image_url !== "") ? e.image_url : null;
   const picsumSrc = `https://picsum.photos/seed/${encodeURIComponent(e.title)}/400/600`;
@@ -543,11 +1317,10 @@ function showFlyer() {
   imgEl.src = aiSrc || localSrc || picsumSrc;
   imgEl.onerror = function() {
     if (this.src !== picsumSrc && this.src !== localSrc && localSrc) {
-      this.src = localSrc; // aiSrc失敗 → ローカル
+      this.src = localSrc;
     } else if (this.src !== picsumSrc) {
-      this.src = picsumSrc; // ローカルも失敗 → picsum
+      this.src = picsumSrc;
     } else {
-      // picsum失敗 → 絵文字フォールバック
       this.style.display = "none";
       const fb = document.createElement("div");
       fb.className = "flyer-img-fallback";
@@ -565,6 +1338,112 @@ function showFlyer() {
 }
 
 // ============================================================
+//  注目の展覧会セクション（最初の3件）
+// ============================================================
+function renderFeaturedExhibitions() {
+  const grid = document.getElementById("exhibitionsGrid");
+  const count = document.getElementById("exhibitionCount");
+
+  if (!exhibitions.length) {
+    grid.innerHTML = `<p style="color:rgba(240,235,224,0.3);font-size:12px;letter-spacing:0.2em;">データを読み込み中...</p>`;
+    return;
+  }
+
+  count.textContent = `${exhibitions.length} exhibitions`;
+
+  const fmt = s => {
+    const d = new Date(s);
+    return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;
+  };
+
+  const featured = exhibitions.slice(0, 3);
+
+  grid.innerHTML = featured.map((e, i) => {
+    const aiSrc     = (e.image_url && e.image_url !== "") ? e.image_url : null;
+    const localSrc  = e.image || "";
+    const picsumSrc = `https://picsum.photos/seed/${encodeURIComponent(e.title)}/800/600`;
+    const imgSrc    = aiSrc || localSrc || picsumSrc;
+    const num       = String(i + 1).padStart(2, "0");
+
+    return `
+      <a class="exhibition-card" href="${e.url || 'list.html'}" target="${e.url ? '_blank' : '_self'}" rel="noopener"
+         style="transition-delay:${i * 0.12}s">
+        <div class="card-image-wrap">
+          <img class="card-img"
+               src="${imgSrc}"
+               alt="${e.title}"
+               onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(e.title)}/800/600'">
+          <span class="card-number">${num}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-museum">${e.museum || ''}</div>
+          <div class="card-title">${e.title}</div>
+          ${e.copy ? `<div class="card-copy">${e.copy}</div>` : ''}
+          <div class="card-rule"></div>
+          <div class="card-date">${fmt(e.start)} — ${fmt(e.end)}</div>
+        </div>
+      </a>
+    `;
+  }).join("");
+
+  // カードにもカーソルイベントを追加
+  document.querySelectorAll(".exhibition-card").forEach(a => {
+    a.addEventListener("mouseenter", () => {
+      cursor.style.transform = "scale(3)";
+      ring.style.width = "50px";
+      ring.style.height = "50px";
+    });
+    a.addEventListener("mouseleave", () => {
+      cursor.style.transform = "scale(1)";
+      ring.style.width = "32px";
+      ring.style.height = "32px";
+    });
+  });
+
+  // IntersectionObserver でフェードイン
+  initScrollAnimation();
+}
+
+// ============================================================
+//  フッター統計
+// ============================================================
+function updateFooterStats() {
+  // 展覧会数
+  document.getElementById("footerExhibitionCount").textContent = exhibitions.length || "—";
+
+  // 美術館数（ユニーク）
+  const museums = new Set(exhibitions.map(e => e.museum).filter(Boolean));
+  document.getElementById("footerMuseumCount").textContent = museums.size || "—";
+
+  // コピーライト年
+  document.getElementById("footerCopyright").textContent =
+    `© ${new Date().getFullYear()} MUnCh. All rights reserved.`;
+}
+
+// ============================================================
+//  スクロールアニメーション（IntersectionObserver）
+// ============================================================
+function initScrollAnimation() {
+  const targets = document.querySelectorAll(
+    ".exhibition-card, .fade-in-up, #viewAllWrap, #site-footer"
+  );
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.12,
+    rootMargin: "0px 0px -40px 0px"
+  });
+
+  targets.forEach(el => observer.observe(el));
+}
+
+// ============================================================
 //  カーソル
 // ============================================================
 const cursor = document.getElementById("cursor");
@@ -579,7 +1458,7 @@ document.addEventListener("mousemove", e => {
 
 function animateRing() {
   rx += (mx - rx) * 0.12;
-  ry += (my - ry) *.12;
+  ry += (my - ry) * 0.12;
   ring.style.left = rx + "px";
   ring.style.top  = ry + "px";
   requestAnimationFrame(animateRing);
@@ -602,10 +1481,23 @@ document.querySelectorAll("a").forEach(a => {
 // ============================================================
 //  初期化
 // ============================================================
+// ロード中はスクロール無効
+document.body.style.overflow = "hidden";
+
+buildLoaderFilmHoles();
 buildFilmHoles();
 buildIndicator();
 playVideo(currentVideoIndex);
 loadExhibitions();
+
+// カウントダウン開始
+runCountdown();
+
+// セクションヘッダーの初期アニメーション（ページ読み込み後）
+window.addEventListener("load", () => {
+  // viewAllWrap / footer もオブザーバー登録
+  initScrollAnimation();
+});
 </script>
 </body>
 </html>
