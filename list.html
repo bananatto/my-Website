@@ -818,11 +818,17 @@
     .book-spread {
       overflow: hidden;
       min-height: 0;
+      height: 210px;
       display: flex;
       box-shadow:
         inset 0 8px 20px rgba(0,0,0,0.25),
         inset 0 -4px 12px rgba(0,0,0,0.10);
     }
+
+    /* カバー形状ごとの高さオーバーライド */
+    .bc-panel-portrait .book-spread { height: 230px; }
+    .bc-panel-oval     .book-spread { height: 215px; }
+    .bc-kakemono-wrap  .book-spread { height: 230px; }
 
     /* 左ページ：画像 */
     .book-left {
@@ -835,7 +841,7 @@
     .book-left img {
       width: 100%;
       height: 100%;
-      min-height: 260px;
+      min-height: 0;
       object-fit: cover;
       display: block;
       filter: sepia(0.15) contrast(1.06) brightness(0.97);
@@ -962,6 +968,9 @@
       line-height: 2.1;
       letter-spacing: 0.04em;
       flex: 1;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(201,168,76,0.3) transparent;
     }
 
     .pamphlet-story p { margin: 0; }
@@ -997,6 +1006,46 @@
     .pamphlet-link:hover {
       color: #c9a84c;
       border-color: rgba(201,168,76,0.5);
+    }
+
+    /* 閉じるボタン */
+    .book-close-btn {
+      display: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.38);
+      background: none;
+      border: 1px solid rgba(0,0,0,0.15);
+      padding: 4px 10px;
+      cursor: pointer;
+      margin-top: 12px;
+      align-self: flex-end;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .book-close-btn:hover {
+      color: rgba(0,0,0,0.65);
+      border-color: rgba(0,0,0,0.3);
+    }
+    .book.open .book-close-btn { display: block; }
+
+    /* カウントダウンバッジ */
+    .ticket-countdown {
+      position: absolute;
+      top: 8px; left: 8px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      background: rgba(201,168,76,0.15);
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.3);
+      padding: 2px 7px;
+    }
+    .ticket-countdown.urgent {
+      background: rgba(200,55,55,0.15);
+      color: rgba(220,80,80,0.9);
+      border-color: rgba(200,55,55,0.3);
     }
 
     /* 空状態 */
@@ -1079,11 +1128,95 @@
       background: rgba(20,15,5,0.85);
     }
 
+    /* 訪問済みボタン */
+    .visited-btn {
+      position: absolute;
+      top: -8px;
+      right: 28px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid rgba(240,235,224,0.22);
+      background: rgba(10,10,10,0.72);
+      color: rgba(240,235,224,0.30);
+      font-size: 13px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: color 0.25s, background 0.25s, border-color 0.25s, transform 0.15s;
+      backdrop-filter: blur(4px);
+    }
+    .visited-btn:hover {
+      color: rgba(240,235,224,0.75);
+      border-color: rgba(240,235,224,0.50);
+      background: rgba(10,10,10,0.88);
+      transform: scale(1.12);
+    }
+    .visited-btn.active {
+      color: rgba(180,220,180,0.85);
+      border-color: rgba(140,200,140,0.55);
+      background: rgba(10,20,10,0.85);
+    }
+
+    /* 訪問済みカードの視覚表現 */
+    .card.visited .ticket-link {
+      filter: sepia(0.55) opacity(0.62);
+    }
+    .card.visited .ticket-link:hover {
+      filter: sepia(0.35) opacity(0.78) brightness(1.04);
+    }
+
+    /* URLコピーボタン */
+    .copy-link-btn {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      color: rgba(240,235,224,0.38);
+      letter-spacing: 0.08em;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.3s;
+    }
+    .copy-link-btn:hover { color: var(--gold); }
+    .copy-link-btn.copied {
+      color: rgba(140,200,140,0.75);
+    }
+
+    /* ===== カード登場アニメーション ===== */
+    @keyframes cardEntrance {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .card {
+      animation: cardEntrance 0.5s ease forwards;
+    }
+
+    /* ===== パンフレット表紙 hint 点滅 ===== */
+    @keyframes hintPulse {
+      0%, 100% { opacity: 0.28; }
+      50%       { opacity: 0.65; }
+    }
+    .book-cover-hint {
+      animation: hintPulse 2.4s ease-in-out infinite;
+    }
+    .book-cover:hover .book-cover-hint { animation: none; opacity: 0.55; }
+
     @media (max-width: 480px) {
       .header   { padding: 24px 20px 20px; }
-      .controls { padding: 14px 20px; }
+      .controls { padding: 14px 16px; flex-wrap: wrap; }
       .page-title { font-size: 20px; }
-      .search-input { width: 130px; }
+      .search-input { width: 100%; }
+      #search { width: 100%; }
+      .ticket-link { margin: 0 8px; }
+      .ticket-stub { width: 50px; }
+      .ticket-img-wrap { width: 70px; }
+      .book { padding: 10px 8px 4px; }
+      .card-distance { padding-left: 16px; padding-right: 16px; }
+      .card-footer   { padding-left: 16px; padding-right: 16px; }
     }
   </style>
 </head>
@@ -1109,6 +1242,7 @@
       <option value="title">タイトル順</option>
       <option value="near">近い順</option>
       <option value="ueno">上野エリア</option>
+      <option value="favs">お気に入りのみ</option>
     </select>
     <input id="search" class="search-input" type="text" placeholder="タイトル・美術館で検索…" autocomplete="off">
     <span class="count" id="count"></span>
@@ -1213,6 +1347,18 @@
     localStorage.setItem("munch_favs", JSON.stringify(favs));
   }
 
+  /* ===== 訪問済み（localStorage） ===== */
+  function getVisited() {
+    try { return JSON.parse(localStorage.getItem("munch_visited") || "{}"); }
+    catch { return {}; }
+  }
+  function setVisited(id, val) {
+    const visited = getVisited();
+    if (val) visited[id] = true;
+    else delete visited[id];
+    localStorage.setItem("munch_visited", JSON.stringify(visited));
+  }
+
   function render() {
     const sortVal   = document.getElementById("sort").value;
     const searchVal = document.getElementById("search").value.trim().toLowerCase();
@@ -1238,6 +1384,9 @@
       data = data.filter(e => e.area === "上野");
     } else if (sortVal === "near" && userLat) {
       data.sort((a,b) => getDistance(userLat,userLng,a.lat,a.lng) - getDistance(userLat,userLng,b.lat,b.lng));
+    } else if (sortVal === "favs") {
+      const favs = getFavs();
+      data = data.filter(e => !!favs[`${e.title}__${e.museum}`]);
     }
 
     document.getElementById("count").textContent = `${data.length} exhibitions`;
@@ -1262,15 +1411,18 @@
         distanceHtml = `<div class="card-distance">${d.toFixed(1)} km — 徒歩 ${toWalkTime(d)} 分</div>`;
       }
 
-      const favId  = `${e.title}__${e.museum}`;
-      const favs   = getFavs();
-      const isFav  = !!favs[favId];
+      const favId    = `${e.title}__${e.museum}`;
+      const favs     = getFavs();
+      const isFav    = !!favs[favId];
+      const visited  = getVisited();
+      const isVisited = !!visited[favId];
 
       const card = document.createElement("div");
-      card.className = "card";
+      card.className = `card${isVisited ? ' visited' : ''}`;
       card.style.position = "relative";
       card.innerHTML = `
         <button class="fav-btn${isFav ? ' active' : ''}" data-fav-id="${favId}" aria-label="お気に入り">${isFav ? '♥' : '♡'}</button>
+        <button class="visited-btn${isVisited ? ' active' : ''}" data-visited-id="${favId}" aria-label="訪問済み">${isVisited ? '✓' : '✓'}</button>
         <a href="${e.url || '#'}" class="ticket-link" ${e.url ? 'target="_blank"' : ''}>
           <div class="ticket-img-wrap">
             <img class="ticket-img" src="${imgSrc}"
@@ -1295,11 +1447,13 @@
             <div class="stub-number">No.${num}</div>
           </div>
         </a>
+        ${days <= 30 ? `<div class="ticket-countdown${days <= 7 ? ' urgent' : ''}">あと${days}日</div>` : ""}
         ${days <= 7 ? `<div class="ticket-ending">Ending Soon</div>` : ""}
         ${distanceHtml}
         <div class="card-footer">
           <a href="https://www.google.com/maps/search/?api=1&query=${e.lat},${e.lng}" target="_blank">地図で見る</a>
           <a href="https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}" target="_blank">ルート</a>
+          ${e.url ? `<button class="copy-link-btn" data-copy-url="${e.url}" aria-label="リンクをコピー">リンクをコピー</button>` : ""}
         </div>
 
         <!-- 本（パンフレット） -->
@@ -1356,6 +1510,7 @@
                     ${e.url ? `<a href="${e.url}" target="_blank" class="pamphlet-link">公式サイトを見る</a>` : ""}
                     <span style="margin-left:12px">— ${String(idx * 2 + 2).padStart(2,"0")} —</span>
                   </div>
+                  <button class="book-close-btn" onclick="toggleBook(${idx})">× 閉じる</button>
                 </div>
               </div>
             </div>
@@ -1363,6 +1518,7 @@
         })()}
         </div>
       `;
+      card.style.animationDelay = (idx * 0.07) + 's';
       list.appendChild(card);
     });
   }
@@ -1470,16 +1626,67 @@
   document.getElementById("sort").addEventListener("change", render);
   document.getElementById("search").addEventListener("input", render);
 
-  // お気に入りボタン：イベント委譲（a要素のクリックと干渉しない）
+  // イベント委譲（お気に入り・訪問済み・URLコピー）
   document.getElementById("list").addEventListener("click", function(e) {
-    const btn = e.target.closest(".fav-btn");
-    if (!btn) return;
-    e.preventDefault();
-    e.stopPropagation();
-    const favId = btn.dataset.favId;
-    const isNowFav = btn.classList.toggle("active");
-    btn.textContent = isNowFav ? "♥" : "♡";
-    setFav(favId, isNowFav);
+    // お気に入りボタン
+    const favBtn = e.target.closest(".fav-btn");
+    if (favBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const favId = favBtn.dataset.favId;
+      const isNowFav = favBtn.classList.toggle("active");
+      favBtn.textContent = isNowFav ? "♥" : "♡";
+      setFav(favId, isNowFav);
+      return;
+    }
+
+    // 訪問済みボタン
+    const visitedBtn = e.target.closest(".visited-btn");
+    if (visitedBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const visitedId = visitedBtn.dataset.visitedId;
+      const isNowVisited = visitedBtn.classList.toggle("active");
+      setVisited(visitedId, isNowVisited);
+      const card = visitedBtn.closest(".card");
+      if (card) card.classList.toggle("visited", isNowVisited);
+      return;
+    }
+
+    // URLコピーボタン
+    const copyBtn = e.target.closest(".copy-link-btn");
+    if (copyBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const url = copyBtn.dataset.copyUrl;
+      navigator.clipboard.writeText(url).then(() => {
+        copyBtn.classList.add("copied");
+        const orig = copyBtn.textContent;
+        copyBtn.textContent = "✓ コピーしました";
+        setTimeout(() => {
+          copyBtn.textContent = orig;
+          copyBtn.classList.remove("copied");
+        }, 1500);
+      }).catch(() => {
+        // clipboard API非対応環境のフォールバック
+        const ta = document.createElement("textarea");
+        ta.value = url;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        copyBtn.classList.add("copied");
+        const orig = copyBtn.textContent;
+        copyBtn.textContent = "✓ コピーしました";
+        setTimeout(() => {
+          copyBtn.textContent = orig;
+          copyBtn.classList.remove("copied");
+        }, 1500);
+      });
+      return;
+    }
   });
 
   fetchExhibitions();
