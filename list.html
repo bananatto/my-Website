@@ -150,6 +150,8 @@
       background: #f0ebe0;
       position: relative;
       transition: filter 0.3s;
+      margin: 0 16px;
+      border-radius: 2px;
       /* 紙テクスチャ */
       background-image:
         url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
@@ -319,12 +321,12 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: 11px;
       color: rgba(240,235,224,0.38);
-      padding: 6px 18px 4px;
+      padding: 6px 32px 4px;
       letter-spacing: 0.05em;
     }
 
     .card-footer {
-      padding: 6px 18px 10px;
+      padding: 6px 32px 10px;
       display: flex;
       gap: 16px;
     }
@@ -342,7 +344,12 @@
 
     /* ===== 本（パンフレット） ===== */
     .book {
-      padding: 16px 0 4px;
+      padding: 16px 16px 4px;
+    }
+
+    /* パネル：表紙と開いたページを同じ幅に包む */
+    .book-panel {
+      position: relative;
     }
 
     /* ===== ページめくりアニメーション（左右） ===== */
@@ -525,11 +532,15 @@
       padding: 10px 0 14px;
     }
 
+    /* ===== パネル幅クラス（表紙・ページ共通） ===== */
+    .bc-panel-portrait  { width: 54%; margin: 0 auto; }
+    .bc-panel-oval      { width: 82%; margin: 0 auto; }
+    /* kakemono / vinyl / hex / crt は既存 wrapClass がそのままパネルに適用 */
+
     /* 1: ポートレートフレーム（ワイエス） ─ 絵画の額縁風 */
     .bc-portrait {
-      width: 52%;
+      width: 100%;
       height: 230px;
-      margin: 0 auto;
       box-shadow:
         0 0 0 5px #0a0a0a,
         0 0 0 7px rgba(143,176,204,0.35),
@@ -565,10 +576,9 @@
 
     /* 4: 楕円（モネ） ─ 浮かぶパレット */
     .bc-oval {
-      width: 80%;
+      width: 100%;
       height: 215px;
       border-radius: 50%;
-      margin: 0 auto;
       box-shadow:
         0 0 0 3px rgba(122,188,160,0.25),
         0 12px 44px rgba(0,0,0,0.65),
@@ -625,16 +635,14 @@
 
     /* 7: LPレコード（ロン・ミュエク） ─ 盤面の写実 */
     .bc-vinyl-wrap {
-      display: flex;
-      justify-content: center;
-      padding: 4px 0 16px;
+      padding: 4px 8% 16px;
     }
     .bc-vinyl {
       width: min(210px,60vw);
       height: min(210px,60vw);
       border-radius: 50%;
-      flex-shrink: 0;
       overflow: hidden;
+      margin: 0 auto;
       box-shadow:
         0 0 0 2px rgba(240,235,224,0.07),
         0 14px 44px rgba(0,0,0,0.75),
@@ -1214,59 +1222,61 @@
         <div class="book" id="book-${idx}">${(() => {
           const th = getCoverTheme(idx);
           return `
-          <div class="book-cover-wrap ${th.wrapClass}">
-            ${th.wrapBefore}
-            <div class="book-cover ${th.coverClass}"
-                 onclick="toggleBook(${idx})">
-              <div class="book-flip-ghost book-flip-ghost--1"></div>
-              <div class="book-flip-ghost book-flip-ghost--2"></div>
-              <div class="book-cover-bg"
-                   style="background-image:url('${imgSrc}');"
-                   onerror="this.style.backgroundImage='url(${fallback})'"></div>
-              <div class="book-cover-overlay" style="background:${th.overlay}"></div>
-              ${th.coverInner}
-              <div class="book-cover-inner-border"></div>
-              <div class="book-cover-content">
-                <div class="book-cover-label" style="color:${th.accent}">${e.museum}</div>
-                <div class="book-cover-main-title">${e.title}</div>
-                <div class="book-cover-divider" style="background:${th.accent}"></div>
-                <div class="book-cover-museum">Special Exhibition</div>
-                <div class="book-cover-dates">${formatDate(e.start)} — ${formatDate(e.end)}</div>
+          <div class="book-panel ${th.panelClass}">
+            <div class="book-cover-wrap">
+              ${th.panelBefore}
+              <div class="book-cover ${th.coverClass}"
+                   onclick="toggleBook(${idx})">
+                <div class="book-flip-ghost book-flip-ghost--1"></div>
+                <div class="book-flip-ghost book-flip-ghost--2"></div>
+                <div class="book-cover-bg"
+                     style="background-image:url('${imgSrc}');"
+                     onerror="this.style.backgroundImage='url(${fallback})'"></div>
+                <div class="book-cover-overlay" style="background:${th.overlay}"></div>
+                ${th.coverInner}
+                <div class="book-cover-inner-border"></div>
+                <div class="book-cover-content">
+                  <div class="book-cover-label" style="color:${th.accent}">${e.museum}</div>
+                  <div class="book-cover-main-title">${e.title}</div>
+                  <div class="book-cover-divider" style="background:${th.accent}"></div>
+                  <div class="book-cover-museum">Special Exhibition</div>
+                  <div class="book-cover-dates">${formatDate(e.start)} — ${formatDate(e.end)}</div>
+                </div>
+                <div class="book-cover-hint">
+                  <span>open</span>
+                  <span class="book-cover-hint-arrow">↓</span>
+                </div>
               </div>
-              <div class="book-cover-hint">
-                <span>open</span>
-                <span class="book-cover-hint-arrow">↓</span>
+              ${th.panelAfter}
+            </div>
+            <div class="book-body">
+              <div class="book-spread">
+                <div class="book-left">
+                  <img src="${imgSrc}"
+                       onerror="if(this.src!=='${fallback}')this.src='${fallback}'" alt="${e.title}">
+                  <div class="book-left-footer">
+                    <div class="book-left-folio">— ${String(idx * 2 + 1).padStart(2,"0")} —</div>
+                  </div>
+                </div>
+                <div class="book-gutter"></div>
+                <div class="book-right">
+                  <div class="book-right-header">
+                    <div class="book-right-header-label">Story</div>
+                    <div class="book-right-header-rule"></div>
+                  </div>
+                  ${e.story
+                    ? `<div class="pamphlet-story">${e.story.split("\n\n").map(p => `<p>${p}</p>`).join("")}</div>`
+                    : `<div class="pamphlet-story"><p>${e.title}</p></div>`
+                  }
+                  <div class="book-right-folio">
+                    ${e.url ? `<a href="${e.url}" target="_blank" class="pamphlet-link">公式サイトを見る</a>` : ""}
+                    <span style="margin-left:12px">— ${String(idx * 2 + 2).padStart(2,"0")} —</span>
+                  </div>
+                </div>
               </div>
             </div>
-            ${th.wrapAfter}
           </div>`;
         })()}
-          <div class="book-body">
-            <div class="book-spread">
-              <div class="book-left">
-                <img src="${imgSrc}"
-                     onerror="if(this.src!=='${fallback}')this.src='${fallback}'" alt="${e.title}">
-                <div class="book-left-footer">
-                  <div class="book-left-folio">— ${String(idx * 2 + 1).padStart(2,"0")} —</div>
-                </div>
-              </div>
-              <div class="book-gutter"></div>
-              <div class="book-right">
-                <div class="book-right-header">
-                  <div class="book-right-header-label">Story</div>
-                  <div class="book-right-header-rule"></div>
-                </div>
-                ${e.story
-                  ? `<div class="pamphlet-story">${e.story.split("\n\n").map(p => `<p>${p}</p>`).join("")}</div>`
-                  : `<div class="pamphlet-story"><p>${e.title}</p></div>`
-                }
-                <div class="book-right-folio">
-                  ${e.url ? `<a href="${e.url}" target="_blank" class="pamphlet-link">公式サイトを見る</a>` : ""}
-                  <span style="margin-left:12px">— ${String(idx * 2 + 2).padStart(2,"0")} —</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       `;
       list.appendChild(card);
@@ -1278,74 +1288,74 @@
     { // 0: ワイエス — 肖像画の額縁
       accent: '#8fb0cc',
       overlay: 'linear-gradient(to bottom, rgba(20,28,44,0.15) 0%, rgba(20,28,44,0.55) 55%, rgba(10,16,28,0.90) 100%)',
-      wrapClass: '', coverClass: 'bc-portrait',
-      wrapBefore: '', coverInner: '', wrapAfter: ''
+      panelClass: 'bc-panel-portrait', coverClass: 'bc-portrait',
+      panelBefore: '', coverInner: '', panelAfter: ''
     },
     { // 1: 加賀前田家 — 鳥居アーチ
       accent: '#c9a84c',
       overlay: 'linear-gradient(to bottom, rgba(14,8,2,0.10) 0%, rgba(14,8,2,0.50) 50%, rgba(8,4,0,0.92) 100%)',
-      wrapClass: '', coverClass: 'bc-arch',
-      wrapBefore: '', coverInner: '', wrapAfter: ''
+      panelClass: '', coverClass: 'bc-arch',
+      panelBefore: '', coverInner: '', panelAfter: ''
     },
     { // 2: 北斎 — 波形底辺
       accent: '#6888d0',
       overlay: 'linear-gradient(to bottom, rgba(6,12,32,0.08) 0%, rgba(6,12,32,0.48) 50%, rgba(4,8,22,0.92) 100%)',
-      wrapClass: '', coverClass: 'bc-wave',
-      wrapBefore: '', coverInner: '', wrapAfter: ''
+      panelClass: '', coverClass: 'bc-wave',
+      panelBefore: '', coverInner: '', panelAfter: ''
     },
     { // 3: モネ — 楕円パレット
       accent: '#7abca0',
       overlay: 'linear-gradient(to bottom, rgba(10,18,26,0.10) 0%, rgba(10,18,26,0.42) 45%, rgba(6,12,18,0.88) 100%)',
-      wrapClass: '', coverClass: 'bc-oval',
-      wrapBefore: '', coverInner: '', wrapAfter: ''
+      panelClass: 'bc-panel-oval', coverClass: 'bc-oval',
+      panelBefore: '', coverInner: '', panelAfter: ''
     },
     { // 4: 観山 — 掛け軸（上下に軸棒）
       accent: '#c0b8b0',
       overlay: 'linear-gradient(to bottom, rgba(4,4,4,0.20) 0%, rgba(4,4,4,0.55) 55%, rgba(4,4,4,0.93) 100%)',
-      wrapClass: 'bc-kakemono-wrap', coverClass: 'bc-kakemono',
-      wrapBefore: '<div class="bc-kakemono-roller"></div>',
+      panelClass: 'bc-kakemono-wrap', coverClass: 'bc-kakemono',
+      panelBefore: '<div class="bc-kakemono-roller"></div>',
       coverInner: '',
-      wrapAfter:  '<div class="bc-kakemono-roller"></div>'
+      panelAfter:  '<div class="bc-kakemono-roller"></div>'
     },
     { // 5: テートYBA — 破れた紙
       accent: '#e03030',
       overlay: 'linear-gradient(to bottom, rgba(4,4,4,0.05) 0%, rgba(4,4,4,0.50) 50%, rgba(4,4,4,0.94) 100%)',
-      wrapClass: '', coverClass: 'bc-torn',
-      wrapBefore: '', coverInner: '', wrapAfter: ''
+      panelClass: '', coverClass: 'bc-torn',
+      panelBefore: '', coverInner: '', panelAfter: ''
     },
     { // 6: ロン・ミュエク — LPレコード
       accent: '#c8a880',
       overlay: 'radial-gradient(circle at center, rgba(14,11,8,0.55) 0%, rgba(8,6,4,0.88) 100%)',
-      wrapClass: 'bc-vinyl-wrap', coverClass: 'bc-vinyl',
-      wrapBefore: '',
+      panelClass: 'bc-vinyl-wrap', coverClass: 'bc-vinyl',
+      panelBefore: '',
       coverInner: `<div class="bc-vinyl-groove"></div>
         <div class="bc-vinyl-label"><div class="bc-vinyl-label-text">RON<br>MUECK</div></div>
         <div class="bc-vinyl-hole"></div>`,
-      wrapAfter: ''
+      panelAfter: ''
     },
     { // 7: 新版画 — 平行四辺形
       accent: '#c88040',
       overlay: 'linear-gradient(to bottom, rgba(22,10,4,0.12) 0%, rgba(22,10,4,0.50) 50%, rgba(14,6,2,0.92) 100%)',
-      wrapClass: '', coverClass: 'bc-slant',
-      wrapBefore: '', coverInner: '', wrapAfter: ''
+      panelClass: '', coverClass: 'bc-slant',
+      panelBefore: '', coverInner: '', panelAfter: ''
     },
     { // 8: 暁斎 — ブラウン管テレビ
       accent: '#c02820',
       overlay: 'linear-gradient(to bottom, rgba(8,3,3,0.12) 0%, rgba(8,3,3,0.50) 50%, rgba(5,2,2,0.93) 100%)',
-      wrapClass: 'bc-crt-wrap', coverClass: 'bc-crt',
-      wrapBefore: '',
+      panelClass: 'bc-crt-wrap', coverClass: 'bc-crt',
+      panelBefore: '',
       coverInner: `<div class="bc-crt-antenna bc-crt-antenna--l"></div>
         <div class="bc-crt-antenna bc-crt-antenna--r"></div>
         <div class="bc-crt-knobs">
           <div class="bc-crt-knob"></div><div class="bc-crt-knob"></div><div class="bc-crt-knob"></div>
         </div>`,
-      wrapAfter: ''
+      panelAfter: ''
     },
     { // 9: エリック・カール — 六角形
       accent: '#50b868',
       overlay: 'linear-gradient(to bottom, rgba(4,14,18,0.10) 0%, rgba(4,14,18,0.45) 50%, rgba(2,8,12,0.90) 100%)',
-      wrapClass: 'bc-hex-wrap', coverClass: 'bc-hex',
-      wrapBefore: '', coverInner: '', wrapAfter: ''
+      panelClass: 'bc-hex-wrap', coverClass: 'bc-hex',
+      panelBefore: '', coverInner: '', panelAfter: ''
     },
   ];
 
