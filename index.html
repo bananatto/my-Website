@@ -503,6 +503,53 @@
   .enter-btn:hover { color: var(--gold); }
   .enter-btn:hover::after { width: 100%; }
 
+  /* 地図ボタン（ゴールドアウトライン） */
+  .map-btn {
+    pointer-events: all;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border: 1px solid rgba(201,168,76,0.55);
+    padding: 8px 18px;
+    transition: color 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .map-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(201,168,76,0.08);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+    z-index: 0;
+  }
+
+  .map-btn span { position: relative; z-index: 1; }
+
+  .map-btn:hover {
+    color: #f0ebe0;
+    border-color: rgba(201,168,76,0.85);
+  }
+
+  .map-btn:hover::before { transform: scaleX(1); }
+
+  /* ヒーロー下部ボタングループ */
+  .hero-btns {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
   .tagline {
     font-family: 'Cormorant Garamond', serif;
     font-size: 12px;
@@ -682,15 +729,17 @@
     transform: translateY(0);
     transition:
       opacity 0.8s ease,
-      transform 0.8s ease,
+      transform 0.4s ease,
       border-color 0.4s ease,
-      background 0.4s ease;
+      background 0.4s ease,
+      filter 0.4s ease;
   }
 
   .exhibition-card:hover {
-    border-color: rgba(201,168,76,0.2);
-    background: rgba(255,255,255,0.04);
-    transform: translateY(-4px);
+    border-color: rgba(201,168,76,0.28);
+    background: rgba(255,255,255,0.05);
+    transform: translateY(-5px) scale(1.012);
+    filter: brightness(1.08);
   }
 
   /* カード内ダブルボーダー */
@@ -803,6 +852,45 @@
     height: 1px;
     background: linear-gradient(to right, rgba(240,235,224,0.08), transparent);
     margin: 14px 0;
+  }
+
+  /* 統計バナー */
+  .stats-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 48px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.8s ease 0.15s, transform 0.8s ease 0.15s;
+  }
+
+  .stats-banner.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .stats-banner-line {
+    width: 28px;
+    height: 1px;
+    background: linear-gradient(to right, rgba(201,168,76,0.4), transparent);
+  }
+
+  .stats-banner-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    color: rgba(240,235,224,0.42);
+  }
+
+  .stats-banner-num {
+    font-style: normal;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--gold);
+    letter-spacing: 0.05em;
   }
 
   /* もっと見るリンク */
@@ -1181,6 +1269,372 @@
   }
 
   /* ============================================================
+     今日の一枚セクション
+  ============================================================ */
+  #daily-pick {
+    position: relative;
+    z-index: 5;
+    overflow: hidden;
+
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  #daily-pick.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .daily-pick-inner {
+    position: relative;
+    height: 50vh;
+    min-height: 320px;
+    overflow: hidden;
+    background: #111;
+  }
+
+  .daily-pick-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(0.25) contrast(1.06) sepia(0.08);
+    transform: scale(1.04);
+    transition: transform 8s ease;
+  }
+
+  #daily-pick.visible .daily-pick-img {
+    transform: scale(1);
+  }
+
+  .daily-pick-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.15) 0%,
+      rgba(0,0,0,0.2) 40%,
+      rgba(0,0,0,0.82) 100%
+    );
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 48px 72px;
+  }
+
+  .daily-pick-label {
+    font-size: 8px;
+    letter-spacing: 0.6em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+    opacity: 0.9;
+  }
+
+  .daily-pick-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(20px, 3.5vw, 38px);
+    font-weight: 400;
+    line-height: 1.55;
+    letter-spacing: 0.06em;
+    color: var(--cream);
+    margin-bottom: 8px;
+    max-width: 600px;
+  }
+
+  .daily-pick-museum {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(240,235,224,0.5);
+    margin-bottom: 12px;
+  }
+
+  .daily-pick-copy {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(240,235,224,0.6);
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    max-width: 460px;
+  }
+
+  .daily-pick-btn {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--cream);
+    text-decoration: none;
+    border: 1px solid rgba(240,235,224,0.35);
+    padding: 12px 28px;
+    position: relative;
+    transition: color 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+    min-height: 44px;
+    align-self: flex-start;
+  }
+
+  .daily-pick-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+    z-index: -1;
+  }
+
+  .daily-pick-btn:hover {
+    color: var(--dark);
+    border-color: var(--gold);
+  }
+
+  .daily-pick-btn:hover::after {
+    transform: scaleX(1);
+  }
+
+  .daily-pick-date-badge {
+    position: absolute;
+    top: 24px;
+    right: 72px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: rgba(240,235,224,0.3);
+    font-style: italic;
+  }
+
+  /* ============================================================
+     モバイル対応 (@media max-width: 480px)
+  ============================================================ */
+  @media (max-width: 480px) {
+    /* カーソル非表示（タッチデバイス） */
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+
+    /* キーボードヒント非表示 */
+    #kb-hint { display: none; }
+
+    /* フィルムエッジ非表示（幅節約） */
+    .film-edge { display: none; }
+
+    /* ヒーローUI パディング縮小 */
+    .hero-ui {
+      padding: 24px 20px 28px;
+    }
+
+    /* ロゴ */
+    .logo {
+      font-size: 11px;
+      letter-spacing: 0.3em;
+    }
+
+    /* チラシカード：右上に小さく */
+    .flyer {
+      width: 68px;
+      top: 18px;
+      right: 18px;
+    }
+
+    /* ヒーロー下部 */
+    .bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .hero-btns {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .enter-btn {
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      padding-bottom: 0;
+      border-bottom: none;
+      border: 1px solid rgba(240,235,224,0.3);
+      padding: 0 16px;
+    }
+
+    .map-btn {
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      min-height: 44px;
+      padding: 0 14px;
+    }
+
+    .tagline {
+      font-size: 11px;
+      text-align: left;
+    }
+
+    /* 背景カウンター（不要なのでさらに薄く） */
+    .counter { display: none; }
+
+    /* YouTube背景：モバイルでは非表示・グラデーション代替 */
+    .video-bg {
+      display: none;
+    }
+
+    #hero {
+      background: linear-gradient(
+        160deg,
+        #1a1610 0%,
+        #0d0d0d 35%,
+        #0a0a0a 60%,
+        #111008 100%
+      );
+    }
+
+    /* CLOSING SOON ウィジェット */
+    #closing-soon-widget {
+      padding: 20px 20px;
+      overflow-x: hidden;
+    }
+
+    .closing-item {
+      flex-wrap: nowrap;
+      gap: 0;
+      padding: 10px 0;
+      min-height: 44px;
+      align-items: center;
+    }
+
+    .closing-days {
+      min-width: 64px;
+      font-size: 10px;
+    }
+
+    .closing-separator {
+      margin: 0 8px;
+    }
+
+    .closing-title {
+      font-size: 11px;
+      max-width: calc(100vw - 160px);
+    }
+
+    .closing-museum {
+      display: none;
+    }
+
+    /* 展覧会セクション */
+    #exhibitions-section {
+      padding: 60px 20px 50px;
+    }
+
+    #exhibitions-section::before {
+      left: 20px;
+      right: 20px;
+    }
+
+    .section-header {
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-size: clamp(20px, 6vw, 28px);
+    }
+
+    .section-count {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    .exhibitions-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .card-body {
+      padding: 16px 18px 20px;
+    }
+
+    .card-title {
+      font-size: 14px;
+    }
+
+    .exhibition-card {
+      /* タップ領域確保 */
+      min-height: 44px;
+    }
+
+    .view-all-wrap {
+      margin-top: 36px;
+    }
+
+    .view-all-link {
+      font-size: 10px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+    }
+
+    /* 今日の一枚 */
+    .daily-pick-overlay {
+      padding: 28px 20px;
+    }
+
+    .daily-pick-title {
+      font-size: clamp(17px, 5vw, 24px);
+    }
+
+    .daily-pick-copy {
+      font-size: 13px;
+    }
+
+    .daily-pick-date-badge {
+      right: 20px;
+      top: 16px;
+    }
+
+    .daily-pick-btn {
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      padding: 12px 20px;
+    }
+
+    /* フッター */
+    footer {
+      padding: 40px 20px 28px;
+    }
+
+    .footer-inner {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .footer-social {
+      align-items: flex-start;
+    }
+
+    .social-links {
+      align-items: flex-start;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-start;
+    }
+  }
+
+  /* ============================================================
      キーボードショートカットヒント
   ============================================================ */
   #kb-hint {
@@ -1309,7 +1763,10 @@
     </a>
 
     <div class="bottom">
-      <a href="list.html" class="enter-btn">Enter</a>
+      <div class="hero-btns">
+        <a href="list.html" class="enter-btn">Enter</a>
+        <a href="map.html" class="map-btn"><span>◎</span><span>地図で探す</span></a>
+      </div>
       <div class="tagline">
         東京の展覧会を、<br>映画のように。
       </div>
@@ -1355,6 +1812,14 @@
     <span class="section-count" id="exhibitionCount">—</span>
   </div>
 
+  <!-- 統計バナー（アニメーションカウンター） -->
+  <div class="stats-banner" id="statsBanner">
+    <div class="stats-banner-line"></div>
+    <div class="stats-banner-text">
+      現在 <span class="stats-banner-num" id="statsBannerNum">0</span> 件の特別展を掲載
+    </div>
+  </div>
+
   <div class="exhibitions-grid" id="exhibitionsGrid">
     <!-- JS で挿入 -->
   </div>
@@ -1362,6 +1827,23 @@
   <div class="view-all-wrap" id="viewAllWrap">
     <div class="view-all-line"></div>
     <a href="list.html" class="view-all-link">View All Exhibitions</a>
+  </div>
+</section>
+
+<!-- ============================================================
+     今日の一枚
+============================================================ -->
+<section id="daily-pick">
+  <div class="daily-pick-inner">
+    <img class="daily-pick-img" id="dailyPickImg" src="" alt="">
+    <div class="daily-pick-overlay">
+      <div class="daily-pick-label">Today's Pick</div>
+      <div class="daily-pick-title" id="dailyPickTitle"></div>
+      <div class="daily-pick-museum" id="dailyPickMuseum"></div>
+      <div class="daily-pick-copy" id="dailyPickCopy"></div>
+      <a class="daily-pick-btn" id="dailyPickBtn" href="list.html">詳しく見る</a>
+    </div>
+    <div class="daily-pick-date-badge" id="dailyPickDate"></div>
   </div>
 </section>
 
@@ -1446,6 +1928,7 @@ async function loadExhibitions() {
   }
   showFlyer();
   renderFeaturedExhibitions();
+  renderDailyPick();
   updateFooterStats();
   renderClosingSoon();
 }
@@ -1717,8 +2200,10 @@ function renderFeaturedExhibitions() {
     const imgSrc    = aiSrc || localSrc || picsumSrc;
     const num       = String(i + 1).padStart(2, "0");
 
+    const listHref = `list.html?highlight=${encodeURIComponent(e.title)}`;
+
     return `
-      <a class="exhibition-card" href="${e.url || 'list.html'}" target="${e.url ? '_blank' : '_self'}" rel="noopener"
+      <a class="exhibition-card" href="${listHref}"
          style="transition-delay:${i * 0.12}s">
         <div class="card-image-wrap">
           <img class="card-img"
@@ -1757,6 +2242,54 @@ function renderFeaturedExhibitions() {
 }
 
 // ============================================================
+//  今日の一枚（日付シードで毎日変わる）
+// ============================================================
+function renderDailyPick() {
+  if (!exhibitions.length) return;
+
+  // 日付を seed に使い毎日異なる展覧会を選択
+  const today = new Date();
+  const seed  = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+  const index = seed % exhibitions.length;
+  const e     = exhibitions[index];
+
+  const aiSrc     = (e.image_url && e.image_url !== "") ? e.image_url : null;
+  const localSrc  = e.image || "";
+  const picsumSrc = `https://picsum.photos/seed/${encodeURIComponent(e.title)}/1400/900`;
+  const imgSrc    = aiSrc || localSrc || picsumSrc;
+
+  const img = document.getElementById("dailyPickImg");
+  img.src   = imgSrc;
+  img.alt   = e.title;
+  img.onerror = function() {
+    if (this.src !== picsumSrc) this.src = picsumSrc;
+  };
+
+  document.getElementById("dailyPickTitle").textContent  = e.title;
+  document.getElementById("dailyPickMuseum").textContent = e.museum || "";
+  document.getElementById("dailyPickCopy").textContent   = e.copy  || "";
+
+  const btn = document.getElementById("dailyPickBtn");
+  btn.href  = `list.html?highlight=${encodeURIComponent(e.title)}`;
+
+  // 日付バッジ
+  const fmt = d => `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;
+  document.getElementById("dailyPickDate").textContent = fmt(today);
+
+  // スクロールで表示
+  const section = document.getElementById("daily-pick");
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        section.classList.add("visible");
+        obs.unobserve(section);
+      }
+    });
+  }, { threshold: 0.08 });
+  obs.observe(section);
+}
+
+// ============================================================
 //  フッター統計
 // ============================================================
 function updateFooterStats() {
@@ -1770,6 +2303,45 @@ function updateFooterStats() {
   // コピーライト年
   document.getElementById("footerCopyright").textContent =
     `© ${new Date().getFullYear()} MUnCh. All rights reserved.`;
+
+  // 統計バナーのカウントアップ
+  if (exhibitions.length > 0) {
+    animateStatsBanner(exhibitions.length);
+  }
+}
+
+// ============================================================
+//  統計バナー カウントアップアニメーション
+// ============================================================
+function animateStatsBanner(target) {
+  const numEl = document.getElementById("statsBannerNum");
+  const banner = document.getElementById("statsBanner");
+  if (!numEl || !banner) return;
+
+  const duration = 1000; // 1秒
+  const startTime = performance.now();
+
+  function update(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // easeOutQuart
+    const eased = 1 - Math.pow(1 - progress, 4);
+    numEl.textContent = Math.round(eased * target);
+    if (progress < 1) requestAnimationFrame(update);
+    else numEl.textContent = target;
+  }
+
+  // IntersectionObserver でビューポートに入ったときに起動
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        banner.classList.add("visible");
+        requestAnimationFrame(update);
+        obs.unobserve(banner);
+      }
+    });
+  }, { threshold: 0.2 });
+  obs.observe(banner);
 }
 
 // ============================================================

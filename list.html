@@ -443,7 +443,7 @@
       inset: 0;
       background-size: cover;
       background-position: center 20%;
-      filter: sepia(0.10) contrast(1.08) brightness(0.95) saturate(1.05);
+      filter: sepia(0.05) contrast(1.05) brightness(0.92) saturate(1.1);
       transition: transform 0.5s ease;
     }
     .book-cover:hover .book-cover-bg { transform: scale(1.04); }
@@ -819,17 +819,31 @@
     .book-spread {
       overflow: hidden;
       min-height: 0;
-      height: 210px;
       display: flex;
       box-shadow:
         inset 0 8px 20px rgba(0,0,0,0.25),
         inset 0 -4px 12px rgba(0,0,0,0.10);
     }
 
+    /* 高さは子要素に設定（.book-spreadに直接設定するとgrid折りたたみが効かない） */
+    .book-left,
+    .book-right,
+    .book-gutter {
+      height: 210px;
+    }
+
     /* カバー形状ごとの高さオーバーライド */
-    .bc-panel-portrait .book-spread { height: 230px; }
-    .bc-panel-oval     .book-spread { height: 215px; }
-    .bc-kakemono-wrap  .book-spread { height: 230px; }
+    .bc-panel-portrait .book-left,
+    .bc-panel-portrait .book-right,
+    .bc-panel-portrait .book-gutter { height: 230px; }
+
+    .bc-panel-oval .book-left,
+    .bc-panel-oval .book-right,
+    .bc-panel-oval .book-gutter     { height: 215px; }
+
+    .bc-kakemono-wrap .book-left,
+    .bc-kakemono-wrap .book-right,
+    .bc-kakemono-wrap .book-gutter  { height: 230px; }
 
     /* 左ページ：画像 */
     .book-left {
@@ -1049,13 +1063,188 @@
       border-color: rgba(200,55,55,0.3);
     }
 
+    /* ===== エリアフィルタータブ ===== */
+    .area-tabs {
+      padding: 10px 48px 0;
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid rgba(240,235,224,0.06);
+    }
+
+    .area-tab {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      color: rgba(240,235,224,0.35);
+      background: none;
+      border: 1px solid rgba(240,235,224,0.10);
+      border-bottom: none;
+      padding: 6px 16px 7px;
+      cursor: pointer;
+      transition: color 0.25s, background 0.25s, border-color 0.25s;
+      position: relative;
+      top: 1px;
+    }
+
+    .area-tab + .area-tab { border-left: none; }
+
+    .area-tab.active {
+      color: var(--gold);
+      border-color: rgba(201,168,76,0.35);
+      background: rgba(201,168,76,0.06);
+    }
+
+    .area-tab:hover:not(.active) {
+      color: rgba(240,235,224,0.65);
+      border-color: rgba(240,235,224,0.22);
+    }
+
+    /* ===== 印刷ボタン ===== */
+    .print-btn {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      color: rgba(240,235,224,0.38);
+      letter-spacing: 0.08em;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.3s;
+    }
+    .print-btn:hover { color: var(--gold); }
+
+    /* ===== 印刷スタイル ===== */
+    @media print {
+      body.print-single .card:not(.printing) { display: none !important; }
+      body.print-single .header,
+      body.print-single .area-tabs,
+      body.print-single .controls,
+      body.print-single .footer,
+      body.print-single #back-to-top { display: none !important; }
+      body.print-single .card.printing {
+        border: none;
+        animation: none;
+      }
+      body.print-single .book { display: none; }
+    }
+
+    /* ===== ページトップボタン ===== */
+    #back-to-top {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(10,10,10,0.88);
+      border: 1px solid rgba(201,168,76,0.45);
+      color: var(--cream);
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s, border-color 0.25s;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+    }
+    #back-to-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #back-to-top:hover {
+      border-color: rgba(201,168,76,0.8);
+      transform: translateY(-3px);
+    }
+
     /* 空状態 */
     .empty {
       padding: 80px;
       text-align: center;
-      font-size: 13px;
+    }
+
+    .empty-icon {
+      font-size: 24px;
+      color: var(--gold);
+      opacity: 0.4;
+      margin-bottom: 16px;
+    }
+
+    .empty-title {
+      font-size: 16px;
+      letter-spacing: 0.3em;
+      color: rgba(240,235,224,0.3);
+      margin-bottom: 8px;
+    }
+
+    .empty-sub {
+      font-size: 11px;
       letter-spacing: 0.15em;
       color: rgba(240,235,224,0.18);
+    }
+
+    /* カード間セパレーター */
+    .card + .card {
+      border-top: 1px solid rgba(201,168,76,0.08);
+    }
+
+    /* ローディングスケルトン */
+    .skeleton-card {
+      background: var(--dark);
+      border: 1px solid rgba(240,235,224,0.07);
+      height: 130px;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .skeleton-img {
+      width: 90px;
+      flex-shrink: 0;
+      background: rgba(240,235,224,0.05);
+    }
+
+    .skeleton-body {
+      flex: 1;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .skeleton-line {
+      height: 10px;
+      border-radius: 2px;
+      background: rgba(240,235,224,0.06);
+      animation: skeletonPulse 1.6s ease-in-out infinite;
+    }
+
+    .skeleton-line--title {
+      width: 65%;
+      height: 14px;
+    }
+
+    .skeleton-line--museum {
+      width: 40%;
+    }
+
+    .skeleton-line--date {
+      width: 45%;
+    }
+
+    .skeleton-stub {
+      width: 66px;
+      flex-shrink: 0;
+      background: rgba(240,235,224,0.03);
+    }
+
+    @keyframes skeletonPulse {
+      0%, 100% { opacity: 0.5; }
+      50%       { opacity: 1; }
     }
 
     /* フッター */
@@ -1207,17 +1396,56 @@
     .book-cover:hover .book-cover-hint { animation: none; opacity: 0.55; }
 
     @media (max-width: 480px) {
-      .header   { padding: 24px 20px 20px; }
-      .controls { padding: 14px 16px; flex-wrap: wrap; }
-      .page-title { font-size: 20px; }
-      .search-input { width: 100%; }
-      #search { width: 100%; }
-      .ticket-link { margin: 0 8px; }
-      .ticket-stub { width: 50px; }
-      .ticket-img-wrap { width: 70px; }
+      /* ヘッダー */
+      .header     { padding: 20px 16px 16px; }
+      .page-title { font-size: 18px; }
+      .nav-tab    { padding: 6px 12px; font-size: 10px; }
+
+      /* コントロールバー */
+      .controls { padding: 12px 16px; flex-wrap: wrap; gap: 12px; }
+      #search   { width: 100%; order: 3; }
+
+      /* チケット */
+      .ticket-link     { margin: 0 8px; }
+      .ticket-img-wrap { width: 72px; }
+      .ticket-body     { padding: 10px 12px; }
+      .ticket-title    { font-size: 13px; }
+      .ticket-stub     { width: 48px; }
+      .stub-museum     { font-size: 8px; }
+
+      /* カード下部 */
+      .card-distance { padding: 5px 16px 3px; font-size: 10px; }
+      .card-footer   { padding: 5px 16px 8px; }
+
+      /* 本（パンフレット） */
       .book { padding: 10px 8px 4px; }
-      .card-distance { padding-left: 16px; padding-right: 16px; }
-      .card-footer   { padding-left: 16px; padding-right: 16px; }
+
+      /* book-spread を縦積みに */
+      .book-spread { flex-direction: column; max-height: none; }
+      .book-left   { width: 100%; height: 140px; flex-shrink: 0; }
+      .book-gutter { width: 100%; height: 12px; flex-shrink: 0; }
+      .book-right  { height: auto; min-height: 120px; flex: 1; }
+
+      /* 高さオーバーライドをモバイルで無効化 */
+      .bc-panel-portrait .book-left,
+      .bc-panel-portrait .book-right,
+      .bc-panel-portrait .book-gutter,
+      .bc-panel-oval .book-left,
+      .bc-panel-oval .book-right,
+      .bc-panel-oval .book-gutter,
+      .bc-kakemono-wrap .book-left,
+      .bc-kakemono-wrap .book-right,
+      .bc-kakemono-wrap .book-gutter {
+        height: auto;
+      }
+
+      /* パンフレットの形状（モバイルで見やすく） */
+      .bc-panel-portrait { width: 80%; }
+      .bc-panel-oval     { width: 94%; }
+      .bc-kakemono-wrap  { padding: 4px 15% 14px; }
+      .bc-vinyl-wrap     { padding: 4px 4% 16px; }
+      .bc-crt-wrap       { padding: 0 2% 28px; }
+      .bc-hex-wrap       { padding: 6px 3% 16px; }
     }
   </style>
 </head>
@@ -1236,6 +1464,14 @@
     </nav>
   </header>
 
+  <!-- エリアフィルタータブ -->
+  <div class="area-tabs" id="area-tabs">
+    <button class="area-tab active" data-area="all">すべて</button>
+    <button class="area-tab" data-area="上野">上野</button>
+    <button class="area-tab" data-area="六本木">六本木</button>
+    <button class="area-tab" data-area="丸の内">丸の内</button>
+  </div>
+
   <div class="controls">
     <span class="controls-label">Sort</span>
     <select id="sort" class="sort-select">
@@ -1252,11 +1488,23 @@
   <div id="status"></div>
   <div class="grid" id="list"></div>
 
+  <!-- ページトップボタン -->
+  <button id="back-to-top" aria-label="ページトップへ">↑</button>
+
   <footer class="footer">
     <div class="footer-text">東京の展覧会を、映画のように。</div>
   </footer>
 
   <script>
+  /* ===== エリア定義 ===== */
+  const AREA_MAP = {
+    "上野":   ["東京都美術館","国立西洋美術館","東京国立博物館","東京国立近代美術館","上野の森美術館","東京藝術大学大学美術館"],
+    "六本木":  ["森美術館","国立新美術館","サントリー美術館"],
+    "丸の内":  ["アーティゾン美術館","三菱一号館美術館","東京国立近代美術館"],
+  };
+
+  let activeArea = "all";
+
   const museumCoords = {
     "東京都美術館":               { lat: 35.7172, lng: 139.7765 },
     "東京国立近代美術館":          { lat: 35.6909, lng: 139.7544 },
@@ -1318,11 +1566,33 @@
   function getCoord(name) { return museumCoords[name] || defaultCoord; }
 
   function getArea(name) {
-    const ueno = ["東京都美術館","国立西洋美術館","東京国立博物館","上野の森美術館","東京藝術大学大学美術館","東京国立近代美術館"];
-    return ueno.includes(name) ? "上野" : "その他";
+    for (const [area, museums] of Object.entries(AREA_MAP)) {
+      if (museums.includes(name)) return area;
+    }
+    return "その他";
+  }
+
+  function showSkeleton() {
+    const list = document.getElementById("list");
+    const skeletonHtml = Array(3).fill(0).map(() => `
+      <div class="skeleton-card">
+        <div class="skeleton-img"></div>
+        <div class="skeleton-body">
+          <div>
+            <div class="skeleton-line" style="width:28%;margin-bottom:10px;"></div>
+            <div class="skeleton-line skeleton-line--title" style="margin-bottom:8px;"></div>
+            <div class="skeleton-line skeleton-line--museum"></div>
+          </div>
+          <div class="skeleton-line skeleton-line--date"></div>
+        </div>
+        <div class="skeleton-stub"></div>
+      </div>
+    `).join("");
+    list.innerHTML = skeletonHtml;
   }
 
   async function fetchExhibitions() {
+    showSkeleton();
     try {
       const res = await fetch("exhibitions.json");
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -1330,6 +1600,7 @@
       exhibitions = raw.map(e => ({ ...e, ...getCoord(e.museum), area: getArea(e.museum) }));
       render();
     } catch (err) {
+      document.getElementById("list").innerHTML = "";
       const el = document.getElementById("status");
       el.style.display = "block";
       el.textContent = `データ読み込み失敗: exhibitions.json が見つかりません`;
@@ -1368,6 +1639,12 @@
 
     let data = exhibitions.filter(e => !e.end || new Date(e.end) >= now);
 
+    // エリアフィルタ
+    if (activeArea !== "all") {
+      const areaMuseums = AREA_MAP[activeArea] || [];
+      data = data.filter(e => areaMuseums.includes(e.museum));
+    }
+
     // キーワードフィルタ
     if (searchVal) {
       data = data.filter(e =>
@@ -1394,7 +1671,12 @@
     list.innerHTML = "";
 
     if (data.length === 0) {
-      list.innerHTML = `<div class="empty">該当する展覧会が見つかりませんでした</div>`;
+      list.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">✦</div>
+          <div class="empty-title">No Exhibitions Found</div>
+          <div class="empty-sub">検索条件を変えてみてください</div>
+        </div>`;
       return;
     }
 
@@ -1403,6 +1685,9 @@
       const imgSrc   = (e.image_url && e.image_url !== "")
         ? e.image_url
         : `https://picsum.photos/seed/${encodeURIComponent(e.title)}/400/600`;
+      const artworkSrc = (e.artwork_url && e.artwork_url !== "")
+        ? e.artwork_url
+        : imgSrc;  // artwork_urlがなければポスター画像を使用
       const fallback = `https://picsum.photos/seed/${encodeURIComponent(e.museum)}/400/600`;
       const num      = String(idx + 1).padStart(4, "0");
 
@@ -1455,6 +1740,7 @@
           <a href="https://www.google.com/maps/search/?api=1&query=${e.lat},${e.lng}" target="_blank">地図で見る</a>
           <a href="https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}" target="_blank">ルート</a>
           ${e.url ? `<button class="copy-link-btn" data-copy-url="${e.url}" aria-label="リンクをコピー">リンクをコピー</button>` : ""}
+          <button class="print-btn" data-print-idx="${idx}" aria-label="印刷">印刷</button>
         </div>
 
         <!-- 本（パンフレット） -->
@@ -1469,7 +1755,7 @@
                 <div class="book-flip-ghost book-flip-ghost--1"></div>
                 <div class="book-flip-ghost book-flip-ghost--2"></div>
                 <div class="book-cover-bg"
-                     style="background-image:url('${imgSrc}');"
+                     style="background-image:url('${artworkSrc}');"
                      onerror="this.style.backgroundImage='url(${fallback})'"></div>
                 <div class="book-cover-overlay" style="background:${th.overlay}"></div>
                 ${th.coverInner}
@@ -1616,7 +1902,30 @@
   document.getElementById("sort").addEventListener("change", render);
   document.getElementById("search").addEventListener("input", render);
 
-  // イベント委譲（お気に入り・訪問済み・URLコピー）
+  /* ===== エリアフィルタータブ ===== */
+  document.getElementById("area-tabs").addEventListener("click", function(e) {
+    const tab = e.target.closest(".area-tab");
+    if (!tab) return;
+    document.querySelectorAll(".area-tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    activeArea = tab.dataset.area;
+    render();
+  });
+
+  /* ===== ページトップボタン ===== */
+  const backToTop = document.getElementById("back-to-top");
+  window.addEventListener("scroll", function() {
+    if (window.scrollY >= 300) {
+      backToTop.classList.add("visible");
+    } else {
+      backToTop.classList.remove("visible");
+    }
+  }, { passive: true });
+  backToTop.addEventListener("click", function() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // イベント委譲（お気に入り・訪問済み・URLコピー・印刷）
   document.getElementById("list").addEventListener("click", function(e) {
     // お気に入りボタン
     const favBtn = e.target.closest(".fav-btn");
@@ -1675,6 +1984,21 @@
           copyBtn.classList.remove("copied");
         }, 1500);
       });
+      return;
+    }
+
+    // 印刷ボタン
+    const printBtn = e.target.closest(".print-btn");
+    if (printBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const card = printBtn.closest(".card");
+      if (!card) return;
+      card.classList.add("printing");
+      document.body.classList.add("print-single");
+      window.print();
+      document.body.classList.remove("print-single");
+      card.classList.remove("printing");
       return;
     }
   });
