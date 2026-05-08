@@ -25,7 +25,7 @@
 
     /* ヘッダー */
     .header {
-      padding: 32px 48px 28px;
+      padding: 36px 52px 30px;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
@@ -82,7 +82,7 @@
 
     /* コントロール */
     .controls {
-      padding: 18px 48px;
+      padding: 20px 52px;
       display: flex;
       align-items: center;
       gap: 20px;
@@ -131,8 +131,8 @@
     .grid {
       display: flex;
       flex-direction: column;
-      gap: 24px;
-      padding: 20px 0 40px;
+      gap: 32px;
+      padding: 32px 0 60px;
     }
 
     /* カード外枠 */
@@ -147,24 +147,67 @@
       text-decoration: none;
       color: inherit;
       min-height: 130px;
-      background: #f0ebe0;
+      background-color: #f2ede3;
       position: relative;
-      transition: filter 0.3s;
-      margin: 0 16px;
+      transition: filter 0.3s, box-shadow 0.3s, transform 0.3s;
+      margin: 0 20px;
       border-radius: 2px;
-      /* 紙テクスチャ */
+      /* サーマルペーパー風テクスチャ */
       background-image:
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-        linear-gradient(160deg, #f5f0e8 0%, #ede8dc 60%, #f0ebe0 100%);
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E"),
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0px, transparent 2px,
+          rgba(0,0,0,0.012) 2px, rgba(0,0,0,0.012) 3px
+        ),
+        linear-gradient(to right, rgba(0,0,0,0.06) 0%, transparent 8%),
+        linear-gradient(168deg, #f7f3ea 0%, #f0ebe0 45%, #ece7dc 100%);
     }
-    .ticket-link:hover { filter: brightness(1.03) contrast(1.01); }
+    /* ゴールド箔押し風アクセントライン */
+    .ticket-link::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right,
+        transparent 0%,
+        rgba(201,168,76,0.6) 20%,
+        rgba(201,168,76,0.9) 50%,
+        rgba(201,168,76,0.6) 80%,
+        transparent 100%);
+      z-index: 2;
+    }
+    .ticket-link:hover {
+      filter: brightness(1.04) contrast(1.02);
+      box-shadow:
+        0 4px 20px rgba(0,0,0,0.35),
+        0 1px 4px rgba(0,0,0,0.2);
+      transform: translateY(-1px);
+    }
 
     /* 左：画像 */
     .ticket-img-wrap {
       width: 90px;
       flex-shrink: 0;
       overflow: hidden;
+      position: relative;
     }
+    /* フィルムストリップ風の枠 */
+    .ticket-img-wrap::before,
+    .ticket-img-wrap::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 18px;
+      background: repeating-linear-gradient(
+        to right,
+        #1a1a1a 0px, #1a1a1a 6px,
+        transparent 6px, transparent 10px
+      );
+      z-index: 2;
+    }
+    .ticket-img-wrap::before { top: 0; }
+    .ticket-img-wrap::after  { bottom: 0; }
 
     .ticket-img {
       width: 100%;
@@ -179,7 +222,7 @@
     /* 中：本文 */
     .ticket-body {
       flex: 1;
-      padding: 14px 20px;
+      padding: 18px 24px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -237,36 +280,41 @@
       flex-direction: column;
       align-items: center;
       position: relative;
-      background: #f0ebe0;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          #f0ebe0 0px, #f0ebe0 4px,
+          rgba(0,0,0,0.08) 4px, rgba(0,0,0,0.08) 5px,
+          #f0ebe0 5px, #f0ebe0 8px
+        );
     }
 
-    .ticket-perf::after {
-      content: '';
-      position: absolute;
-      top: 8px;
-      bottom: 8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      border-left: 1px dashed rgba(0,0,0,0.18);
-    }
+    .ticket-perf::after { display: none; }
 
     .perf-notch {
-      width: 14px;
-      height: 7px;
+      width: 16px;
+      height: 9px;
       background: var(--dark);
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
       flex-shrink: 0;
       z-index: 1;
     }
 
-    .perf-notch.top    { border-radius: 0 0 7px 7px; }
-    .perf-notch.bottom { border-radius: 7px 7px 0 0; margin-top: auto; }
+    .perf-notch.top    { border-radius: 0 0 8px 8px; }
+    .perf-notch.bottom { border-radius: 8px 8px 0 0; margin-top: auto; }
 
     /* 右：スタブ */
     .ticket-stub {
       width: 66px;
       flex-shrink: 0;
-      background: #e5e0d5;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0px, transparent 3px,
+          rgba(0,0,0,0.015) 3px, rgba(0,0,0,0.015) 4px
+        ),
+        linear-gradient(to right, #ddd8cc, #e5e0d5);
+      border-left: 1px dashed rgba(0,0,0,0.12);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -295,17 +343,28 @@
     }
 
     .stub-number {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 8px;
-      color: #ccc;
+      font-family: 'Courier New', monospace;
+      font-size: 7px;
       letter-spacing: 0.08em;
+      color: #aaa;
+      /* バーコード風の細い縦線を下に追加 */
+      padding-bottom: 14px;
+      background:
+        repeating-linear-gradient(
+          to right,
+          #888 0px, #888 1px,
+          transparent 1px, transparent 2px,
+          #888 2px, #888 3px,
+          transparent 3px, transparent 5px
+        )
+        bottom center / 40px 10px no-repeat;
     }
 
     /* 終了間近スタンプ */
     .ticket-ending {
       position: absolute;
-      bottom: 44px;
-      right: 80px;
+      bottom: 52px;
+      right: 84px;
       font-size: 7px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -321,12 +380,12 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: 11px;
       color: rgba(240,235,224,0.38);
-      padding: 6px 32px 4px;
+      padding: 8px 32px 5px;
       letter-spacing: 0.05em;
     }
 
     .card-footer {
-      padding: 6px 32px 10px;
+      padding: 8px 32px 14px;
       display: flex;
       gap: 16px;
     }
@@ -344,7 +403,7 @@
 
     /* ===== 本（パンフレット） ===== */
     .book {
-      padding: 16px 16px 4px;
+      padding: 20px 20px 8px;
     }
 
     /* パネル：表紙と開いたページを同じ幅に包む */
@@ -398,10 +457,23 @@
       cursor: pointer;
       user-select: none;
       transform-origin: left center;  /* 本の背（左端）を軸に右へめくる */
-      transition: filter 0.25s;
+      transition: box-shadow 0.3s, transform 0.3s, filter 0.25s;
       will-change: transform;
+      box-shadow:
+        2px 2px 0 rgba(0,0,0,0.5),
+        4px 4px 0 rgba(0,0,0,0.3),
+        6px 6px 0 rgba(0,0,0,0.15),
+        0 20px 60px rgba(0,0,0,0.6);
     }
-    .book-cover:hover { filter: brightness(1.08) contrast(1.03); }
+    .book-cover:hover {
+      box-shadow:
+        3px 3px 0 rgba(0,0,0,0.5),
+        6px 6px 0 rgba(0,0,0,0.3),
+        10px 10px 0 rgba(0,0,0,0.15),
+        0 30px 80px rgba(0,0,0,0.7);
+      transform: translateX(-2px) translateY(-2px);
+      filter: brightness(1.08) contrast(1.03);
+    }
 
     /* めくり中の光沢シェーン */
     .book-cover::after {
@@ -458,9 +530,13 @@
     /* 内側装飾ボーダー */
     .book-cover-inner-border {
       position: absolute;
-      inset: 10px;
+      inset: 8px;
       pointer-events: none;
       z-index: 2;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow:
+        inset 0 0 0 1px rgba(0,0,0,0.3),
+        inset 0 0 20px rgba(0,0,0,0.2);
     }
 
     /* テキストコンテンツ */
@@ -482,19 +558,27 @@
     }
     .book-cover-main-title {
       font-family: 'Noto Serif JP', serif;
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 400;
-      line-height: 1.6;
-      letter-spacing: 0.04em;
+      line-height: 1.5;
+      letter-spacing: 0.06em;
       color: #fff;
-      text-shadow: 0 1px 8px rgba(0,0,0,0.7), 0 2px 24px rgba(0,0,0,0.5);
+      text-shadow:
+        0 1px 0 rgba(255,255,255,0.1),
+        0 -1px 0 rgba(0,0,0,0.8),
+        0 2px 12px rgba(0,0,0,0.9),
+        0 4px 30px rgba(0,0,0,0.6);
       margin-bottom: 10px;
     }
     .book-cover-divider {
       height: 1px;
-      width: 36px;
-      margin-bottom: 9px;
-      opacity: 0.8;
+      width: 48px;
+      margin-bottom: 10px;
+      background: linear-gradient(to right,
+        transparent, currentColor 30%, #ffe080 50%, currentColor 70%, transparent
+      ) !important;
+      opacity: 1;
+      box-shadow: 0 0 4px rgba(255,220,80,0.4);
     }
     .book-cover-museum {
       font-family: 'Cormorant Garamond', serif;
@@ -514,12 +598,15 @@
     .book-cover-hint {
       position: absolute;
       z-index: 3;
-      top: 14px; right: 16px;
+      top: auto;
+      bottom: 14px;
+      right: 16px;
       font-family: 'Cormorant Garamond', serif;
-      font-size: 9px;
-      letter-spacing: 0.22em;
+      font-size: 8px;
+      letter-spacing: 0.35em;
       text-transform: uppercase;
       color: rgba(255,255,255,0.28);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
       display: flex; align-items: center; gap: 5px;
       transition: color 0.25s;
     }
@@ -880,18 +967,26 @@
 
     /* 背の折り目（ガター） ─ 写実的な綴じ目 */
     .book-gutter {
-      width: 22px;
+      width: 18px;
       flex-shrink: 0;
       position: relative;
-      background: linear-gradient(to right,
-        rgba(0,0,0,0.32) 0%,
-        rgba(0,0,0,0.14) 20%,
-        rgba(255,255,255,0.12) 35%,
-        rgba(255,255,255,0.28) 50%,
-        rgba(255,255,255,0.08) 65%,
-        rgba(0,0,0,0.08) 80%,
-        rgba(0,0,0,0.03) 100%
-      );
+      background:
+        /* 製本クロスの質感 */
+        repeating-linear-gradient(
+          to bottom,
+          rgba(0,0,0,0.0) 0px,
+          rgba(0,0,0,0.04) 1px,
+          rgba(0,0,0,0.0) 2px
+        ),
+        linear-gradient(to right,
+          rgba(0,0,0,0.45) 0%,
+          rgba(0,0,0,0.18) 25%,
+          rgba(255,255,255,0.18) 40%,
+          rgba(255,255,255,0.35) 50%,
+          rgba(255,255,255,0.10) 65%,
+          rgba(0,0,0,0.10) 85%,
+          rgba(0,0,0,0.05) 100%
+        );
       box-shadow:
         -3px 0 8px rgba(0,0,0,0.20),
          4px 0 10px rgba(0,0,0,0.12);
@@ -917,24 +1012,21 @@
       padding: 16px 16px 14px 14px;
       display: flex;
       flex-direction: column;
-      color: #1a1410;
+      color: #1c1810;
       position: relative;
       overflow: hidden;
-      /* 多層の紙テクスチャ */
-      background-color: #f3ede0;
+      /* 高級コート紙の多層テクスチャ */
+      background-color: #f5f0e6;
       background-image:
-        /* 細かいノイズグレイン */
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E"),
-        /* 左端のガター影 */
-        linear-gradient(to right, rgba(0,0,0,0.07) 0%, rgba(0,0,0,0.02) 12%, transparent 30%),
-        /* 右端の微妙な暗み */
-        linear-gradient(to left, rgba(0,0,0,0.04) 0%, transparent 20%),
-        /* 上端の影（本を開いたときの影） */
-        linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, transparent 8%),
-        /* 下端の影（ページが丸まる感じ） */
-        linear-gradient(to top, rgba(0,0,0,0.06) 0%, transparent 10%),
-        /* 紙の色の微妙なグラデーション */
-        linear-gradient(155deg, #f8f3e8 0%, #f3ede0 40%, #ede7d8 75%, #e8e1d4 100%);
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E"),
+        /* 上から差し込む光 */
+        linear-gradient(to bottom, rgba(255,255,255,0.12) 0%, transparent 25%),
+        /* ガター側の影 */
+        linear-gradient(to right, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.03) 15%, transparent 35%),
+        /* 右端の影 */
+        linear-gradient(to left, rgba(0,0,0,0.04) 0%, transparent 15%),
+        /* 高級コート紙のグラデーション */
+        linear-gradient(160deg, #faf5eb 0%, #f5f0e6 35%, #ede8da 70%, #e8e2d4 100%);
     }
     /* ページ右端のページ断面（積み重なった紙の厚み） */
     .book-right::after {
@@ -979,9 +1071,10 @@
       font-family: 'Noto Serif JP', serif;
       font-size: 11px;
       font-weight: 300;
-      color: #2a2a2a;
-      line-height: 1.9;
-      letter-spacing: 0.04em;
+      color: #1c1810;
+      line-height: 2.0;
+      letter-spacing: 0.06em;
+      text-indent: 1em;
       flex: 1;
       overflow-y: auto;
       scrollbar-width: thin;
@@ -989,7 +1082,7 @@
     }
 
     .pamphlet-story p { margin: 0; }
-    .pamphlet-story p + p { margin-top: 1.1em; }
+    .pamphlet-story p + p { margin-top: 0.8em; text-indent: 1em; }
 
     /* ページ番号（右ページ下） */
     .book-right-folio {
@@ -1048,7 +1141,7 @@
     /* カウントダウンバッジ */
     .ticket-countdown {
       position: absolute;
-      top: 8px; left: 8px;
+      top: 10px; left: 10px;
       font-family: 'Cormorant Garamond', serif;
       font-size: 9px;
       letter-spacing: 0.18em;
@@ -1065,9 +1158,9 @@
 
     /* ===== エリアフィルタータブ ===== */
     .area-tabs {
-      padding: 10px 48px 0;
+      padding: 12px 52px 0;
       display: flex;
-      gap: 0;
+      gap: 10px;
       border-bottom: 1px solid rgba(240,235,224,0.06);
     }
 
@@ -1395,6 +1488,81 @@
     }
     .book-cover:hover .book-cover-hint { animation: none; opacity: 0.55; }
 
+    /* ===== 感想投稿セクション ===== */
+    .review-section {
+      display: none;
+      padding: 16px 20px 20px;
+      border-top: 1px solid rgba(240,235,224,0.08);
+      margin: 0 20px 8px;
+    }
+    .book.open .review-section { display: block; }
+
+    .review-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px;
+    }
+    .review-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px; letter-spacing: 0.3em;
+      color: rgba(240,235,224,0.45);
+    }
+    .review-count {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px; color: rgba(240,235,224,0.25);
+    }
+
+    /* 投稿されたレビューカード */
+    .review-item {
+      padding: 10px 14px; margin-bottom: 8px;
+      border: 1px solid rgba(240,235,224,0.07);
+      background: rgba(240,235,224,0.02);
+    }
+    .review-item-header {
+      display: flex; justify-content: space-between;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px; color: rgba(240,235,224,0.35);
+      margin-bottom: 6px;
+    }
+    .review-item-text {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 12px; line-height: 1.8;
+      color: rgba(240,235,224,0.7);
+    }
+
+    /* 投稿フォーム */
+    .review-form { margin-top: 12px; }
+    .review-name-input, .review-textarea {
+      width: 100%; background: rgba(240,235,224,0.04);
+      border: 1px solid rgba(240,235,224,0.1);
+      color: var(--cream);
+      font-family: 'Noto Serif JP', serif; font-size: 12px;
+      padding: 8px 12px; outline: none; resize: vertical;
+      transition: border-color 0.2s;
+    }
+    .review-name-input { margin-bottom: 8px; height: 34px; resize: none; }
+    .review-name-input:focus, .review-textarea:focus {
+      border-color: rgba(201,168,76,0.4);
+    }
+    .review-form-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 8px;
+    }
+    .review-char-count {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px; color: rgba(240,235,224,0.2);
+    }
+    .review-submit-btn {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px; letter-spacing: 0.2em;
+      background: none; border: 1px solid rgba(201,168,76,0.4);
+      color: rgba(201,168,76,0.8); padding: 6px 18px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .review-submit-btn:hover {
+      background: rgba(201,168,76,0.1);
+      border-color: rgba(201,168,76,0.7);
+    }
+
     @media (max-width: 480px) {
       /* ヘッダー */
       .header     { padding: 20px 16px 16px; }
@@ -1420,13 +1588,13 @@
       /* 本（パンフレット） */
       .book { padding: 10px 8px 4px; }
 
-      /* book-spread を縦積みに */
-      .book-spread { flex-direction: column; max-height: none; }
-      .book-left   { width: 100%; height: 140px; flex-shrink: 0; }
-      .book-gutter { width: 100%; height: 12px; flex-shrink: 0; }
-      .book-right  { height: auto; min-height: 120px; flex: 1; }
+      /* モバイルでも左右並びを維持 */
+      .book-spread { flex-direction: row; }
+      .book-left   { width: 38%; height: 180px; flex-shrink: 0; }
+      .book-gutter { width: 16px; height: auto; flex-shrink: 0; }
+      .book-right  { flex: 1; height: 180px; overflow-y: auto; }
 
-      /* 高さオーバーライドをモバイルで無効化 */
+      /* 高さオーバーライドもモバイル用に調整 */
       .bc-panel-portrait .book-left,
       .bc-panel-portrait .book-right,
       .bc-panel-portrait .book-gutter,
@@ -1435,9 +1603,7 @@
       .bc-panel-oval .book-gutter,
       .bc-kakemono-wrap .book-left,
       .bc-kakemono-wrap .book-right,
-      .bc-kakemono-wrap .book-gutter {
-        height: auto;
-      }
+      .bc-kakemono-wrap .book-gutter { height: 180px; }
 
       /* パンフレットの形状（モバイルで見やすく） */
       .bc-panel-portrait { width: 80%; }
@@ -1459,8 +1625,9 @@
       <div class="page-title">開催中の特別展</div>
     </div>
     <nav class="nav-tabs">
-      <a href="list.html" class="nav-tab active">一覧</a>
-      <a href="map.html"  class="nav-tab">地図</a>
+      <a href="list.html"     class="nav-tab active">一覧</a>
+      <a href="map.html"      class="nav-tab">地図</a>
+      <a href="calendar.html" class="nav-tab">カレンダー</a>
     </nav>
   </header>
 
@@ -1737,6 +1904,7 @@
         ${days <= 7 ? `<div class="ticket-ending">Ending Soon</div>` : ""}
         ${distanceHtml}
         <div class="card-footer">
+          <a href="exhibition.html?title=${encodeURIComponent(e.title)}">詳細</a>
           <a href="https://www.google.com/maps/search/?api=1&query=${e.lat},${e.lng}" target="_blank">地図で見る</a>
           <a href="https://www.google.com/maps/dir/?api=1&destination=${e.lat},${e.lng}" target="_blank">ルート</a>
           ${e.url ? `<button class="copy-link-btn" data-copy-url="${e.url}" aria-label="リンクをコピー">リンクをコピー</button>` : ""}
@@ -1787,6 +1955,21 @@
                     : `<div class="pamphlet-story"><p>${e.title}</p></div>`
                   }
                   <button class="book-close-btn" onclick="toggleBook(${idx})">× 閉じる</button>
+                </div>
+              </div>
+            </div>
+            <div class="review-section" id="review-${idx}">
+              <div class="review-header">
+                <span class="review-label">— 感想 —</span>
+                <span class="review-count" id="review-count-${idx}">0件</span>
+              </div>
+              <div class="review-list" id="review-list-${idx}"></div>
+              <div class="review-form">
+                <input type="text" class="review-name-input" placeholder="ペンネーム（省略可）" maxlength="20">
+                <textarea class="review-textarea" placeholder="この展覧会の感想を書いてください..." rows="3" maxlength="300"></textarea>
+                <div class="review-form-footer">
+                  <span class="review-char-count">0/300</span>
+                  <button class="review-submit-btn" onclick="submitReview(${idx}, this)">投稿</button>
                 </div>
               </div>
             </div>
@@ -1887,6 +2070,8 @@
       cover.addEventListener('animationend', () => {
         cover.classList.remove('flipping');
         book.classList.add('open');
+        const title = book.querySelector('.book-cover-main-title')?.textContent || idx;
+        loadReviews(idx, title);
       }, { once: true });
     } else {
       book.classList.remove('open');
@@ -1897,6 +2082,63 @@
         }, { once: true });
       });
     }
+  }
+
+  /* ===== 感想投稿機能 ===== */
+  function loadReviews(idx, title) {
+    const all = JSON.parse(localStorage.getItem('munch_reviews') || '{}');
+    const reviews = all[title] || [];
+    const list = document.getElementById(`review-list-${idx}`);
+    const count = document.getElementById(`review-count-${idx}`);
+    if (!list) return;
+    count.textContent = `${reviews.length}件`;
+    list.innerHTML = reviews.slice(-10).reverse().map(r => `
+      <div class="review-item">
+        <div class="review-item-header">
+          <span>${r.name || '匿名'}</span>
+          <span>${r.date}</span>
+        </div>
+        <div class="review-item-text">${r.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+      </div>
+    `).join('');
+
+    const section = document.getElementById(`review-${idx}`);
+    if (!section) return;
+    const textarea = section.querySelector('.review-textarea');
+    if (textarea && !textarea.dataset.listenerAdded) {
+      textarea.dataset.listenerAdded = 'true';
+      textarea.addEventListener('input', () => {
+        section.querySelector('.review-char-count').textContent = `${textarea.value.length}/300`;
+      });
+    }
+  }
+
+  function submitReview(idx, btn) {
+    const section = document.getElementById(`review-${idx}`);
+    const nameInput = section.querySelector('.review-name-input');
+    const textarea  = section.querySelector('.review-textarea');
+    const text = textarea.value.trim();
+    if (!text) return;
+
+    const book = document.getElementById(`book-${idx}`);
+    const title = book.querySelector('.book-cover-main-title')?.textContent || idx;
+
+    const all = JSON.parse(localStorage.getItem('munch_reviews') || '{}');
+    if (!all[title]) all[title] = [];
+    all[title].push({
+      name: nameInput.value.trim(),
+      text,
+      date: new Date().toLocaleDateString('ja-JP', {month:'numeric',day:'numeric'})
+    });
+    localStorage.setItem('munch_reviews', JSON.stringify(all));
+
+    textarea.value = '';
+    nameInput.value = '';
+    section.querySelector('.review-char-count').textContent = '0/300';
+    loadReviews(idx, title);
+
+    btn.textContent = '✓ 投稿しました';
+    setTimeout(() => btn.textContent = '投稿', 2000);
   }
 
   document.getElementById("sort").addEventListener("change", render);

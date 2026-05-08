@@ -214,7 +214,7 @@
   ============================================================ */
   #hero {
     position: relative;
-    height: 100vh;
+    min-height: 100vh;
     overflow: hidden;
   }
 
@@ -236,6 +236,14 @@
     pointer-events: none;
   }
 
+  /* YouTube iframeが失敗した場合のフォールバック */
+  .video-fallback {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #0a0a0a 0%, #111 40%, #0a0a0a 100%);
+    z-index: -1;
+  }
+
   /* 映画フィルター層 */
   .film-overlay {
     position: absolute;
@@ -244,17 +252,45 @@
     background: rgba(0,0,0,0.3);
   }
 
-  /* グレイン */
+  /* グレイン（2層リッチグレイン） */
   .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* 第1層：粗いフィルムグレイン */
+  .grain::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+    animation: grainShift 0.08s steps(1) infinite;
+  }
+
+  /* 第2層：細かいテクスチャ */
+  .grain::after {
+    content: '';
     position: fixed;
     inset: -50%;
     width: 200%;
     height: 200%;
-    z-index: 2;
-    opacity: 0.045;
+    z-index: 9997;
+    pointer-events: none;
+    opacity: 0.03;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
     animation: grain-move 0.8s steps(1) infinite;
-    pointer-events: none;
+  }
+
+  @keyframes grainShift {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(-2px, 1px); }
+    50%  { transform: translate(1px, -2px); }
+    75%  { transform: translate(-1px, 2px); }
+    100% { transform: translate(2px, -1px); }
   }
 
   @keyframes grain-move {
@@ -336,13 +372,14 @@
   /* ロゴ */
   .logo {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 13px;
+    font-size: clamp(14px, 1.5vw, 18px);
     font-weight: 300;
-    letter-spacing: 0.4em;
+    letter-spacing: 0.45em;
     text-transform: uppercase;
-    color: rgba(240,235,224,0.7);
+    color: rgba(240,235,224,0.75);
     opacity: 0;
     animation: fadeIn 1.2s ease 0.3s forwards;
+    -webkit-text-stroke: 0.3px rgba(201,168,76,0.2);
   }
 
   /* チラシカード */
@@ -712,8 +749,8 @@
   .exhibition-card {
     position: relative;
     background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(240,235,224,0.06);
-    transition: border-color 0.4s ease, transform 0.4s ease, background 0.4s ease;
+    border: 1px solid rgba(240,235,224,0.1);
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s, border-color 0.4s ease, background 0.4s ease;
     text-decoration: none;
     color: var(--cream);
     display: block;
@@ -729,20 +766,22 @@
     transform: translateY(0);
     transition:
       opacity 0.8s ease,
-      transform 0.4s ease,
+      transform 0.4s cubic-bezier(0.16,1,0.3,1),
+      box-shadow 0.4s,
       border-color 0.4s ease,
-      background 0.4s ease,
-      filter 0.4s ease;
+      background 0.4s ease;
   }
 
   .exhibition-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.7),
+      0 0 0 1px rgba(201,168,76,0.2);
     border-color: rgba(201,168,76,0.28);
     background: rgba(255,255,255,0.05);
-    transform: translateY(-5px) scale(1.012);
-    filter: brightness(1.08);
   }
 
-  /* カード内ダブルボーダー */
+  /* カード内ダブルボーダー（::before）＋光沢ライン（::after 上書き） */
   .exhibition-card::before {
     content: '';
     position: absolute;
@@ -757,6 +796,18 @@
     border-color: rgba(201,168,76,0.1);
   }
 
+  /* ポスターの光沢ライン */
+  .exhibition-card .card-image-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+      rgba(255,255,255,0.08) 0%, transparent 40%,
+      transparent 60%, rgba(0,0,0,0.08) 100%);
+    pointer-events: none;
+    z-index: 3;
+  }
+
   .card-image-wrap {
     position: relative;
     aspect-ratio: 4/3;
@@ -769,13 +820,13 @@
     height: 100%;
     object-fit: cover;
     display: block;
-    filter: grayscale(0.3) contrast(1.05) sepia(0.08);
-    transition: transform 0.6s ease, filter 0.6s ease;
+    filter: sepia(0.12) contrast(1.1) brightness(0.9);
+    transition: transform 0.4s ease, filter 0.4s ease;
   }
 
   .exhibition-card:hover .card-img {
-    transform: scale(1.04);
-    filter: grayscale(0.1) contrast(1.08) sepia(0.05);
+    transform: scale(1.06);
+    filter: sepia(0.05) contrast(1.15) brightness(0.95);
   }
 
   /* 画像上のゴールドオーバーレイ（ホバー時） */
@@ -1189,12 +1240,21 @@
     height: 6px;
     border-radius: 50%;
     background: var(--gold);
-    animation: pulseDot 1.6s ease-in-out infinite;
+    box-shadow: 0 0 6px rgba(201,168,76,0.8), 0 0 12px rgba(201,168,76,0.4);
+    animation: closingPulse 1.4s ease-in-out infinite;
   }
 
-  @keyframes pulseDot {
-    0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
-    50%       { opacity: 0.4; transform: translateY(-50%) scale(0.7); }
+  @keyframes closingPulse {
+    0%, 100% {
+      opacity: 1;
+      transform: translateY(-50%) scale(1);
+      box-shadow: 0 0 6px rgba(201,168,76,0.8), 0 0 12px rgba(201,168,76,0.4);
+    }
+    50% {
+      opacity: 0.5;
+      transform: translateY(-50%) scale(0.8);
+      box-shadow: 0 0 2px rgba(201,168,76,0.3);
+    }
   }
 
   .closing-header-line {
@@ -1311,16 +1371,31 @@
   .daily-pick-overlay {
     position: absolute;
     inset: 0;
+    z-index: 2;
     background: linear-gradient(
       to bottom,
-      rgba(0,0,0,0.15) 0%,
-      rgba(0,0,0,0.2) 40%,
-      rgba(0,0,0,0.82) 100%
+      rgba(0,0,0,0.1) 0%,
+      rgba(0,0,0,0.15) 30%,
+      rgba(0,0,0,0.55) 65%,
+      rgba(0,0,0,0.92) 100%
     );
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     padding: 48px 72px;
+  }
+
+  /* 強いドラマチックビネット */
+  .daily-pick-inner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center,
+      transparent 35%,
+      rgba(0,0,0,0.55) 75%,
+      rgba(0,0,0,0.85) 100%);
+    pointer-events: none;
+    z-index: 1;
   }
 
   .daily-pick-label {
@@ -1334,13 +1409,16 @@
 
   .daily-pick-title {
     font-family: 'Noto Serif JP', serif;
-    font-size: clamp(20px, 3.5vw, 38px);
+    font-size: clamp(20px, 4vw, 32px);
     font-weight: 400;
     line-height: 1.55;
     letter-spacing: 0.06em;
-    color: var(--cream);
     margin-bottom: 8px;
     max-width: 600px;
+    background: linear-gradient(135deg, #f0ebe0 0%, #c9a84c 40%, #f0ebe0 70%, #c9a84c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .daily-pick-museum {
@@ -1376,9 +1454,37 @@
     border: 1px solid rgba(240,235,224,0.35);
     padding: 12px 28px;
     position: relative;
+    overflow: hidden;
     transition: color 0.35s ease, border-color 0.35s ease, background 0.35s ease;
     min-height: 44px;
     align-self: flex-start;
+  }
+
+  /* ホログラム風シマー */
+  .daily-pick-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      105deg,
+      transparent 30%,
+      rgba(201,168,76,0.25) 50%,
+      rgba(255,255,255,0.15) 55%,
+      rgba(201,168,76,0.1) 60%,
+      transparent 70%
+    );
+    animation: shimmer 3.2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes shimmer {
+    0%   { left: -100%; }
+    40%  { left: 200%; }
+    100% { left: 200%; }
   }
 
   .daily-pick-btn::after {
@@ -1731,7 +1837,8 @@
 <section id="hero">
   <!-- 動画背景 -->
   <div class="video-bg" id="videoBg">
-    <iframe id="yt" frameborder="0" playsinline allow="autoplay; fullscreen; encrypted-media; picture-in-picture"></iframe>
+    <div class="video-fallback"></div>
+    <iframe id="yt" frameborder="0" playsinline allow="autoplay; muted; loop; fullscreen; encrypted-media; picture-in-picture"></iframe>
   </div>
 
   <!-- フィルム演出 -->
@@ -2117,7 +2224,7 @@ function playVideo(index) {
   const v = VIDEOS[index];
   const start = Math.floor(Math.random() * 3600);
   document.getElementById("yt").src =
-    `https://www.youtube.com/embed/${v.id}?autoplay=1&mute=1&loop=1&playlist=${v.id}&start=${start}&controls=0&showinfo=0&modestbranding=1&playsinline=1`;
+    `https://www.youtube.com/embed/${v.id}?autoplay=1&mute=1&loop=1&playlist=${v.id}&start=${start}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1`;
   document.getElementById("counter").textContent = v.label;
 
   document.querySelectorAll(".vid-dot").forEach((d, i) => {
