@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MUnCh — Calendar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cream: #f0ebe0;
+      --gold:  #c9a84c;
+      --dark:  #0a0a0a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--dark);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;
+      min-height: 100vh;
+    }
+
+    /* ヘッダー */
+    .header {
+      padding: 32px 48px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid rgba(240,235,224,0.08);
+    }
+
+    .logo {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(240,235,224,0.6);
+    }
+
+    .logo-link { text-decoration: none; }
+
+    .page-title {
+      font-size: 26px;
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: 0.04em;
+      color: var(--cream);
+      margin-top: 6px;
+    }
+
+    /* タブナビ */
+    .nav-tabs { display: flex; }
+
+    .nav-tab {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(240,235,224,0.38);
+      text-decoration: none;
+      padding: 7px 18px;
+      border: 1px solid rgba(240,235,224,0.14);
+      transition: color 0.3s, background 0.3s, border-color 0.3s;
+    }
+
+    .nav-tab + .nav-tab { border-left: none; }
+
+    .nav-tab.active {
+      color: var(--cream);
+      background: rgba(240,235,224,0.07);
+      border-color: rgba(240,235,224,0.28);
+    }
+
+    .nav-tab:hover:not(.active) {
+      color: var(--gold);
+      border-color: rgba(201,168,76,0.35);
+    }
+
+    /* 月ナビゲーション */
+    .month-nav {
+      padding: 24px 48px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      border-bottom: 1px solid rgba(240,235,224,0.06);
+    }
+
+    .month-btn {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 12px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(240,235,224,0.45);
+      background: none;
+      border: 1px solid rgba(240,235,224,0.14);
+      padding: 6px 16px;
+      cursor: pointer;
+      transition: color 0.3s, border-color 0.3s;
+    }
+
+    .month-btn:hover {
+      color: var(--gold);
+      border-color: rgba(201,168,76,0.35);
+    }
+
+    .month-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: 0.08em;
+      color: var(--cream);
+      min-width: 160px;
+      text-align: center;
+    }
+
+    /* カレンダーコンテナ */
+    .calendar-wrap {
+      padding: 24px 48px;
+    }
+
+    /* 曜日ヘッダー */
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      margin-bottom: 1px;
+    }
+
+    .cal-weekday {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(240,235,224,0.28);
+      text-align: center;
+      padding: 8px 0;
+    }
+
+    .cal-weekday.sun { color: rgba(220,100,80,0.45); }
+    .cal-weekday.sat { color: rgba(100,140,220,0.45); }
+
+    /* カレンダーグリッド */
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: rgba(240,235,224,0.06);
+    }
+
+    .cal-day {
+      background: var(--dark);
+      min-height: 80px;
+      padding: 6px;
+      border: 1px solid rgba(240,235,224,0.04);
+      cursor: pointer;
+      transition: background 0.2s;
+      position: relative;
+    }
+
+    .cal-day:hover {
+      background: rgba(240,235,224,0.03);
+    }
+
+    .cal-day.other-month {
+      opacity: 0.3;
+    }
+
+    .cal-day.today {
+      border-color: rgba(201,168,76,0.25);
+    }
+
+    .cal-day.selected {
+      background: rgba(201,168,76,0.06);
+      border-color: rgba(201,168,76,0.35);
+    }
+
+    .cal-day-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      color: rgba(240,235,224,0.45);
+      line-height: 1;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .cal-day.today .cal-day-num {
+      color: var(--gold);
+      font-weight: 400;
+    }
+
+    .cal-day.sun .cal-day-num { color: rgba(220,100,80,0.5); }
+    .cal-day.sat .cal-day-num { color: rgba(100,140,220,0.5); }
+    .cal-day.today .cal-day-num { color: var(--gold) !important; }
+
+    /* バッジ */
+    .cal-badge {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 8px;
+      padding: 2px 4px;
+      margin-top: 2px;
+      border-radius: 1px;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      display: block;
+      opacity: 0.85;
+      transition: opacity 0.2s;
+    }
+
+    .cal-badge:hover { opacity: 1; }
+
+    .cal-badge .badge-mark {
+      font-size: 7px;
+      margin-right: 2px;
+      opacity: 0.8;
+    }
+
+    /* バッジの配色（展覧会ごとに循環） */
+    .cal-badge.theme-0 { background: rgba(139,176,204,0.22); color: #8fb0cc; border-left: 2px solid rgba(139,176,204,0.5); }
+    .cal-badge.theme-1 { background: rgba(201,168,76,0.18);  color: #c9a84c; border-left: 2px solid rgba(201,168,76,0.5); }
+    .cal-badge.theme-2 { background: rgba(104,136,208,0.20); color: #6888d0; border-left: 2px solid rgba(104,136,208,0.5); }
+    .cal-badge.theme-3 { background: rgba(122,188,160,0.20); color: #7abca0; border-left: 2px solid rgba(122,188,160,0.5); }
+    .cal-badge.theme-4 { background: rgba(192,184,176,0.18); color: #c0b8b0; border-left: 2px solid rgba(192,184,176,0.4); }
+    .cal-badge.theme-5 { background: rgba(224,80,80,0.16);   color: #e05050; border-left: 2px solid rgba(224,80,80,0.45); }
+    .cal-badge.theme-6 { background: rgba(200,168,128,0.20); color: #c8a880; border-left: 2px solid rgba(200,168,128,0.5); }
+    .cal-badge.theme-7 { background: rgba(200,128,64,0.18);  color: #c88040; border-left: 2px solid rgba(200,128,64,0.5); }
+    .cal-badge.theme-8 { background: rgba(192,40,32,0.16);   color: #c02820; border-left: 2px solid rgba(192,40,32,0.45); }
+    .cal-badge.theme-9 { background: rgba(80,184,104,0.18);  color: #50b868; border-left: 2px solid rgba(80,184,104,0.45); }
+
+    /* 日付クリック後の詳細パネル */
+    .day-detail {
+      padding: 0 48px;
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1), padding 0.3s;
+    }
+
+    .day-detail.open {
+      max-height: 800px;
+      padding: 0 48px 32px;
+    }
+
+    .day-detail-inner {
+      border-top: 1px solid rgba(201,168,76,0.2);
+      padding-top: 20px;
+    }
+
+    .day-detail-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-style: italic;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .day-detail-empty {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      color: rgba(240,235,224,0.22);
+      font-style: italic;
+    }
+
+    /* 詳細カードリスト */
+    .day-ex-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .day-ex-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 12px 16px;
+      border: 1px solid rgba(240,235,224,0.06);
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.25s, background 0.25s;
+    }
+
+    .day-ex-item:hover {
+      border-color: rgba(201,168,76,0.3);
+      background: rgba(201,168,76,0.04);
+    }
+
+    .day-ex-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .day-ex-info { flex: 1; }
+
+    .day-ex-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 13px;
+      color: var(--cream);
+      line-height: 1.5;
+      margin-bottom: 4px;
+    }
+
+    .day-ex-meta {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: rgba(240,235,224,0.4);
+    }
+
+    .day-ex-dates {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: rgba(240,235,224,0.28);
+      margin-top: 3px;
+    }
+
+    .day-ex-mark {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      padding: 2px 8px;
+      border-radius: 1px;
+      flex-shrink: 0;
+      align-self: center;
+    }
+
+    .day-ex-mark.start {
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.35);
+      background: rgba(201,168,76,0.08);
+    }
+
+    .day-ex-mark.end {
+      color: rgba(220,80,80,0.8);
+      border: 1px solid rgba(220,80,80,0.3);
+      background: rgba(220,80,80,0.06);
+    }
+
+    /* エラー・ローディング */
+    #cal-status {
+      display: none;
+      padding: 16px 48px;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      color: rgba(224,90,90,0.7);
+    }
+
+    /* フッター */
+    .footer {
+      padding: 40px 48px;
+      border-top: 1px solid rgba(240,235,224,0.06);
+      margin-top: 1px;
+      text-align: center;
+    }
+
+    .footer-text {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: rgba(240,235,224,0.12);
+      text-transform: uppercase;
+      font-style: italic;
+    }
+
+    /* ページトップボタン */
+    #back-to-top {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(10,10,10,0.88);
+      border: 1px solid rgba(201,168,76,0.45);
+      color: var(--cream);
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s, border-color 0.25s;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+    }
+    #back-to-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #back-to-top:hover {
+      border-color: rgba(201,168,76,0.8);
+      transform: translateY(-3px);
+    }
+
+    /* モバイル */
+    @media (max-width: 480px) {
+      .header      { padding: 20px 16px 16px; }
+      .page-title  { font-size: 18px; }
+      .nav-tab     { padding: 6px 12px; font-size: 10px; }
+      .month-nav   { padding: 16px 16px 12px; gap: 16px; }
+      .month-label { font-size: 16px; min-width: 120px; }
+      .calendar-wrap { padding: 12px 8px; }
+      .cal-day     { min-height: 50px; padding: 3px; }
+      .cal-day-num { font-size: 11px; }
+      .cal-badge   { font-size: 7px; padding: 1px 3px; }
+      .day-detail  { padding: 0 16px; }
+      .day-detail.open { padding: 0 16px 24px; }
+      .footer      { padding: 32px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div>
+      <a href="index.html" class="logo-link">
+        <div class="logo">MUnCh — Tokyo Exhibitions</div>
+      </a>
+      <div class="page-title">展覧会カレンダー</div>
+    </div>
+    <nav class="nav-tabs">
+      <a href="list.html"     class="nav-tab">一覧</a>
+      <a href="map.html"      class="nav-tab">地図</a>
+      <a href="calendar.html" class="nav-tab active">カレンダー</a>
+    </nav>
+  </header>
+
+  <div id="cal-status"></div>
+
+  <!-- 月ナビゲーション -->
+  <div class="month-nav">
+    <button class="month-btn" id="prev-month">← 前月</button>
+    <div class="month-label" id="month-label"></div>
+    <button class="month-btn" id="next-month">次月 →</button>
+  </div>
+
+  <!-- カレンダー本体 -->
+  <div class="calendar-wrap">
+    <div class="cal-weekdays">
+      <div class="cal-weekday sun">日</div>
+      <div class="cal-weekday">月</div>
+      <div class="cal-weekday">火</div>
+      <div class="cal-weekday">水</div>
+      <div class="cal-weekday">木</div>
+      <div class="cal-weekday">金</div>
+      <div class="cal-weekday sat">土</div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+  </div>
+
+  <!-- 日付クリック後の展覧会詳細 -->
+  <div class="day-detail" id="day-detail">
+    <div class="day-detail-inner">
+      <div class="day-detail-heading" id="day-detail-heading"></div>
+      <div id="day-detail-content"></div>
+    </div>
+  </div>
+
+  <button id="back-to-top" aria-label="ページトップへ">↑</button>
+
+  <footer class="footer">
+    <div class="footer-text">東京の展覧会を、映画のように。</div>
+  </footer>
+
+  <script>
+    let exhibitions = [];
+    let currentYear, currentMonth;
+    let selectedCell = null;
+
+    // テーマカラー（list.htmlのCOVER_THEMESと対応）
+    const THEME_COLORS = [
+      '#8fb0cc','#c9a84c','#6888d0','#7abca0','#c0b8b0',
+      '#e05050','#c8a880','#c88040','#c02820','#50b868'
+    ];
+
+    function formatDate(s) {
+      if (!s) return '—';
+      const d = new Date(s);
+      if (isNaN(d)) return s;
+      return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    function toDateObj(str) {
+      if (!str) return null;
+      const d = new Date(str);
+      return isNaN(d) ? null : d;
+    }
+
+    // 日付を YYYY-MM-DD 形式の文字列に変換（タイムゾーン安全）
+    function toKey(year, month, day) {
+      return `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    }
+
+    // ある日付に開催中の展覧会を返す
+    function getExhibitionsOnDate(year, month, day) {
+      const target = new Date(year, month, day);
+      target.setHours(0, 0, 0, 0);
+      return exhibitions.filter((e, idx) => {
+        const start = toDateObj(e.start);
+        const end   = toDateObj(e.end);
+        if (!start && !end) return false;
+        const s = start ? new Date(start.getFullYear(), start.getMonth(), start.getDate()) : null;
+        const en = end   ? new Date(end.getFullYear(),   end.getMonth(),   end.getDate())   : null;
+        if (s && en) return target >= s && target <= en;
+        if (s)  return target >= s;
+        if (en) return target <= en;
+        return false;
+      });
+    }
+
+    function isStartDate(ex, year, month, day) {
+      const d = toDateObj(ex.start);
+      if (!d) return false;
+      return d.getFullYear() === year && d.getMonth() === month && d.getDate() === day;
+    }
+
+    function isEndDate(ex, year, month, day) {
+      const d = toDateObj(ex.end);
+      if (!d) return false;
+      return d.getFullYear() === year && d.getMonth() === month && d.getDate() === day;
+    }
+
+    // 展覧会のインデックスを元にしたテーマ番号
+    function themeOf(ex) {
+      const idx = exhibitions.indexOf(ex);
+      return (idx < 0 ? 0 : idx) % 10;
+    }
+
+    function renderCalendar() {
+      const grid   = document.getElementById('cal-grid');
+      const label  = document.getElementById('month-label');
+      grid.innerHTML = '';
+
+      label.textContent = `${currentYear}年${currentMonth + 1}月`;
+
+      const today     = new Date();
+      const todayY    = today.getFullYear();
+      const todayM    = today.getMonth();
+      const todayD    = today.getDate();
+
+      const firstDay  = new Date(currentYear, currentMonth, 1).getDay(); // 0=日
+      const daysInMonth     = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+
+      // 前月の末尾セル
+      for (let i = 0; i < firstDay; i++) {
+        const day = daysInPrevMonth - firstDay + i + 1;
+        const cell = createDayCell(currentYear, currentMonth - 1, day, true);
+        grid.appendChild(cell);
+      }
+
+      // 当月セル
+      for (let d = 1; d <= daysInMonth; d++) {
+        const cell = createDayCell(currentYear, currentMonth, d, false);
+        if (currentYear === todayY && currentMonth === todayM && d === todayD) {
+          cell.classList.add('today');
+        }
+        grid.appendChild(cell);
+      }
+
+      // 翌月の先頭セル（6行になるよう補完）
+      const total = firstDay + daysInMonth;
+      const remaining = total % 7 === 0 ? 0 : 7 - (total % 7);
+      for (let d = 1; d <= remaining; d++) {
+        const cell = createDayCell(currentYear, currentMonth + 1, d, true);
+        grid.appendChild(cell);
+      }
+
+      // 選択状態をリセット
+      selectedCell = null;
+      closeDayDetail();
+    }
+
+    function createDayCell(year, month, day, isOther) {
+      // 月の正規化
+      let y = year, m = month;
+      if (m < 0)  { y--; m = 11; }
+      if (m > 11) { y++; m = 0;  }
+
+      const cell = document.createElement('div');
+      cell.className = 'cal-day' + (isOther ? ' other-month' : '');
+
+      // 曜日クラス
+      const dow = new Date(y, m, day).getDay();
+      if (dow === 0) cell.classList.add('sun');
+      if (dow === 6) cell.classList.add('sat');
+
+      // 日付番号
+      const numEl = document.createElement('span');
+      numEl.className = 'cal-day-num';
+      numEl.textContent = day;
+      cell.appendChild(numEl);
+
+      // その日の展覧会バッジ
+      const exList = getExhibitionsOnDate(y, m, day);
+      exList.forEach(ex => {
+        const badge = document.createElement('span');
+        badge.className = `cal-badge theme-${themeOf(ex)}`;
+
+        let mark = '';
+        if (isStartDate(ex, y, m, day)) mark = '▶';
+        else if (isEndDate(ex, y, m, day)) mark = '■';
+
+        // 展覧会名を短縮（全角10文字まで）
+        const shortTitle = ex.title.length > 10 ? ex.title.slice(0, 9) + '…' : ex.title;
+        badge.innerHTML = mark
+          ? `<span class="badge-mark">${mark}</span>${shortTitle}`
+          : shortTitle;
+        badge.title = `${ex.title} — ${ex.museum}`;
+        cell.appendChild(badge);
+      });
+
+      // クリックで詳細表示
+      cell.addEventListener('click', () => {
+        // 同じセルをクリックしたら閉じる
+        if (selectedCell === cell) {
+          cell.classList.remove('selected');
+          selectedCell = null;
+          closeDayDetail();
+          return;
+        }
+        if (selectedCell) selectedCell.classList.remove('selected');
+        cell.classList.add('selected');
+        selectedCell = cell;
+        showDayDetail(y, m, day, exList);
+      });
+
+      return cell;
+    }
+
+    function showDayDetail(year, month, day, exList) {
+      const detail  = document.getElementById('day-detail');
+      const heading = document.getElementById('day-detail-heading');
+      const content = document.getElementById('day-detail-content');
+
+      const dateStr = `${year}年${month + 1}月${day}日`;
+      heading.textContent = dateStr + ' の展覧会';
+
+      if (exList.length === 0) {
+        content.innerHTML = '<div class="day-detail-empty">この日に開催中の展覧会はありません</div>';
+      } else {
+        const listEl = document.createElement('div');
+        listEl.className = 'day-ex-list';
+
+        exList.forEach(ex => {
+          const theme = themeOf(ex);
+          const color = THEME_COLORS[theme];
+
+          let markHtml = '';
+          if (isStartDate(ex, year, month, day)) {
+            markHtml = '<span class="day-ex-mark start">▶ 開始</span>';
+          } else if (isEndDate(ex, year, month, day)) {
+            markHtml = '<span class="day-ex-mark end">■ 最終日</span>';
+          }
+
+          const item = document.createElement('a');
+          item.href = ex.url || '#';
+          if (ex.url) item.target = '_blank';
+          item.className = 'day-ex-item';
+          item.innerHTML = `
+            <div class="day-ex-dot" style="background:${color};"></div>
+            <div class="day-ex-info">
+              <div class="day-ex-title">${ex.title}</div>
+              <div class="day-ex-meta">${ex.museum}</div>
+              <div class="day-ex-dates">${formatDate(ex.start)} — ${formatDate(ex.end)}</div>
+            </div>
+            ${markHtml}
+          `;
+          listEl.appendChild(item);
+        });
+
+        content.innerHTML = '';
+        content.appendChild(listEl);
+      }
+
+      detail.classList.add('open');
+
+      // スムーススクロール
+      requestAnimationFrame(() => {
+        detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    }
+
+    function closeDayDetail() {
+      document.getElementById('day-detail').classList.remove('open');
+    }
+
+    async function fetchExhibitions() {
+      try {
+        const res = await fetch('exhibitions.json');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        exhibitions = await res.json();
+      } catch (err) {
+        const el = document.getElementById('cal-status');
+        el.style.display = 'block';
+        el.textContent = 'データ読み込み失敗: exhibitions.json が見つかりません';
+      }
+      renderCalendar();
+    }
+
+    // 月ナビゲーション
+    document.getElementById('prev-month').addEventListener('click', () => {
+      currentMonth--;
+      if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+      renderCalendar();
+    });
+
+    document.getElementById('next-month').addEventListener('click', () => {
+      currentMonth++;
+      if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+      renderCalendar();
+    });
+
+    // ページトップボタン
+    const backToTop = document.getElementById('back-to-top');
+    window.addEventListener('scroll', function() {
+      backToTop.classList.toggle('visible', window.scrollY >= 300);
+    }, { passive: true });
+    backToTop.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // 初期化：現在の年月を設定
+    const now = new Date();
+    currentYear  = now.getFullYear();
+    currentMonth = now.getMonth();
+
+    fetchExhibitions();
+  </script>
+
+</body>
+</html>
