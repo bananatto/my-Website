@@ -1016,6 +1016,225 @@
     transform: translateY(0);
   }
 
+  /* ============================================================
+     タイプライターカーソル
+  ============================================================ */
+  .typewriter-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 0.85em;
+    background: var(--cream);
+    margin-left: 3px;
+    vertical-align: middle;
+    animation: cursorBlink 0.7s step-end infinite;
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+
+  .typewriter-cursor.active {
+    opacity: 1;
+  }
+
+  @keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* ============================================================
+     CLOSING SOON ウィジェット
+  ============================================================ */
+  #closing-soon-widget {
+    position: relative;
+    z-index: 5;
+    background: rgba(10,10,10,0.97);
+    border-top: 1px solid rgba(201,168,76,0.15);
+    border-bottom: 1px solid rgba(240,235,224,0.05);
+    padding: 28px 72px;
+    overflow: hidden;
+
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
+  }
+
+  #closing-soon-widget.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #closing-soon-widget::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    opacity: 0.5;
+  }
+
+  .closing-widget-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .closing-label {
+    font-size: 8px;
+    letter-spacing: 0.55em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    position: relative;
+    padding-left: 14px;
+  }
+
+  .closing-label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: pulseDot 1.6s ease-in-out infinite;
+  }
+
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+    50%       { opacity: 0.4; transform: translateY(-50%) scale(0.7); }
+  }
+
+  .closing-header-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(201,168,76,0.2), transparent);
+    max-width: 200px;
+  }
+
+  .closing-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .closing-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(240,235,224,0.04);
+    transition: background 0.3s;
+  }
+
+  .closing-item:last-child {
+    border-bottom: none;
+  }
+
+  .closing-days {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-style: italic;
+    color: var(--gold);
+    min-width: 80px;
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+  }
+
+  .closing-days.urgent {
+    color: #e06060;
+  }
+
+  .closing-separator {
+    color: rgba(240,235,224,0.15);
+    font-size: 10px;
+    margin: 0 14px;
+    flex-shrink: 0;
+  }
+
+  .closing-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(240,235,224,0.75);
+    letter-spacing: 0.04em;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .closing-museum {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(240,235,224,0.3);
+    margin-left: 16px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    font-size: 9px;
+  }
+
+  /* ============================================================
+     キーボードショートカットヒント
+  ============================================================ */
+  #kb-hint {
+    position: fixed;
+    bottom: 28px;
+    right: 60px;
+    z-index: 100;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+
+  #kb-hint.visible {
+    opacity: 1;
+  }
+
+  .kb-key-group {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .kb-key {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    color: rgba(240,235,224,0.6);
+    border: 1px solid rgba(240,235,224,0.2);
+    padding: 2px 6px;
+    min-width: 20px;
+    text-align: center;
+    line-height: 1.6;
+    background: rgba(10,10,10,0.8);
+    backdrop-filter: blur(4px);
+  }
+
+  .kb-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: rgba(240,235,224,0.3);
+    text-transform: uppercase;
+  }
+
+  .kb-divider {
+    width: 1px;
+    height: 14px;
+    background: rgba(240,235,224,0.1);
+  }
+
 </style>
 </head>
 <body>
@@ -1072,7 +1291,7 @@
 
   <!-- ヒーローUI -->
   <div class="hero-ui">
-    <div class="logo">MUnCh — Tokyo Exhibitions</div>
+    <div class="logo"><span id="typewriter-text"></span><span class="typewriter-cursor active" id="typewriter-cursor"></span></div>
 
     <!-- チラシカード -->
     <a href="list.html" class="flyer" id="flyer">
@@ -1112,6 +1331,19 @@
 <!-- フィルムエッジ（両端の穴） -->
 <div class="film-edge left" id="filmLeft"></div>
 <div class="film-edge right" id="filmRight"></div>
+
+<!-- ============================================================
+     CLOSING SOON ウィジェット
+============================================================ -->
+<div id="closing-soon-widget">
+  <div class="closing-widget-header">
+    <span class="closing-label">Closing Soon</span>
+    <div class="closing-header-line"></div>
+  </div>
+  <ul class="closing-list" id="closingList">
+    <!-- JS で挿入 -->
+  </ul>
+</div>
 
 <!-- ============================================================
      今週の注目展覧会セクション
@@ -1177,6 +1409,19 @@
   </div>
 </footer>
 
+<!-- キーボードショートカットヒント -->
+<div id="kb-hint">
+  <div class="kb-key-group">
+    <span class="kb-key">L</span>
+    <span class="kb-desc">一覧</span>
+  </div>
+  <div class="kb-divider"></div>
+  <div class="kb-key-group">
+    <span class="kb-key">M</span>
+    <span class="kb-desc">地図</span>
+  </div>
+</div>
+
 <script>
 // ============================================================
 //  ★ YouTube動画IDをここに追加・変更してください ★
@@ -1202,6 +1447,113 @@ async function loadExhibitions() {
   showFlyer();
   renderFeaturedExhibitions();
   updateFooterStats();
+  renderClosingSoon();
+}
+
+// ============================================================
+//  タイプライター演出
+// ============================================================
+function runTypewriter(text, targetId, cursorId, delay) {
+  const el     = document.getElementById(targetId);
+  const cursor = document.getElementById(cursorId);
+  let i = 0;
+
+  setTimeout(() => {
+    cursor.classList.add("active");
+    const interval = setInterval(() => {
+      el.textContent += text[i];
+      i++;
+      if (i >= text.length) {
+        clearInterval(interval);
+        // 完了後カーソルを2秒点滅させてから消す
+        setTimeout(() => {
+          cursor.style.animation = "none";
+          cursor.style.opacity   = "0";
+        }, 2000);
+      }
+    }, 85);
+  }, delay);
+}
+
+// ============================================================
+//  CLOSING SOON ウィジェット
+// ============================================================
+function renderClosingSoon() {
+  const list = document.getElementById("closingList");
+  if (!list) return;
+
+  const today   = new Date("2026-05-08");
+  const monthEnd = new Date("2026-05-31");
+
+  const closing = exhibitions
+    .filter(e => {
+      const end = new Date(e.end);
+      return end >= today && end <= monthEnd;
+    })
+    .map(e => {
+      const end      = new Date(e.end);
+      const daysLeft = Math.round((end - today) / 86400000);
+      return { ...e, daysLeft };
+    })
+    .sort((a, b) => a.daysLeft - b.daysLeft);
+
+  if (!closing.length) {
+    document.getElementById("closing-soon-widget").style.display = "none";
+    return;
+  }
+
+  list.innerHTML = closing.map(e => {
+    const isUrgent = e.daysLeft <= 3;
+    const daysText = e.daysLeft === 0
+      ? "本日最終"
+      : e.daysLeft === 1
+        ? "明日まで"
+        : `残り ${e.daysLeft} 日`;
+
+    return `
+      <li class="closing-item">
+        <span class="closing-days${isUrgent ? ' urgent' : ''}">${daysText}</span>
+        <span class="closing-separator">|</span>
+        <span class="closing-title">${e.title}</span>
+        <span class="closing-museum">${e.museum || ''}</span>
+      </li>
+    `;
+  }).join("");
+
+  // スクロールで表示
+  const widget = document.getElementById("closing-soon-widget");
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        widget.classList.add("visible");
+        obs.unobserve(widget);
+      }
+    });
+  }, { threshold: 0.1 });
+  obs.observe(widget);
+}
+
+// ============================================================
+//  キーボードショートカット
+// ============================================================
+function initKeyboardShortcuts() {
+  document.addEventListener("keydown", e => {
+    // 入力フィールドにフォーカス中は無視
+    if (["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+    if (e.key === "l" || e.key === "L") {
+      window.location.href = "list.html";
+    } else if (e.key === "m" || e.key === "M") {
+      window.location.href = "map.html";
+    }
+  });
+
+  // ローダー非表示後にヒントを表示
+  setTimeout(() => {
+    const hint = document.getElementById("kb-hint");
+    if (hint) hint.classList.add("visible");
+  }, 4500);
 }
 
 // ============================================================
@@ -1489,9 +1841,13 @@ buildFilmHoles();
 buildIndicator();
 playVideo(currentVideoIndex);
 loadExhibitions();
+initKeyboardShortcuts();
 
 // カウントダウン開始
 runCountdown();
+
+// タイプライター：ローダー終了後（約3.8秒）に開始
+runTypewriter("MUnCh — Tokyo Exhibitions", "typewriter-text", "typewriter-cursor", 3800);
 
 // セクションヘッダーの初期アニメーション（ページ読み込み後）
 window.addEventListener("load", () => {

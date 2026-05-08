@@ -810,6 +810,7 @@
       display: grid;
       grid-template-rows: 0fr;
       transition: grid-template-rows 0.5s cubic-bezier(0.16,1,0.3,1);
+      overflow: hidden;
     }
 
     .book.open .book-body { grid-template-rows: 1fr; }
@@ -899,7 +900,7 @@
     /* 右ページ：ストーリー ─ リアルな紙の質感 */
     .book-right {
       flex: 1;
-      padding: 20px 20px 18px 16px;
+      padding: 16px 16px 14px 14px;
       display: flex;
       flex-direction: column;
       color: #1a1410;
@@ -962,10 +963,10 @@
     /* ストーリー本文 */
     .pamphlet-story {
       font-family: 'Noto Serif JP', serif;
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 300;
       color: #2a2a2a;
-      line-height: 2.1;
+      line-height: 1.9;
       letter-spacing: 0.04em;
       flex: 1;
       overflow-y: auto;
@@ -1492,24 +1493,13 @@
                 <div class="book-left">
                   <img src="${imgSrc}"
                        onerror="if(this.src!=='${fallback}')this.src='${fallback}'" alt="${e.title}">
-                  <div class="book-left-footer">
-                    <div class="book-left-folio">— ${String(idx * 2 + 1).padStart(2,"0")} —</div>
-                  </div>
                 </div>
                 <div class="book-gutter"></div>
                 <div class="book-right">
-                  <div class="book-right-header">
-                    <div class="book-right-header-label">Story</div>
-                    <div class="book-right-header-rule"></div>
-                  </div>
                   ${e.story
                     ? `<div class="pamphlet-story">${e.story.split("\n\n").map(p => `<p>${p}</p>`).join("")}</div>`
                     : `<div class="pamphlet-story"><p>${e.title}</p></div>`
                   }
-                  <div class="book-right-folio">
-                    ${e.url ? `<a href="${e.url}" target="_blank" class="pamphlet-link">公式サイトを見る</a>` : ""}
-                    <span style="margin-left:12px">— ${String(idx * 2 + 2).padStart(2,"0")} —</span>
-                  </div>
                   <button class="book-close-btn" onclick="toggleBook(${idx})">× 閉じる</button>
                 </div>
               </div>
