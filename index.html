@@ -1134,6 +1134,35 @@
     color: rgba(240,235,224,0.2);
   }
 
+  .footer-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .footer-nav-link {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(240,235,224,0.35);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .footer-nav-link:hover {
+    color: var(--gold);
+  }
+
+  .footer-nav-sep {
+    color: rgba(240,235,224,0.15);
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+
   .footer-film-code {
     font-family: 'Cormorant Garamond', serif;
     font-size: 9px;
@@ -1179,6 +1208,37 @@
   @keyframes cursorBlink {
     0%, 100% { opacity: 1; }
     50%       { opacity: 0; }
+  }
+
+  /* ============================================================
+     今日開催中バナー
+  ============================================================ */
+  #today-banner {
+    position: relative;
+    z-index: 5;
+    background: var(--dark);
+    border-top: 1px solid rgba(201,168,76,0.1);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    padding: 16px 48px;
+    text-align: center;
+
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  #today-banner.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .today-banner-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    color: var(--gold);
   }
 
   /* ============================================================
@@ -1717,6 +1777,26 @@
       padding: 12px 20px;
     }
 
+    /* 今日開催中バナー */
+    #today-banner {
+      padding: 14px 20px;
+    }
+
+    .today-banner-text {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+    }
+
+    /* フッターナビ */
+    .footer-nav {
+      gap: 8px;
+    }
+
+    .footer-nav-link {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+    }
+
     /* フッター */
     footer {
       padding: 40px 20px 28px;
@@ -1740,6 +1820,26 @@
       gap: 10px;
       align-items: flex-start;
     }
+  }
+
+  /* ============================================================
+     お気に入りバッジ
+  ============================================================ */
+  .fav-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: rgba(240,235,224,0.45);
+    margin-left: 6px;
+  }
+
+  .fav-badge-count {
+    font-style: normal;
+    color: var(--gold);
+    font-size: 11px;
   }
 
   /* ============================================================
@@ -1875,7 +1975,7 @@
 
     <div class="bottom">
       <div class="hero-btns">
-        <a href="list.html" class="enter-btn">Enter</a>
+        <a href="list.html" class="enter-btn">一覧へ<span class="fav-badge" id="favBadge"></span></a>
         <a href="map.html" class="map-btn"><span>◎</span><span>地図で探す</span></a>
       </div>
       <div class="tagline">
@@ -1899,6 +1999,13 @@
 <!-- フィルムエッジ（両端の穴） -->
 <div class="film-edge left" id="filmLeft"></div>
 <div class="film-edge right" id="filmRight"></div>
+
+<!-- ============================================================
+     今日開催中バナー
+============================================================ -->
+<div id="today-banner">
+  <span class="today-banner-text" id="todayBannerText">— 今日、東京で … 本の展覧会が開催中 —</span>
+</div>
 
 <!-- ============================================================
      CLOSING SOON ウィジェット
@@ -1994,6 +2101,17 @@
     </div>
   </div>
 
+  <!-- ナビリンク -->
+  <div class="footer-nav">
+    <a href="list.html" class="footer-nav-link">一覧</a>
+    <span class="footer-nav-sep">·</span>
+    <a href="calendar.html" class="footer-nav-link">カレンダー</a>
+    <span class="footer-nav-sep">·</span>
+    <a href="timeline.html" class="footer-nav-link">タイムライン</a>
+    <span class="footer-nav-sep">·</span>
+    <a href="map.html" class="footer-nav-link">地図</a>
+  </div>
+
   <div class="footer-rule"></div>
 
   <div class="footer-bottom">
@@ -2012,6 +2130,11 @@
   <div class="kb-key-group">
     <span class="kb-key">M</span>
     <span class="kb-desc">地図</span>
+  </div>
+  <div class="kb-divider"></div>
+  <div class="kb-key-group">
+    <span class="kb-key">T</span>
+    <span class="kb-desc">タイムライン</span>
   </div>
 </div>
 
@@ -2042,6 +2165,8 @@ async function loadExhibitions() {
   renderDailyPick();
   updateFooterStats();
   renderClosingSoon();
+  renderTodayBanner();
+  renderFavBadge();
 }
 
 // ============================================================
@@ -2128,6 +2253,60 @@ function renderClosingSoon() {
 }
 
 // ============================================================
+//  今日開催中バナー
+// ============================================================
+function renderTodayBanner() {
+  const banner = document.getElementById("today-banner");
+  const textEl = document.getElementById("todayBannerText");
+  if (!banner || !textEl) return;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const count = exhibitions.filter(e => {
+    const start = new Date(e.start);
+    const end   = new Date(e.end);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+    return start <= today && today <= end;
+  }).length;
+
+  textEl.textContent = `— 今日、東京で ${count} 本の展覧会が開催中 —`;
+
+  // スクロールで表示
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        banner.classList.add("visible");
+        obs.unobserve(banner);
+      }
+    });
+  }, { threshold: 0.1 });
+  obs.observe(banner);
+}
+
+// ============================================================
+//  お気に入りバッジ
+// ============================================================
+function renderFavBadge() {
+  const badgeEl = document.getElementById("favBadge");
+  if (!badgeEl) return;
+
+  let favs = [];
+  try {
+    const raw = localStorage.getItem("munch_favs");
+    favs = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(favs)) favs = [];
+  } catch {
+    favs = [];
+  }
+
+  if (favs.length > 0) {
+    badgeEl.innerHTML = `♥<span class="fav-badge-count">${favs.length}</span>`;
+  }
+}
+
+// ============================================================
 //  キーボードショートカット
 // ============================================================
 function initKeyboardShortcuts() {
@@ -2140,6 +2319,8 @@ function initKeyboardShortcuts() {
       window.location.href = "list.html";
     } else if (e.key === "m" || e.key === "M") {
       window.location.href = "map.html";
+    } else if (e.key === "t" || e.key === "T") {
+      window.location.href = "timeline.html";
     }
   });
 

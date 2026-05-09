@@ -111,6 +111,84 @@
 
     .sort-select option { background: #111; }
 
+    /* ===== ジャンルフィルタータグ ===== */
+    .genre-filter {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 8px;
+      padding: 12px 52px 14px;
+      border-bottom: 1px solid rgba(240,235,224,0.04);
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .genre-filter::-webkit-scrollbar { display: none; }
+    .genre-chip {
+      padding: 3px 12px;
+      border-radius: 999px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      border: 1px solid rgba(240,235,224,0.15);
+      color: rgba(240,235,224,0.45);
+      background: transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .genre-chip:hover { border-color: rgba(240,235,224,0.4); color: rgba(240,235,224,0.8); }
+    .genre-chip.active {
+      border-color: var(--g-color, var(--gold));
+      color: var(--g-color, var(--gold));
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* ===== ジャンルバッジ（カード上） ===== */
+    .genre-badge {
+      display: block;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      font-family: 'Cormorant Garamond', serif;
+      border: 1px solid currentColor;
+      opacity: 0.7;
+      margin: 4px 0 6px;
+      width: fit-content;
+    }
+
+    /* ===== 星評価 ===== */
+    .star-rating {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+      padding: 8px 12px 7px;
+      margin-top: 4px;
+      border-top: 1px solid rgba(240,235,224,0.07);
+    }
+    .star-btn {
+      background: none;
+      border: none;
+      font-size: 14px;
+      color: rgba(240,235,224,0.2);
+      cursor: pointer;
+      padding: 0 1px;
+      transition: color 0.15s, transform 0.1s;
+      line-height: 1;
+    }
+    .star-btn.lit {
+      color: var(--gold);
+      text-shadow: 0 0 6px rgba(201,168,76,0.5);
+    }
+    .star-btn:hover { transform: scale(1.25); }
+    .star-label {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: rgba(240,235,224,0.3);
+      margin-left: 4px;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
     .count {
       margin-left: auto;
       font-size: 10px;
@@ -1248,7 +1326,7 @@
       align-items: center;
       gap: 14px;
       padding: 10px 32px;
-      opacity: 0.38;
+      opacity: 0.28;
     }
     .card-sep-line {
       flex: 1;
@@ -1652,9 +1730,10 @@
       <div class="page-title">開催中の特別展</div>
     </div>
     <nav class="nav-tabs">
-      <a href="list.html"     class="nav-tab active">一覧</a>
-      <a href="map.html"      class="nav-tab">地図</a>
-      <a href="calendar.html" class="nav-tab">カレンダー</a>
+      <a href="list.html"      class="nav-tab active">一覧</a>
+      <a href="map.html"       class="nav-tab">地図</a>
+      <a href="calendar.html"  class="nav-tab">カレンダー</a>
+      <a href="timeline.html"  class="nav-tab">タイムライン</a>
     </nav>
   </header>
 
@@ -1666,12 +1745,29 @@
     <button class="area-tab" data-area="丸の内">丸の内</button>
   </div>
 
+  <!-- ジャンルフィルター -->
+  <div class="genre-filter" id="genre-filter">
+    <button class="genre-chip active" data-genre="all" style="--g-color:var(--gold)">すべて</button>
+    <button class="genre-chip" data-genre="印象派"    style="--g-color:#7abca0">印象派</button>
+    <button class="genre-chip" data-genre="洋画"      style="--g-color:#8fb0cc">洋画</button>
+    <button class="genre-chip" data-genre="日本画"    style="--g-color:#a8a060">日本画</button>
+    <button class="genre-chip" data-genre="浮世絵"    style="--g-color:#6888d0">浮世絵</button>
+    <button class="genre-chip" data-genre="版画"      style="--g-color:#b0906a">版画</button>
+    <button class="genre-chip" data-genre="現代美術"  style="--g-color:#e05050">現代美術</button>
+    <button class="genre-chip" data-genre="写真"      style="--g-color:#909090">写真</button>
+    <button class="genre-chip" data-genre="工芸"      style="--g-color:#c9a84c">工芸</button>
+    <button class="genre-chip" data-genre="仏教美術"  style="--g-color:#9070b0">仏教美術</button>
+    <button class="genre-chip" data-genre="絵本"      style="--g-color:#70b868">絵本</button>
+    <button class="genre-chip" data-genre="マンガ"    style="--g-color:#e08840">マンガ</button>
+  </div>
+
   <div class="controls">
     <span class="controls-label">Sort</span>
     <select id="sort" class="sort-select">
       <option value="end">終了が近い順</option>
       <option value="title">タイトル順</option>
       <option value="near">近い順</option>
+      <option value="random">ランダム</option>
       <option value="ueno">上野エリア</option>
       <option value="favs">お気に入りのみ</option>
     </select>
@@ -1825,6 +1921,34 @@
     localStorage.setItem("munch_visited", JSON.stringify(visited));
   }
 
+  /* ===== 星評価（localStorage） ===== */
+  const GENRE_COLORS = {
+    '印象派':'#7abca0','洋画':'#8fb0cc','日本画':'#a8a060','浮世絵':'#6888d0',
+    '版画':'#b0906a','現代美術':'#e05050','彫刻':'#c0b8b0','写真':'#909090',
+    '工芸':'#c9a84c','仏教美術':'#9070b0','絵本':'#70b868','マンガ':'#e08840'
+  };
+  function getGenreColor(g) { return GENRE_COLORS[g] || '#c9a84c'; }
+
+  function getStarRatings() {
+    try { return JSON.parse(localStorage.getItem("munch_stars") || "{}"); }
+    catch { return {}; }
+  }
+  function rateStar(favId, n) {
+    const stars = getStarRatings();
+    stars[favId] = n;
+    localStorage.setItem("munch_stars", JSON.stringify(stars));
+    // DOM更新
+    const container = document.getElementById(`stars-${CSS.escape(favId)}`);
+    if (container) renderStars(container, favId, n);
+  }
+  function renderStars(container, favId, rating) {
+    container.innerHTML = [1,2,3,4,5].map(n =>
+      `<button class="star-btn${rating >= n ? ' lit' : ''}" onclick="rateStar('${favId.replace(/'/g,"\\'")}',${n})">★</button>`
+    ).join('') + `<span class="star-label">${rating > 0 ? rating + ' / 5' : '評価する'}</span>`;
+  }
+
+  let activeGenre = 'all';
+
   function render() {
     const sortVal   = document.getElementById("sort").value;
     const searchVal = document.getElementById("search").value.trim().toLowerCase();
@@ -1837,6 +1961,11 @@
     if (activeArea !== "all") {
       const areaMuseums = AREA_MAP[activeArea] || [];
       data = data.filter(e => areaMuseums.includes(e.museum));
+    }
+
+    // ジャンルフィルタ
+    if (activeGenre !== 'all') {
+      data = data.filter(e => e.genre === activeGenre);
     }
 
     // キーワードフィルタ
@@ -1852,6 +1981,8 @@
       data.sort((a,b) => new Date(a.end||"9999") - new Date(b.end||"9999"));
     } else if (sortVal === "title") {
       data.sort((a,b) => a.title.localeCompare(b.title, "ja"));
+    } else if (sortVal === "random") {
+      data = data.sort(() => Math.random() - 0.5);
     } else if (sortVal === "ueno") {
       data = data.filter(e => e.area === "上野");
     } else if (sortVal === "near" && userLat) {
@@ -1913,6 +2044,7 @@
               <div class="ticket-admit">Admit One — Special Exhibition</div>
               <div class="ticket-title">${e.title}</div>
               <div class="ticket-museum">${e.museum}</div>
+              ${e.genre ? `<span class="genre-badge" style="color:${getGenreColor(e.genre)};border-color:${getGenreColor(e.genre)}">${e.genre}</span>` : ""}
               ${e.copy ? `<div class="ticket-copy">"${e.copy}"</div>` : ""}
             </div>
             <div class="ticket-dates">${formatDate(e.start)} — ${formatDate(e.end)}</div>
@@ -1937,6 +2069,7 @@
           ${e.url ? `<button class="copy-link-btn" data-copy-url="${e.url}" aria-label="リンクをコピー">リンクをコピー</button>` : ""}
           <button class="print-btn" data-print-idx="${idx}" aria-label="印刷">印刷</button>
         </div>
+        ${isVisited ? `<div class="star-rating" id="stars-${CSS.escape(favId)}"></div>` : ""}
 
         <!-- 本（パンフレット） -->
         <div class="book" id="book-${idx}">${(() => {
@@ -2007,6 +2140,15 @@
       `;
       card.style.animationDelay = (idx * 0.07) + 's';
       list.appendChild(card);
+
+      // 星評価の初期化（訪問済みの場合）
+      if (isVisited) {
+        const starEl = card.querySelector(`#stars-${CSS.escape(favId)}`);
+        if (starEl) {
+          const stars = getStarRatings();
+          renderStars(starEl, favId, stars[favId] || 0);
+        }
+      }
 
       // カード間装飾
       if (idx < data.length - 1) {
@@ -2198,6 +2340,16 @@
 
   document.getElementById("sort").addEventListener("change", render);
   document.getElementById("search").addEventListener("input", render);
+
+  /* ===== ジャンルフィルター ===== */
+  document.getElementById("genre-filter").addEventListener("click", function(e) {
+    const chip = e.target.closest(".genre-chip");
+    if (!chip) return;
+    document.querySelectorAll(".genre-chip").forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    activeGenre = chip.dataset.genre;
+    render();
+  });
 
   /* ===== エリアフィルタータブ ===== */
   document.getElementById("area-tabs").addEventListener("click", function(e) {

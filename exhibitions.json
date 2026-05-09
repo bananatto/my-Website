@@ -8,7 +8,8 @@
     "image_url": "https://www.tobikan.jp/media/img/poster/2026_wyeth_l.jpg",
     "copy": "静寂の中に差し込む、ひとすじの現実",
     "story": "窓の向こうに、草原がある。風は吹いていないのに、カーテンが揺れる。\n\n彼女はいつもそこにいた——部屋の端に、光の届かない場所に。ワイエスの絵は語らない。ただ、静かに、あなたを見つめ返す。\n\n描かれているのは風景ではなく、時間だ。止まったまま、どこへも行けない、あの感覚。",
-    "artwork_url": "https://upload.wikimedia.org/wikipedia/en/b/b2/Christina%27s_World.jpg"
+    "artwork_url": "https://upload.wikimedia.org/wikipedia/en/b/b2/Christina%27s_World.jpg",
+    "genre": "洋画"
   },
   {
     "title": "百万石！加賀前田家",
@@ -19,7 +20,8 @@
     "image_url": "https://www.tnm.jp/uploads/r_exhibition/exhibition/SPECIAL_LARGE_8419.jpg",
     "copy": "国宝20点以上、百万石の美が集結",
     "story": "百万石とは、米の重さではなく、夢の重さだったのかもしれない。\n\n刀は鞘に収まり、甲冑はもう誰も守らない。それでも金沢の空の下で育まれた前田家の美は、腐らずに今日まで届いた。\n\n権力は滅びる。しかし美は、滅びることを知らない。",
-    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Antique_Japanese_(samurai)_O-Yoroi_armor_2.jpg"
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Antique_Japanese_(samurai)_O-Yoroi_armor_2.jpg",
+    "genre": "工芸"
   },
   {
     "title": "北斎 冨嶽三十六景 井内コレクションより",
@@ -30,7 +32,8 @@
     "image_url": "https://www.nmwa.go.jp/jp/exhibitions/img/2026hokusai.png",
     "copy": "珠玉のコレクションで見る富嶽の全景",
     "story": "波は、山になろうとしていた。富士は、波になろうとしていた。\n\n北斎は八十余年、筆を置かなかった。晩年、彼は自らを「画狂老人」と名乗った。あの頂は、人の目に映るたびに形を変える——それでも、そこにあり続ける。\n\n見るたびに、初めて見る絵がある。",
-    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/The_Great_Wave_off_Kanagawa.jpg"
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/The_Great_Wave_off_Kanagawa.jpg",
+    "genre": "浮世絵"
   },
   {
     "title": "クロード・モネ —風景への問いかけ",
@@ -41,7 +44,8 @@
     "image_url": "https://atz-image.s3.ap-northeast-1.amazonaws.com/2064984481696596f230e653.72257440.jpg",
     "copy": "印象派の巨匠、光と風景の詩",
     "story": "光は嘘をつかない。ただ、いつも違う嘘をつく。\n\nモネは睡蓮の前に座り続け、水面が空を映すのか、空が水面を映すのか、もう気にしなくなった。白内障が深まるにつれ、絵は溶けていった。それでも筆は止まらなかった。\n\n正午の庭に答えはない。光だけがある。",
-    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Monet_Water_Lilies_1916.jpg"
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Monet_Water_Lilies_1916.jpg",
+    "genre": "印象派"
   },
   {
     "title": "下村観山展",
@@ -52,7 +56,8 @@
     "image_url": "https://www.momat.go.jp/wp-content/uploads/2025/10/exhibitions_567_01-1024x472.jpg",
     "copy": "日本画の奥に潜む、緊張と気配",
     "story": "線の細さに、強さが宿る。\n\n日本画の沈黙は、西洋画の沈黙とは違う種類のものだ。観山は余白に何かを描いた——見えないものを見せるために、あえて描かなかった。\n\n息を詰めて見ていると、絵の中の気配が、こちら側に漏れてくる気がする。",
-    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Shimomura_Kanzan_-_Autumn_among_Trees.jpg"
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Shimomura_Kanzan_-_Autumn_among_Trees.jpg",
+    "genre": "日本画"
   },
   {
     "title": "テート美術館 ― YBA & BEYOND 世界を変えた90s英国アート",
@@ -63,7 +68,8 @@
     "image_url": "https://www.nact.jp/media/1000009652_1.jpg",
     "copy": "90年代英国アートが世界を変えた夜",
     "story": "1990年代のロンドンで、若者たちは美術館に火をつけようとした——比喩ではなく、ほとんど文字通りに。\n\n牛は二つに割られ、ベッドは汚れたまま展示された。醜さも美しさと同じ権利を持つ、と彼らは叫んだ。\n\n世界は怒り、そして振り返った。あれから三十年。問いはまだ、答えを待っている。",
-    "artwork_url": "https://upload.wikimedia.org/wikipedia/en/4/4d/Hirst_shark.jpg"
+    "artwork_url": "https://upload.wikimedia.org/wikipedia/en/4/4d/Hirst_shark.jpg",
+    "genre": "現代美術"
   },
   {
     "title": "ロン・ミュエク展",
@@ -74,7 +80,8 @@
     "image_url": "https://www.mori.art.museum/files/exhibitions/2025/10/23/img_ron_mueck_04.jpg",
     "copy": "超リアルな彫刻が問う、存在の重さ",
     "story": "等身大の人間は、もはや怖くない。だがミュエクの彫刻は、五メートルの赤子としてあなたを見下ろす。\n\nまぶたの厚さ、産毛の一本一本——その重さは、生よりも生きている。それが、なぜか悲しい。\n\n私たちは何者なのかと、彫刻が問う。彫刻は答えない。",
-    "artwork_url": ""
+    "artwork_url": "",
+    "genre": "現代美術"
   },
   {
     "title": "トワイライト、新版画 —小林清親から川瀬巴水まで",
@@ -85,7 +92,8 @@
     "image_url": "https://mimt.jp/wp-content/themes/mimt/assets/ex_sp/img/shin-hanga/top/fv_mainvisual_pc.webp",
     "copy": "清親から巴水へ、夕暮れの日本美",
     "story": "夕暮れは、東京にも降りてくる。清親は闇の中に光を見つけ、巴水は旅の宿で雪を待った。\n\n版木に刻まれた線は、百年の後もまだ震えている——あの夜の、冷たい空気ごと。\n\n印刷された景色の中に、もう誰もいない。それでも灯りが、一つ、ともっている。",
-    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Kawase_Z%C3%B4j%C3%B4ji.jpg"
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Kawase_Z%C3%B4j%C3%B4ji.jpg",
+    "genre": "版画"
   },
   {
     "title": "ゴールドマン コレクション 河鍋暁斎の世界",
@@ -96,7 +104,8 @@
     "image_url": "https://kyosai2026.exhibit.jp/images/kv_pc_1300x.png",
     "copy": "破天荒な天才絵師、笑いと鬼気迫る世界",
     "story": "鬼は笑い、骸骨は踊り、蛙は相撲をとる。\n\n暁斎の筆は止まらなかった——酔っていても、怒っていても。天才と狂気のあいだに、彼は住所を持っていた。表札には何と書いてあったのだろう。\n\n怖いのに、目が離せない。それが暁斎の罠だ。",
-    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Brooklyn_Museum_-_Crow_on_a_Branch_-_Kawanabe_Kyosai.jpg"
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Brooklyn_Museum_-_Crow_on_a_Branch_-_Kawanabe_Kyosai.jpg",
+    "genre": "日本画"
   },
   {
     "title": "エリック・カール展 はじまりは、はらぺこあおむし",
@@ -107,7 +116,8 @@
     "image_url": "https://mot-art-museum.jp/exhibitions/images/643cadcccd7f166f31869dda0ba8632b6c27fa76.jpg",
     "copy": "原画180点、絵本の誕生を辿る旅",
     "story": "あおむしは、腹が減っていた。月曜日にりんごを一つ。火曜日に梨を二つ。\n\nそして最後に、繭の中で長い眠りについた。目覚めたとき、世界はもっと広くなっていた。\n\nあのとき子供だった誰もが、今も知っている——空腹と、変容と、朝の光の色を。",
-    "artwork_url": "https://upload.wikimedia.org/wikipedia/en/b/b5/HungryCaterpillar.JPG"
+    "artwork_url": "https://upload.wikimedia.org/wikipedia/en/b/b5/HungryCaterpillar.JPG",
+    "genre": "絵本"
   },
   {
     "title": "弘法大師生誕1250年記念 特別展「空海と真言の名宝」",
@@ -118,7 +128,8 @@
     "image_url": "https://www.tnm.jp/uploads/r_exhibition/exhibition/SPECIAL_LARGE_8491.jpg",
     "copy": "密教の美、千二百五十年を超えて",
     "story": "彼は筆を持たず、墨も使わなかった。ただ、手を合わせ、宇宙の声を聴いた。\n\n国宝の仏像は、ガラス越しに目を閉じている。しかしその沈黙は、饒舌だ——遠い山の霧、燃える護摩の炎、夜明けの鐘。空海はそこにいた。今もいる。\n\n密教の美は、美しさを目指していない。ただ、真実に触れようとしている。それが、見る者を震わせる。",
-    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Kukai_sitting_statue.jpg"
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Kukai_sitting_statue.jpg",
+    "genre": "仏教美術"
   },
   {
     "title": "版画家レンブラント 挑戦、継承、インパクト",
@@ -129,7 +140,8 @@
     "image_url": "https://www.nmwa.go.jp/jp/exhibitions/img/2026rembrandt.png",
     "copy": "銅板に刻まれた光と影の哲学",
     "story": "針が銅を引っかく音は、誰にも聞こえない。しかしその傷の深さが、光になる。\n\nレンブラントは何度も刷り直した——一枚の版を、何度も何度も傷つけながら。完成とは、あきらめることだったのかもしれない。あるいは、次の試みへの踏み台だったのか。\n\n版画は複数存在する。しかし、あなたが今日見る一枚は、世界にただ一枚だ。",
-    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt_The_Three_Crosses_1653.jpg"
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Rembrandt_The_Three_Crosses_1653.jpg",
+    "genre": "版画"
   },
   {
     "title": "ルーヴル美術館展 ルネサンス",
@@ -140,7 +152,8 @@
     "image_url": "https://www.nact.jp/media/louvre2026_kv.jpg",
     "copy": "ダ・ヴィンチ初来日、52年ぶりの奇跡",
     "story": "彼女は微笑んでいない。ただ、こちらを見ている——五百年前から、変わらない目で。\n\n《美しきフェロニエール》が海を渡った。ルーヴルの壁を離れ、この東京の秋に、静かに降り立った。絵の前に立つとき、あなたは1490年代のミラノに触れている。\n\nルネサンスとは、再生のことだ。何かが終わった後に、必ず訪れるもの。",
-    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo_da_Vinci_(attrib)-_la_Belle_Ferroniere.jpg"
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Leonardo_da_Vinci_(attrib)-_la_Belle_Ferroniere.jpg",
+    "genre": "洋画"
   },
   {
     "title": "少女漫画・インフィニティ 萩尾望都×山岸凉子×大和和紀 三人展",
@@ -151,7 +164,8 @@
     "image_url": "https://www.nact.jp/media/shojomanga2026_kv.jpg",
     "copy": "少女漫画の黄金期、原画で辿る軌跡",
     "story": "少女は宇宙へ飛んだ。少女は死者と踊った。少女は源氏の世界で恋をした。\n\n三人の女性たちは、1970年代に紙とペンだけで世界を変えた。原稿用紙の上に刻まれた線は、読者の心に巣を作り、もう何十年も住み続けている。\n\nここに並ぶのは原画だ。印刷ではない。あの線を引いた手が、たしかにあった——その事実に、胸が震える。",
-    "artwork_url": ""
+    "artwork_url": "",
+    "genre": "マンガ"
   },
   {
     "title": "杉本博司 絶滅写真",
@@ -162,7 +176,8 @@
     "image_url": "https://www.momat.go.jp/wp-content/uploads/2025/10/exhibitions_569_01-1024x472.jpg",
     "copy": "銀塩写真の終幕——光と時間の最後の記録",
     "story": "海は、いつも同じ顔をしている。劇場は、夜ごと同じ暗闇に沈む。それでも杉本は、五十年間シャッターを切り続けた。\n\n銀塩写真というメディアが消えようとしている。フィルムが感光する瞬間——光が、化学反応として銀の粒子に刻まれるあの瞬間——は、もう再現されない。彼はそれを知っていた。だから撮った。\n\n絶滅とは、終わりのことではない。記憶が、形を変えて残ろうとする、最後の努力のことだ。",
-    "artwork_url": ""
+    "artwork_url": "",
+    "genre": "写真"
   },
   {
     "title": "ピカソ meets ポール・スミス 遊び心の冒険へ",
@@ -173,7 +188,8 @@
     "image_url": "https://www.nact.jp/media/picasso_paulsmith2026_kv.jpg",
     "copy": "ピカソの遊び心、スミスの色彩が出会う場所",
     "story": "青の時代があり、薔薇の時代があった。しかし誰も、ポール・スミスの時代があるとは知らなかった。\n\nパリの国立ピカソ美術館から約80点が運ばれてきた。そしてロンドンの仕立て屋が、会場という名の布地を裁ち始めた。色とりどりのストライプが壁を走り、キュビスムの顔が笑っている——いや、もともとそういう顔だったのか。\n\nピカソは遊んでいた。作ることは、いつだって遊ぶことだったと、展覧会は静かに教える。",
-    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Pablo_Picasso_Les_Demoiselles_d%27Avignon_(2346559).jpg"
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Pablo_Picasso_Les_Demoiselles_d%27Avignon_(2346559).jpg",
+    "genre": "現代美術"
   },
   {
     "title": "\"カフェ\"に集う芸術家 —印象派からゴッホ、ロートレック、ピカソまで",
@@ -184,7 +200,8 @@
     "image_url": "https://mimt.jp/wp-content/themes/mimt/assets/ex_sp/img/cafe/top/fv_mainvisual_pc.webp",
     "copy": "カフェという名の革命——130点が語る、芸術の揺りかご",
     "story": "煙草の煙の向こうに、モネがいた。隅のテーブルでゴッホが赤ワインを傾けながら、窓の外を見ていた。カフェは、19世紀パリの唯一の民主主義だった。\n\nロートレックは踊り子を描き、ピカソは青白い貧困を持ち込んだ。印刷されたポスターが壁に貼られ、それ自体が芸術になっていった。杯の触れ合う音が、時代を変えていった。\n\n約130点の作品は言う——革命は、いつも騒がしい場所で、ひっそりと始まる、と。",
-    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent_Willem_van_Gogh_-_Cafe_Terrace_at_Night_(Yorck).jpg"
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Vincent_Willem_van_Gogh_-_Cafe_Terrace_at_Night_(Yorck).jpg",
+    "genre": "印象派"
   },
   {
     "title": "大ゴッホ展 夜のカフェテラス",
@@ -195,7 +212,8 @@
     "image_url": "https://grand-van-gogh.com/images/kv_main.jpg",
     "copy": "20年ぶりの星夜、アルルの光が帰ってきた",
     "story": "夜はカフェを照らし、星はカフェを照らし、ゴッホの目はその全部を照らしていた。\n\n《夜のカフェテラス》が二十年ぶりに日本へ渡った。オランダの野原から南フランスの夜空へ——彼が移動するたびに絵は燃え上がり、燃え上がるたびに体が壊れていった。それでも筆は止まらなかった。\n\n約六十点のゴッホが一堂に会する。圧倒されることを、恐れなくていい。それがゴッホの望みだったのだから。",
-    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
+    "genre": "印象派"
   },
   {
     "title": "オルセー美術館所蔵 いまを生きる歓び",
@@ -206,7 +224,8 @@
     "image_url": "https://www.tobikan.jp/media/img/poster/2026_orsay_l.jpg",
     "copy": "ミレー、ゴッホ、ルノワール——歓びの110点",
     "story": "《落穂拾い》の女たちは、地面に向かって腰を折っている。それでも彼女たちの背中には、どこか誇りがある——ミレーはそれを知っていた。\n\n《ローヌ川の星月夜》の水面は揺れ、岸辺の灯が川に溶けていく。ゴッホが見ていたのは星ではなく、星を映す水だったのかもしれない。生きることと、美しいものを見ること——それは同じことだったのか。\n\n東京都美術館が百周年を迎える秋に、オルセーの百十点が届いた。「いまを生きる歓び」とは、問いかけだ。あなたはどう答えるか。",
-    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Jean-Fran%C3%A7ois_Millet_-_Gleaners_-_Google_Art_Project_2.jpg"
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Jean-Fran%C3%A7ois_Millet_-_Gleaners_-_Google_Art_Project_2.jpg",
+    "genre": "印象派"
   },
   {
     "title": "シンシナティ美術館展 アメリカに渡ったヨーロッパの至宝",
@@ -217,6 +236,49 @@
     "image_url": "https://www.cincinnati-art2026.jp/images/kv_main.jpg",
     "copy": "大西洋を渡った84点、81点が初来日",
     "story": "大西洋を渡った絵には、海の塩の匂いが残っているだろうか。十九世紀のアメリカ人たちは、ヨーロッパの美を抱きしめて西へ帰った。\n\nコロー、セザンヌ、モネ——彼らの作品はシンシナティの街で静かに眠っていた。百四十五年の時を経て、今度は太平洋を越えてきた。八十一点が、はじめて日本の光の下に立つ。\n\n旅する絵は、旅した記憶を持つ。あなたがそれを見るとき、絵もまたあなたを見ている——初めての東洋の顔を、驚きをもって。",
-    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Claude_Monet_-_Water_Lilies_and_Japanese_Bridge.jpg"
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Claude_Monet_-_Water_Lilies_and_Japanese_Bridge.jpg",
+    "genre": "洋画"
+  },
+  {
+    "title": "草間彌生 —宇宙への問いかけ",
+    "museum": "国立新美術館",
+    "lat": 35.6653,
+    "lng": 139.7272,
+    "start": "2026-10-07",
+    "end": "2027-01-25",
+    "url": "https://www.nact.jp/exhibition_special/2026/kusama2026/",
+    "image_url": "https://www.nact.jp/media/kusama2026_kv.jpg",
+    "copy": "水玉の宇宙に、あなたは消えていく",
+    "story": "水玉は増殖する。壁を越え、天井を越え、あなたの輪郭を越えて、宇宙まで続いていく。草間彌生は恐怖から描き始めた——幻視が現実を侵食するとき、描くことだけが彼女を守った。\n\n松本の少女は、やがて東京へ、ニューヨークへ、そして再び東京へ戻った。九十年を超えた今も、アトリエに籠もり、今日も筆を動かしている。恐怖はまだある。だから描く。\n\n鏡の部屋に入ると、自分がどこで終わるのかわからなくなる。それは消滅ではなく、拡張だ——草間は言う、愛と平和と、無限の水玉の中で。",
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Yayoi_Kusama_-_Pumpkin_-_2010_%282%29.jpg",
+    "genre": "現代美術"
+  },
+  {
+    "title": "狩野派四百年 —権力と美の系譜",
+    "museum": "東京国立博物館",
+    "lat": 35.7189,
+    "lng": 139.7764,
+    "start": "2026-09-15",
+    "end": "2026-11-29",
+    "url": "https://www.tnm.jp/modules/r_free_page/index.php?id=2810",
+    "image_url": "https://www.tnm.jp/uploads/r_exhibition/exhibition/SPECIAL_LARGE_kano2026.jpg",
+    "copy": "将軍が愛した絵師の一族、国宝の金屏風が揃う",
+    "story": "金の地に、松は緑を絞り出す。屏風は折れ、空間を作り、そこに別の世界が出現する。狩野派の絵師たちは権力の中枢に仕えながら、しかし絵の前では誰にも仕えなかった。\n\n元信から探幽へ、探幽から常信へ——血ではなく、筆の記憶が受け継がれた。弟子は師の線を手本とし、やがてその線を超えようとした。超えられなかった者も、諦めなかった者も、みな同じ金の屏風の前に立っていた。\n\n四百年とは、一本の筆の重さだ。描かれた龍は今も生きている。あなたが見るとき、龍もまたあなたを見ている。",
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Kano_Eitoku_-_Chinese_Lions.jpg",
+    "genre": "日本画"
+  },
+  {
+    "title": "セザンヌ —モダンアートの父、その全貌",
+    "museum": "アーティゾン美術館",
+    "lat": 35.6779,
+    "lng": 139.7742,
+    "start": "2027-02-06",
+    "end": "2027-05-23",
+    "url": "https://www.artizon.museum/exhibition/detail/650",
+    "image_url": "https://atz-image.s3.ap-northeast-1.amazonaws.com/cezanne2027_kv.jpg",
+    "copy": "リンゴ一つが、世界を変えた",
+    "story": "リンゴは腐らない——セザンヌが描く限り。テーブルの上のリンゴは傾き、布は重力に逆らい、奥行きは矛盾する。それでも画面は静かに、確固として、そこに在る。\n\n彼はサント=ヴィクトワール山を六十回以上描いた。山は変わらない。光は変わる。セザンヌの目も変わっていった——白内障が深まり、指先の感覚が鈍くなっても、彼はプロヴァンスの野外に出続けた。雨に打たれ、道端で倒れ、それでも帰宅してから仕事をした。\n\n彼の後継者たちはキュビスムを生み、抽象画を生んだ。しかしセザンヌ自身は何も壊そうとしていなかった——ただ、本当のことを描こうとしていただけだ。リンゴは今日もテーブルの上に、少しだけ傾いて置かれている。",
+    "artwork_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Paul_C%C3%A9zanne_-_Still_Life_with_Apples_-_Google_Art_Project.jpg",
+    "genre": "洋画"
   }
 ]
