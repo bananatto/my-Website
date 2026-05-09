@@ -25,7 +25,7 @@
     font-family: 'Cormorant Garamond', 'Noto Serif JP', serif;
     color: var(--cream);
     cursor: none;
-    overflow-x: hidden;
+    overflow-x: clip; /* clipはiOS Safariでスクロールを妨げない */
   }
 
   /* ============================================================
@@ -267,6 +267,7 @@
     inset: 0;
     z-index: 9998;
     pointer-events: none;
+    will-change: transform;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
     animation: grainShift 0.08s steps(1) infinite;
   }
@@ -280,6 +281,7 @@
     height: 200%;
     z-index: 9997;
     pointer-events: none;
+    will-change: transform;
     opacity: 0.03;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
     animation: grain-move 0.8s steps(1) infinite;
@@ -1838,7 +1840,9 @@
   <!-- 動画背景 -->
   <div class="video-bg" id="videoBg">
     <div class="video-fallback"></div>
-    <iframe id="yt" frameborder="0" playsinline allow="autoplay; muted; loop; fullscreen; encrypted-media; picture-in-picture"></iframe>
+    <iframe id="yt" frameborder="0" playsinline muted
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen></iframe>
   </div>
 
   <!-- フィルム演出 -->
@@ -2188,10 +2192,12 @@ function runCountdown() {
       count--;
       setTimeout(tick, 600);
     } else {
-      // カウントダウン終了：ローダーを消す
+      // カウントダウン終了：ローダーを消して動画再生開始
       setTimeout(() => {
         const loader = document.getElementById("film-loader");
         loader.classList.add("hidden");
+        // 動画再生：ローダー非表示と同時に開始
+        playVideo(currentVideoIndex);
         setTimeout(() => { loader.style.display = "none"; }, 900);
         document.body.style.overflow = "";
       }, 700);
@@ -2222,9 +2228,10 @@ function buildFilmHoles() {
 
 function playVideo(index) {
   const v = VIDEOS[index];
-  const start = Math.floor(Math.random() * 3600);
+  const start = Math.floor(Math.random() * 30);
+  const origin = encodeURIComponent(location.origin || 'null');
   document.getElementById("yt").src =
-    `https://www.youtube.com/embed/${v.id}?autoplay=1&mute=1&loop=1&playlist=${v.id}&start=${start}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1`;
+    `https://www.youtube-nocookie.com/embed/${v.id}?autoplay=1&mute=1&loop=1&playlist=${v.id}&start=${start}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1&origin=${origin}&widget_referrer=${origin}`;
   document.getElementById("counter").textContent = v.label;
 
   document.querySelectorAll(".vid-dot").forEach((d, i) => {
@@ -2518,7 +2525,6 @@ document.body.style.overflow = "hidden";
 buildLoaderFilmHoles();
 buildFilmHoles();
 buildIndicator();
-playVideo(currentVideoIndex);
 loadExhibitions();
 initKeyboardShortcuts();
 

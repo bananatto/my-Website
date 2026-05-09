@@ -965,43 +965,29 @@
       text-align: center;
     }
 
-    /* 背の折り目（ガター） ─ 写実的な綴じ目 */
+    /* 背の折り目（ガター） ─ スタイリッシュな細い綴じ目 */
     .book-gutter {
-      width: 18px;
+      width: 6px;
       flex-shrink: 0;
       position: relative;
-      background:
-        /* 製本クロスの質感 */
-        repeating-linear-gradient(
-          to bottom,
-          rgba(0,0,0,0.0) 0px,
-          rgba(0,0,0,0.04) 1px,
-          rgba(0,0,0,0.0) 2px
-        ),
-        linear-gradient(to right,
-          rgba(0,0,0,0.45) 0%,
-          rgba(0,0,0,0.18) 25%,
-          rgba(255,255,255,0.18) 40%,
-          rgba(255,255,255,0.35) 50%,
-          rgba(255,255,255,0.10) 65%,
-          rgba(0,0,0,0.10) 85%,
-          rgba(0,0,0,0.05) 100%
-        );
-      box-shadow:
-        -3px 0 8px rgba(0,0,0,0.20),
-         4px 0 10px rgba(0,0,0,0.12);
+      background: linear-gradient(to right,
+        rgba(0,0,0,0.18) 0%,
+        rgba(0,0,0,0.06) 40%,
+        rgba(255,255,255,0.10) 55%,
+        rgba(0,0,0,0.04) 70%,
+        transparent 100%
+      );
     }
-    /* ガターの縦の綴じ糸ライン */
     .book-gutter::before {
       content: '';
       position: absolute;
-      left: 50%; top: 0; bottom: 0;
+      left: 50%; top: 8%; bottom: 8%;
       width: 1px;
       background: linear-gradient(to bottom,
         transparent,
-        rgba(0,0,0,0.08) 15%,
-        rgba(0,0,0,0.12) 50%,
-        rgba(0,0,0,0.08) 85%,
+        rgba(0,0,0,0.10) 20%,
+        rgba(0,0,0,0.14) 50%,
+        rgba(0,0,0,0.10) 80%,
         transparent
       );
     }
@@ -1256,6 +1242,24 @@
     }
 
     /* 空状態 */
+    /* ===== カード間装飾 ===== */
+    .card-separator {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 32px;
+      opacity: 0.38;
+    }
+    .card-sep-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(240,235,224,0.3), transparent);
+    }
+    .card-sep-icon {
+      font-size: 16px;
+      filter: grayscale(0.3);
+    }
+
     .empty {
       padding: 80px;
       text-align: center;
@@ -1495,7 +1499,30 @@
       border-top: 1px solid rgba(240,235,224,0.08);
       margin: 0 20px 8px;
     }
-    .book.open .review-section { display: block; }
+    .review-section.is-open { display: block; }
+
+    /* 感想トグルボタン */
+    .review-toggle-btn {
+      display: none;
+      margin: 0 20px 12px;
+      padding: 7px 20px;
+      background: transparent;
+      border: 1px solid rgba(240,235,224,0.18);
+      color: rgba(240,235,224,0.55);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s;
+      border-radius: 2px;
+      width: calc(100% - 40px);
+    }
+    .review-toggle-btn:hover {
+      border-color: rgba(240,235,224,0.45);
+      color: rgba(240,235,224,0.85);
+    }
+    .book.open .review-toggle-btn { display: block; }
 
     .review-header {
       display: flex; justify-content: space-between; align-items: center;
@@ -1958,6 +1985,7 @@
                 </div>
               </div>
             </div>
+            <button class="review-toggle-btn" id="review-toggle-${idx}" onclick="toggleReview(${idx})">感想を見る / 書く ▾</button>
             <div class="review-section" id="review-${idx}">
               <div class="review-header">
                 <span class="review-label">— 感想 —</span>
@@ -1979,6 +2007,15 @@
       `;
       card.style.animationDelay = (idx * 0.07) + 's';
       list.appendChild(card);
+
+      // カード間装飾
+      if (idx < data.length - 1) {
+        const SEP_ICONS = ['🍎', '✏️', '🖌️', '🎨', '🌿', '🍋', '🖊️', '🎭', '🌸', '✦'];
+        const sep = document.createElement("div");
+        sep.className = "card-separator";
+        sep.innerHTML = `<span class="card-sep-line"></span><span class="card-sep-icon">${SEP_ICONS[idx % SEP_ICONS.length]}</span><span class="card-sep-line"></span>`;
+        list.appendChild(sep);
+      }
     });
   }
 
@@ -2070,10 +2107,13 @@
       cover.addEventListener('animationend', () => {
         cover.classList.remove('flipping');
         book.classList.add('open');
-        const title = book.querySelector('.book-cover-main-title')?.textContent || idx;
-        loadReviews(idx, title);
       }, { once: true });
     } else {
+      // 閉じる時は感想欄もリセット
+      const sec = document.getElementById(`review-${idx}`);
+      const btn = document.getElementById(`review-toggle-${idx}`);
+      if (sec) sec.classList.remove('is-open');
+      if (btn) btn.textContent = '感想を見る / 書く ▾';
       book.classList.remove('open');
       requestAnimationFrame(() => {
         cover.classList.add('flipping-back');
@@ -2081,6 +2121,21 @@
           cover.classList.remove('flipping-back');
         }, { once: true });
       });
+    }
+  }
+
+  /* ===== 感想トグル ===== */
+  function toggleReview(idx) {
+    const sec = document.getElementById(`review-${idx}`);
+    const btn = document.getElementById(`review-toggle-${idx}`);
+    if (!sec) return;
+    const opening = !sec.classList.contains('is-open');
+    sec.classList.toggle('is-open', opening);
+    if (btn) btn.textContent = opening ? '感想を閉じる ▴' : '感想を見る / 書く ▾';
+    if (opening) {
+      const book = document.getElementById(`book-${idx}`);
+      const title = book?.querySelector('.book-cover-main-title')?.textContent || idx;
+      loadReviews(idx, title);
     }
   }
 
